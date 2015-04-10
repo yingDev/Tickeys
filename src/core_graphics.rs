@@ -333,4 +333,8 @@ extern "system"
 		   userInfo: *mut c_void) -> CFMachPortRef;
 
 	pub fn CGEventGetIntegerValueField(event: CGEventRef, field: CGEventField) -> i64;
+
+	pub fn CGEventTapEnable(tap: CFMachPortRef, enable: bool);
+
+	pub fn CGEventTapIsEnabled(tap: CFMachPortRef) -> bool;
 }

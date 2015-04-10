@@ -22,6 +22,7 @@ extern "system"
 {
 	pub fn CFMachPortCreateRunLoopSource(allocator: CFAllocatorRef, port: CFMachPortRef, order: CFIndex) -> CFRunLoopSourceRef;
 	pub fn CFRunLoopAddSource(rl: CFRunLoopRef, source: CFRunLoopSourceRef , mode: CFStringRef);
+	pub fn CFRunLoopRemoveSource(rl: CFRunLoopRef, source: CFRunLoopSourceRef , mode: CFStringRef);
 	pub fn CFRunLoopGetCurrent() -> CFRunLoopRef;
 	pub fn CFRunLoopRun();
 }
