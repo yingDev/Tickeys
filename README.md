@@ -9,6 +9,6 @@ A demo for learning `Rust`.
 * alut:
 ```sh
 brew install freealut
-
+```
 ## License
 MIT
