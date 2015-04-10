@@ -5,7 +5,10 @@ Instant audio feedback when typing. For MacOS X.
 
 A demo for learning `Rust`.
 
-# Env
+## Env
 * alut:
 ```sh
 brew install freealut
+
+## License
+MIT
