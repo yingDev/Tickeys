@@ -1,0 +1,13 @@
+[package]
+name = "Tickeys"
+version = "0.0.1"
+authors = ["应元东 <ying@yingDev.com>"]
+
+[dependencies]
+libc = "0.1.6"
+glutin_cocoa = "*"
+time = "*"
+objc = "*"
+
+[dependencies.openal-rs]
+git = "https://github.com/jpernst/openal-rs.git"

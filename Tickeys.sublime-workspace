@@ -1,0 +1,520 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"C",
+				"stepCount"
+			],
+			[
+				"G",
+				"GestureStep     Enum (main.rs) : enum GestureStep                                  "
+			],
+			[
+				"ty",
+				"type_of_obj"
+			],
+			[
+				"prin",
+				"println!	println! …"
+			],
+			[
+				"to",
+				"to_string"
+			],
+			[
+				"st",
+				"struct-tuple	struct …(…)"
+			],
+			[
+				"pr",
+				"println!	println! …"
+			],
+			[
+				"ind",
+				"indexOfO"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 392.0,
+		"last_filter": "PCI",
+		"selected_items":
+		[
+			[
+				"PCI",
+				"Package Control: Disable Package"
+			],
+			[
+				"pcu",
+				"Package Control: Upgrade Package"
+			],
+			[
+				"PCD",
+				"Package Control: Disable Package"
+			],
+			[
+				"PCE",
+				"Package Control: Enable Package"
+			],
+			[
+				"PC",
+				"Package Control: Discover Packages"
+			],
+			[
+				"pci",
+				"Package Control: Install Package"
+			],
+			[
+				"Pci",
+				"Package Control: Install Package"
+			],
+			[
+				"PCR",
+				"Package Control: Remove Package"
+			],
+			[
+				"pCR",
+				"Package Control: Remove Package"
+			],
+			[
+				"pid",
+				"Package Control: Disable Package"
+			],
+			[
+				"pcd",
+				"Package Control: Disable Package"
+			],
+			[
+				"PIC",
+				"Package Control: Install Package"
+			],
+			[
+				"package control: li",
+				"Package Control: Disable Package"
+			],
+			[
+				"Install",
+				"Package Control: Install Package"
+			],
+			[
+				"PaCI",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: Inst",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: Ins",
+				"Package Control: Install Package"
+			],
+			[
+				"package Control: Install Package",
+				"Package Control: Install Package"
+			],
+			[
+				"packa",
+				"Preferences: Browse Packages"
+			]
+		],
+		"width": 467.0
+	},
+	"console":
+	{
+		"height": 152.0,
+		"history":
+		[
+			"import urllib.request,os,hashlib; h = 'eb2297e1a458f27d836c04bb0cbaf282' + 'd0e7a3098092775ccb37ca9d6b2e4b7d'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by) ",
+			"exit",
+			"ls"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/Users/Ying/Desktop/Tickeys"
+	],
+	"file_history":
+	[
+		"/Users/Ying/Desktop/rusthello/Cargo.toml",
+		"/Users/Ying/Desktop/rusthello/src/main.rs",
+		"/Users/Ying/.cargo/git/checkouts/glib-27833b4b6d67ca46/master/glib-sys/src/lib.rs",
+		"/Volumes/C/Users/ying/Desktop/boltsdk_2008/samples/HelloBolt/XAR/HelloBolt7/layout/Button.lua",
+		"/Volumes/C/Users/ying/Desktop/boltsdk_2008/samples/HelloBolt/XAR/HelloBolt7/onload.lua",
+		"/Users/Ying/Library/Application Support/Sublime Text 3/Packages/User/Terminal.sublime-settings",
+		"/Users/Ying/Library/Application Support/Sublime Text 3/Packages/Terminal/Terminal.sublime-settings",
+		"/Users/Ying/Library/Application Support/Sublime Text 3/Packages/User/Preferences.sublime-settings",
+		"/Users/Ying/Library/Application Support/Sublime Text 3/Packages/User/RustAutoComplete.sublime-settings",
+		"/Users/Ying/Desktop/rusthello/src/lib.rs",
+		"/Users/Ying/.cargo/registry/src/github.com-1ecc6299db9ec823/rustc-serialize-0.3.0/src/serialize.rs",
+		"/Users/Ying/Desktop/MobileGame/assets/common.zh-CN.locale",
+		"/Users/Ying/Desktop/MobileGame/assets/common.en-US.locale",
+		"/Developer/rust-lang/rust/src/libcore/cell.rs",
+		"/Developer/rust-lang/rust/src/liballoc/boxed.rs",
+		"/Users/Ying/Desktop/WorkSpace/android-ffmpeg-with-rtmp/src/ffmpeg/config.h",
+		"/Users/Ying/Desktop/WorkSpace/android-ffmpeg-with-rtmp/build.sh",
+		"/Users/Ying/Desktop/WorkSpace/android-ffmpeg-with-rtmp/_build_librtmp.sh",
+		"/Users/Ying/Desktop/WorkSpace/android-ffmpeg-with-rtmp/patches/ffmpeg-configure.patch",
+		"/Users/Ying/Desktop/WorkSpace/android-ffmpeg-with-rtmp/_build_ffmpeg.sh",
+		"/Users/Ying/Desktop/WorkSpace/android-ffmpeg-with-rtmp/build/build.log",
+		"/Users/Ying/Desktop/WorkSpace/android-ffmpeg-with-rtmp/src/ffmpeg/config.mak",
+		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/MobileGame/Resources/UI/locale/baccarat.en-US.locale",
+		"/Users/Ying/Desktop/MobileGame/AndroidManifest.xml",
+		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/MobileGame/proj.android/build_native.py",
+		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/MobileGame/3rd/static/ffmpeg2.4.1/Android.mk",
+		"/Users/Ying/Desktop/MobileGame iOS.plist",
+		"/Users/Ying/Desktop/untitled.plist",
+		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/MobileGame/proj.android/jni/Android.mk",
+		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/Assets/LOGIN_UI_1/Json/LOGIN.json",
+		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/Assets/LOGIN_UI_1/LOGIN_UI_1.xml.ui",
+		"/Users/Ying/Desktop/rust-quicklook/rust-quicklook/highlight/styles/github.css",
+		"/Users/Ying/Desktop/rust-quicklook/rust-quicklook/highlight/styles/default.css",
+		"/Users/Ying/Desktop/rust-quicklook/rust-quicklook/highlight/highlight.pack.js",
+		"/Library/QuickLook/QLMarkdown.qlgenerator/styles.css",
+		"/Library/QuickLook/QLMarkdown.qlgenerator/blocktags",
+		"/Library/QuickLook/rust-quicklook.qlgenerator/Contents/Info.plist",
+		"/Users/Ying/Desktop/test.rs",
+		"/Developer/rust-lang/rust/src/libcollections/vec.rs",
+		"/Users/Ying/Library/Application Support/Sublime Text 3/Packages/User/SublimeLinter.sublime-settings",
+		"/Users/Ying/Library/Application Support/Sublime Text 3/Packages/User/Default (OSX).sublime-keymap",
+		"/Developer/rust-lang/rust/src/libcore/result.rs",
+		"/Users/Ying/Library/Application Support/Sublime Text 3/Packages/Default/Default (OSX).sublime-keymap",
+		"/Users/Ying/Library/Application Support/Sublime Text 3/Packages/Color Highlighter/ColorHighlighter.sublime-settings",
+		"/Users/Ying/Library/Application Support/Sublime Text 3/Packages/User/ColorHighlighter.sublime-settings",
+		"/Users/Ying/Desktop/rusthello/src/tmp1sgi9n",
+		"/Users/Ying/Desktop/racer/src/racer/ast.rs",
+		"/Users/Ying/Desktop/idea-rust/Makefile",
+		"/Users/Ying/Desktop/rusthello/src/app.rs",
+		"/Users/Ying/Desktop/rusthello/src/rusthello/lib.rs",
+		"/Users/Ying/Library/Application Support/Sublime Text 3/Packages/Default/Preferences.sublime-settings",
+		"/Users/Ying/Desktop/rusthello/build.sublime-build",
+		"/Volumes/C/Users/Ying/AppData/Local/YingDev.com/WGestures/1.4.1.1/gestures.json",
+		"/Users/Ying/Projects/SerTest/dfsdfs/gtk-gui/gui.stetic",
+		"/Users/Ying/Desktop/SafeNativeMethods.cs",
+		"/Users/Ying/Desktop/Screen.cs",
+		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/MobileGame/Resources/UI/SAIBAO.json",
+		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/Assets/MultipleUI/Resources/locale/UILobby.zh-TW.locale",
+		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/Assets/MultipleUI/Resources/locale/UILobby.zh-CN.locale",
+		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/MobileGame/Resources/UI/BaccaratUI.json",
+		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/MobileGame/Resources/UI/GameOverviewTemplate.json",
+		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/MobileGame/Resources/common.zh-TW.locale",
+		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/MobileGame/Resources/UI/locale/roulette.zh-CN.locale",
+		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/MobileGame/Resources/UI/locale/roulette.en-US.locale",
+		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/MobileGame/Resources/UI/locale/roulette.zh-TW.locale",
+		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/MobileGame/Resources/UI/locale/baccarat.zh-TW.locale",
+		"/Volumes/C 1/Users/me665/Desktop/MobileGameSolution0/MobileGame/proj.win32/mobileGame2.vcxproj",
+		"/Volumes/C 1/Users/me665/Desktop/MobileGameSolution0/MobileGame/proj.win32/mobileGame2.vcxproj.filters",
+		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/MobileGame/Resources/SmallVideoChannel.xml",
+		"/Users/Ying/Desktop/服务器核心概要设计(13).doc",
+		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/MobileGame/Resources/UI/USERINFO_T.json",
+		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/MobileGame/Resources/UI/USERINFO.json",
+		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/MobileGame/Resources/UI/SERVICELIST_T.json",
+		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/MobileGame/Resources/UI/SERVICELIST_E.json",
+		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/MobileGame/Resources/UI/SERVICELIST.json",
+		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/Assets/Baccarat_Ui/Json/Baccarat_TableList_Ui.json",
+		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/Assets/Baccarat_Ui/Ui1.xml.ui",
+		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/MobileGame/Resources/UI/LOGIN.json",
+		"/Users/Ying/Downloads/AG_setup/res/values-zh-rTW/strings.xml",
+		"/Users/Ying/Downloads/AG_setup/AndroidManifest.xml",
+		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/Design/Other/AG_setup/AndroidManifest.xml",
+		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/Design/Other/AG_setup/resources.arsc",
+		"/Volumes/C/Users/me665/Desktop/MobileGameSolution0/说明.md",
+		"/Users/Ying/Desktop/SmallVideoChannel.xml",
+		"/Users/Ying/Desktop/WorkSpace/ActionScript/games/ClientNewLebo/scnetlib/src/cmd/CMD_SC_RouletteRoad.as",
+		"/Users/Ying/Desktop/WorkSpace/ActionScript/games/ClientNewLebo/scnetlib/src/cmd/CMD_SC_BingoRoad.as",
+		"/Users/Ying/Desktop/temp/src/main.rs",
+		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/MobileGame/Classes/app/controller/gameController/SicboGameController.cpp",
+		"/Users/Ying/Desktop/temp/hello-rust.sublime-project",
+		"/Users/Ying/Desktop/temp/main.rs",
+		"/Users/Ying/Desktop/temp/<std macros>",
+		"/Users/Ying/Library/Application Support/Sublime Text 2/Packages/User/Preferences.sublime-settings",
+		"/Users/Ying/Library/Application Support/Sublime Text 2/Packages/User/Rust.sublime-settings",
+		"/Users/Ying/Library/Application Support/Sublime Text 2/Packages/User/Distraction Free.sublime-settings",
+		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/说明.md",
+		"/Users/Ying/Library/Application Support/Sublime Text 2/Packages/Default/Preferences.sublime-settings",
+		"/Users/Ying/Library/Application Support/Sublime Text 2/Packages/Default/Default (OSX).sublime-keymap",
+		"/Users/Ying/rust.nanorc",
+		"/Users/Ying/Downloads/Huagong_war_exploded/META-INF/context.xml",
+		"/Users/Ying/Downloads/Huagong_war_exploded/WEB-INF/web.xml",
+		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/MobileGame/Classes/view/roadmap/roulette/RoadRouB.cpp",
+		"/Applications/goagent-goagent-2a5ba69/local/proxy.ini",
+		"/Users/Ying/Library/Mobile Documents/com~apple~CloudDocs/rvo/keyValue.txf",
+		"/Applications/goagent-goagent-2a5ba69/local/goagent-osx.command",
+		"/Users/Ying/Downloads/CMD_Opcodes(1).as",
+		"/Users/Ying/Desktop/WorkSpace/ActionScript/games/ClientNewLebo/scnetlib/src/cmd/bac/CMD_SC_GamePayOut.as",
+		"/Users/Ying/Desktop/WorkSpace/ActionScript/games/ClientNewLebo/scnetlib/src/cmd/drag/CMD_SC_DragonTigerHistory.as",
+		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/MobileGame/3rd/src/ffmpeg_android/build_android.sh",
+		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/MobileGame/3rd/src/ffmpeg_android/Android.mk",
+		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/MobileGame/3rd/src/ffmpeg_android/Android_configure.mk",
+		"/Users/Ying/Downloads/SmallVideoChannel.xml",
+		"/Users/Ying/Documents/Projects/Beihe/MobileGameIOS/Podfile",
+		"/Users/Ying/Desktop/Podfle",
+		"/Users/Ying/Downloads/OpenSSL-for-iPhone-master/bin/iPhoneSimulator8.1-i386.sdk/build-openssl-1.0.1j.log",
+		"/Users/Ying/Desktop/WorkSpace/ActionScript/games/ClientNewLebo/BH_Hall_Big_新大厅/src/bac/GameClass.as",
+		"/Users/Ying/Desktop/WorkSpace/ActionScript/games/ClientNewLebo/BH_Hall_Big_新大厅/src/Main.as",
+		"/Users/Ying/Desktop/WorkSpace/ActionScript/games/Common/sccommonLib/src/org/as3lib/math/limit.as",
+		"/usr/local/Cellar/cmake/3.0.2/share/cmake/Modules/FindGTK2.cmake",
+		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/MobileGame/3rd/src/libsigcpp-multiplatform/_android/jni/Android.mk",
+		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/MobileGame/cocos2d/cocos/Android.mk",
+		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/MobileGame/cocos2d/cocos/editor-support/cocostudio/Android.mk",
+		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/MobileGame/proj.android/build-cfg.json",
+		"/Users/Ying/Desktop/WorkSpace/ActionScript/games/ClientNewLebo/BH_Roulette_Big/src/Cmd/CMD_C_AddGold.as",
+		"/Users/Ying/Desktop/TeamTalk.plist",
+		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/MobileGame/Classes/view/GameOverviewList.cpp",
+		"/Users/Ying/Desktop/WorkSpace/ActionScript/games/Common/sccommonLib/src/net/ClientSocket.as",
+		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/MobileGame/Classes/net/PacketHead.h",
+		"/Applications/Wireshark.app/Contents/Resources/bin/wireshark"
+	],
+	"find":
+	{
+		"height": 25.0
+	},
+	"find_in_files":
+	{
+		"height": 93.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"test",
+			"SYSROOT",
+			"i32",
+			"run",
+			"Box::new",
+			"}\n",
+			"line",
+			"indexOf",
+			"indexOfO",
+			"usr",
+			"path",
+			"lotus",
+			"GameRule",
+			"bg.jpg",
+			"pause_screen.jpg",
+			"bg.jpg",
+			"chip_bar",
+			"wood_chip_bar_rou",
+			"\n",
+			"Run",
+			"index",
+			"sendAddGlod",
+			"index",
+			"connectHandler",
+			"m_hSocket",
+			"Mac",
+			"Adapt",
+			"sizePercent",
+			"200",
+			"producttype",
+			"Name",
+			"enterGameScene",
+			"select",
+			"sendBuf",
+			"debug",
+			"iSize",
+			"SendBuffer",
+			"EncryptBuffer",
+			"OnSocketSubScore",
+			"m_IMain",
+			"OnSocketSubUserCome",
+			"onsocketmainuser",
+			"init",
+			",*",
+			",",
+			"pcbDataBuffer",
+			"Encrypt",
+			"socketDataHandler",
+			"socketDataHandler1",
+			"EncryptBuffer",
+			"mac",
+			"Mac",
+			"pb",
+			"nobuffer",
+			"delay",
+			"av_dlog",
+			"delay",
+			"VIDEO_PICTURE_QUEUE_SIZE",
+			"buffer",
+			"printf",
+			"SLIBNAME",
+			"avcodec",
+			",",
+			"pkg",
+			"\\\"",
+			"XXX",
+			"\n",
+			" ",
+			"\n",
+			" ",
+			"XXOO",
+			" ",
+			"WTF",
+			"debug",
+			"menu",
+			"    border: 1px solid #EFEFEF;",
+			"wdrfgt123",
+			"LS980ZV7",
+			"F320",
+			"LG",
+			"check",
+			"max1462x_button_pressed",
+			"max1462x_ear_3button_type_data",
+			"VUP_MIN",
+			"acc_read_value",
+			"pr_debug",
+			"PERMISS_REANGE_MAX",
+			"HOOK_MIN",
+			"max1462x_ear_3button_type_data",
+			"/system/framework/",
+			"ClassNotFoundError",
+			"findAndHookMethod",
+			"ResourcesManager",
+			"getTopLevelResources",
+			"initXbridgeZygote",
+			"getParametersString",
+			"hookmethod",
+			"Fullscreen",
+			"GlobalAccess",
+			"enableGlobalAccess",
+			"xs",
+			"xs_select",
+			"加密",
+			"google",
+			"http://",
+			"    import socket, thread, select",
+			"public static void main()\n{\n		\n}\n",
+			"servlet"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			""
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 25.0
+	},
+	"input":
+	{
+		"height": 31.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 327.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "Tickeys.sublime-project",
+	"replace":
+	{
+		"height": 46.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 127.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 392.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 140.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
