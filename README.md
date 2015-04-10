@@ -11,4 +11,4 @@ A demo for learning `Rust`.
 brew install freealut
 ```
 ## License
-MIT
+* MIT
