@@ -25,5 +25,6 @@ extern "system"
 	pub fn CFRunLoopRemoveSource(rl: CFRunLoopRef, source: CFRunLoopSourceRef , mode: CFStringRef);
 	pub fn CFRunLoopGetCurrent() -> CFRunLoopRef;
 	pub fn CFRunLoopRun();
+	pub fn CFRunLoopStop(rl: CFRunLoopRef);
 }
 

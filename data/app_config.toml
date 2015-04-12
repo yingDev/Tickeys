@@ -1,0 +1,3 @@
+[app_config]
+site = "http://www.yingDev.com/projects/Tickeys"
+check_update_api = "http://www.yingdev.com/projects/latestVersion?product=WGestures"

@@ -8,6 +8,7 @@ libc = "0.1.6"
 glutin_cocoa = "*"
 time = "*"
 objc = "*"
+hyper = "0.3.11"
 
 [dependencies.openal-rs]
 git = "https://github.com/jpernst/openal-rs.git"
