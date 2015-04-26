@@ -4,16 +4,32 @@
 		"selected_items":
 		[
 			[
+				"msg",
+				"msg_send"
+			],
+			[
+				"NSN",
+				"NSUserNotificationCenterDelegate"
+			],
+			[
+				"NSU",
+				"NSUserNotificationCenter"
+			],
+			[
+				"prin",
+				"println!	println! …"
+			],
+			[
+				"pri",
+				"println!	println! …"
+			],
+			[
 				"las",
 				"last_key"
 			],
 			[
 				"CFRLR",
 				"CFRunLoopRef"
-			],
-			[
-				"prin",
-				"print!	print! …"
 			],
 			[
 				"load",
@@ -136,52 +152,11 @@
 	"buffers":
 	[
 		{
-			"file": "Cargo.toml",
+			"file": "/Volumes/C/Users/me665/Desktop/GameOverviewList/2/Json/BaccaratDataTable.json",
 			"settings":
 			{
-				"buffer_size": 229,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/main.rs",
-			"settings":
-			{
-				"buffer_size": 6206,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "data/defaults.toml",
-			"settings":
-			{
-				"buffer_size": 230,
-				"line_ending": "Unix",
-				"name": "[audio_files]"
-			}
-		},
-		{
-			"file": "src/event_tap.rs",
-			"settings":
-			{
-				"buffer_size": 1548,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/core_graphics.rs",
-			"settings":
-			{
-				"buffer_size": 12221,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/core_foundation.rs",
-			"settings":
-			{
-				"buffer_size": 992,
-				"line_ending": "Unix"
+				"buffer_size": 35758,
+				"line_ending": "Windows"
 			}
 		}
 	],
@@ -325,15 +300,29 @@
 	"expanded_folders":
 	[
 		"/Users/Ying/Desktop/Tickeys",
-		"/Users/Ying/Desktop/Tickeys/data"
+		"/Users/Ying/Desktop/Tickeys/data",
+		"/Users/Ying/Desktop/Tickeys/target"
 	],
 	"file_history":
 	[
+		"/Volumes/C/Users/me665/Desktop/GameOverviewList/2/2.xml.ui",
+		"/Users/Ying/Desktop/Tickeys/src/core_foundation.rs",
+		"/Users/Ying/Desktop/Tickeys/src/core_graphics.rs",
+		"/Users/Ying/Desktop/Tickeys/src/event_tap.rs",
+		"/Users/Ying/Desktop/Tickeys/data/app_config.toml",
+		"/Users/Ying/Desktop/Tickeys/data/user_options.default.toml",
+		"/Users/Ying/Desktop/Tickeys/src/main.rs",
+		"/Users/Ying/Desktop/Tickeys/Cargo.toml",
+		"/Users/Ying/Desktop/hackintosh/config(1).plist",
+		"/Volumes/C/Users/me665/Desktop/新建文件夹/DemoHead_UI/Export/DemoHead_UI/DemoHead_UI.csb",
+		"/Users/Ying/Downloads/config.plist",
+		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/Design/Other/AG_setup/AndroidManifest.xml",
+		"/Users/Ying/Downloads/VideoChannel(1).xml",
+		"/Users/Ying/Desktop/Tickeys/src/<objc macros>",
 		"/Users/Ying/Desktop/Tickeys/Tickeys.app/Contents/Info.plist",
 		"/Users/Ying/Desktop/Tickeys/src/<std macros>",
 		"/Users/Ying/Desktop/Tickeys/src/alut.rs",
 		"/Users/Ying/Desktop/Tickeys/LICENSE",
-		"/Users/Ying/Desktop/Tickeys/src/<objc macros>",
 		"/Users/Ying/Desktop/Tickeys/src/lib.rs",
 		"/Users/Ying/Desktop/rusthello/Cargo.toml",
 		"/Users/Ying/Desktop/rusthello/src/main.rs",
@@ -415,7 +404,6 @@
 		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/MobileGame/Resources/UI/LOGIN.json",
 		"/Users/Ying/Downloads/AG_setup/res/values-zh-rTW/strings.xml",
 		"/Users/Ying/Downloads/AG_setup/AndroidManifest.xml",
-		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/Design/Other/AG_setup/AndroidManifest.xml",
 		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/Design/Other/AG_setup/resources.arsc",
 		"/Volumes/C/Users/me665/Desktop/MobileGameSolution0/说明.md",
 		"/Users/Ying/Desktop/SmallVideoChannel.xml",
@@ -444,19 +432,7 @@
 		"/Users/Ying/Desktop/WorkSpace/ActionScript/games/ClientNewLebo/scnetlib/src/cmd/drag/CMD_SC_DragonTigerHistory.as",
 		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/MobileGame/3rd/src/ffmpeg_android/build_android.sh",
 		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/MobileGame/3rd/src/ffmpeg_android/Android.mk",
-		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/MobileGame/3rd/src/ffmpeg_android/Android_configure.mk",
-		"/Users/Ying/Downloads/SmallVideoChannel.xml",
-		"/Users/Ying/Documents/Projects/Beihe/MobileGameIOS/Podfile",
-		"/Users/Ying/Desktop/Podfle",
-		"/Users/Ying/Downloads/OpenSSL-for-iPhone-master/bin/iPhoneSimulator8.1-i386.sdk/build-openssl-1.0.1j.log",
-		"/Users/Ying/Desktop/WorkSpace/ActionScript/games/ClientNewLebo/BH_Hall_Big_新大厅/src/bac/GameClass.as",
-		"/Users/Ying/Desktop/WorkSpace/ActionScript/games/ClientNewLebo/BH_Hall_Big_新大厅/src/Main.as",
-		"/Users/Ying/Desktop/WorkSpace/ActionScript/games/Common/sccommonLib/src/org/as3lib/math/limit.as",
-		"/usr/local/Cellar/cmake/3.0.2/share/cmake/Modules/FindGTK2.cmake",
-		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/MobileGame/3rd/src/libsigcpp-multiplatform/_android/jni/Android.mk",
-		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/MobileGame/cocos2d/cocos/Android.mk",
-		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/MobileGame/cocos2d/cocos/editor-support/cocostudio/Android.mk",
-		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/MobileGame/proj.android/build-cfg.json"
+		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/MobileGame/3rd/src/ffmpeg_android/Android_configure.mk"
 	],
 	"find":
 	{
@@ -474,6 +450,7 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"ApAppDelegatep",
 			"Id",
 			"id",
 			"last_time",
@@ -609,181 +586,35 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 0,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "Cargo.toml",
+					"file": "/Volumes/C/Users/me665/Desktop/GameOverviewList/2/Json/BaccaratDataTable.json",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 229,
+						"buffer_size": 35758,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								229,
-								229
+								1817,
+								1817
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/TOML/TOML.tmLanguage"
+							"syntax": "Packages/JavaScript/JSON.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 2,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "src/main.rs",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 6206,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								3733,
-								3733
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Rust/Rust.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 270.0,
+						"translation.y": 2090.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "data/defaults.toml",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 230,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								230,
-								230
-							]
-						],
-						"settings":
-						{
-							"auto_name": "[audio_files]",
-							"syntax": "Packages/TOML/TOML.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "src/event_tap.rs",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1548,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1144,
-								1144
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Rust/Rust.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 148.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 3,
-					"type": "text"
-				},
-				{
-					"buffer": 4,
-					"file": "src/core_graphics.rs",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 12221,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								12171,
-								12190
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Rust/Rust.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 4,
-					"type": "text"
-				},
-				{
-					"buffer": 5,
-					"file": "src/core_foundation.rs",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 992,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								885,
-								904
-							]
-						],
-						"settings":
-						{
-							"auto_name": "",
-							"syntax": "Packages/Rust/Rust.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 5,
 					"type": "text"
 				}
 			]
@@ -870,7 +701,7 @@
 	"show_open_files": false,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 179.0,
+	"side_bar_width": 235.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{

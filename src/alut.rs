@@ -1,7 +1,7 @@
 extern crate openal;
 use openal::al::*;
 
-#[link(name= "alut")]
+//#[link(name= "alut")]
 extern "cdecl"
 {
 	pub fn alutInit(argcp:*mut i32, argv: *mut *mut u8) -> ALboolean;

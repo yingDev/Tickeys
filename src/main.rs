@@ -1,15 +1,14 @@
-#![feature(collections)]
 
 extern crate libc;
 extern crate openal;
 extern crate cocoa;
 extern crate time;
 extern crate hyper;
+extern crate toml;
 
 
 #[macro_use]
 extern crate objc;
-
 
 use std::collections::{VecDeque, VecMap};
 use std::option::Option;
@@ -18,7 +17,8 @@ use std::boxed::Box;
 use std::thread;
 use std::io::Read;
 use std::sync::{Once, ONCE_INIT};
-
+use std::string::String;
+use std::fs::File;
 
 use libc::{c_void};
 use core_foundation::*;
@@ -33,10 +33,12 @@ use objc::runtime::*;
 use cocoa::base::{class,id,nil};
 use cocoa::foundation::NSAutoreleasePool;
 
+
 use hyper::Client;
 use hyper::header::{Connection, ConnectionOption};
 use hyper::status::StatusCode;
 
+//自己的modules才需要声明
 mod core_graphics;
 mod core_foundation;
 mod alut;
@@ -49,6 +51,26 @@ const NON_UNIQ_AUDIO_COUNT:u8 = 8;
 
 fn main() 
 {	
+	let mut data_path = get_data_path();
+	data_path.push("app_config.toml");
+	let cfg_path = data_path.as_path().to_str().unwrap();
+
+	let mut toml_file = match File::open(cfg_path)
+	{
+		Ok(f) => f, 
+		Err(e) => panic!("Error open file:{} : {}", e, cfg_path)
+	};
+	let mut toml_str = String::new();
+	let n_read = toml_file.read_to_string(&mut toml_str);
+	match n_read
+	{
+		Ok(_) => {},
+		Err(e) => panic!("Failed Reading file content:{}", e)
+	};
+ 
+	let app_cfg: toml::Value = toml_str.parse().unwrap();
+	println!("app_config:{:?}", app_cfg.lookup("config.check_update_api").unwrap());
+
 	thread::spawn(||
 	{
 	    let mut client = Client::new();
@@ -84,7 +106,6 @@ fn main()
 	    {
 	    	println!("Failed to check for update: Status {}", resp.status);
 	    }
-	    
 	});
 
 	unsafe
@@ -95,7 +116,11 @@ fn main()
 	let _pool = unsafe{NSAutoreleasePool::new(nil)};
 
 	let mut app = App::new();
-	app.load_audio(&find_data_path("bubble"), &AUDIO_FILES);
+	let mut audio_dir = get_data_path();
+	audio_dir.push("bubble");
+	
+	
+	app.load_audio(&(audio_dir.into_os_string().into_string().unwrap()), &AUDIO_FILES);
 
 	app.show_notification("Tickeys正在运行", "按 QAZ123 退出");
 
@@ -103,22 +128,22 @@ fn main()
 }
 
 
-fn find_data_path(style_name: &str) -> String
+fn get_data_path() -> std::path::PathBuf
 {
 	let args:Vec<_> = std::env::args().collect();
 	let mut data_path = std::path::PathBuf::from(&args[0]);
 	data_path.pop();
 	data_path.push("data");
-	data_path.push(style_name);
-
-	data_path.into_os_string().into_string().unwrap()
+	data_path
 }
 
 
 struct App
 {
+	gain:f32,
+
 	audio_data: Vec<AudioData>,
-	special_keymap: VecMap<u8>, //keycode -> index
+	//special_keymap: VecMap<u8>, //keycode -> index
 
 	last_keys: VecDeque<u8>,
 	keyboard_monitor: Option< event_tap::KeyboardMonitor>, //defered
@@ -135,7 +160,7 @@ impl App
 			let center:id = msg_send![class("NSUserNotificationCenter"), defaultUserNotificationCenter];
 			let center:id = msg_send![center, setDelegate: noti_center_del];
 
-			let mut app = App{audio_data: Vec::new(), special_keymap: VecMap::new(), last_keys: VecDeque::new(), keyboard_monitor:None, notification_delegate: noti_center_del};
+			let mut app = App{gain:0f32, audio_data: Vec::new(), last_keys: VecDeque::new(), keyboard_monitor:None, notification_delegate: noti_center_del};
 			app
 		}
 
@@ -270,8 +295,6 @@ impl App
 
 		self.audio_data[index].play();
 	}
-
-
 
 	fn show_notification(&mut self, title: &str, msg: &str)
 	{
@@ -424,6 +447,8 @@ pub trait UserNotificationCenterDelegate //: <NSUserNotificationCenerDelegate>
 			let url:id = msg_send![class("NSURL"), URLWithString: NSString::alloc(nil).init_str("http://www.yingDev.com/projects/Tickeys")];
 
 			let ok:bool = msg_send![workspace, openURL: url];
+
+			msg_send![center, removeDeliveredNotification:note]
 		}
 	}
 }
