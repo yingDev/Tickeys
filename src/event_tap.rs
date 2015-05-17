@@ -58,6 +58,8 @@ impl Drop for KeyboardMonitor
 		unsafe
 		{
 			CFRunLoopRemoveSource(CFRunLoopGetCurrent(), self.runloop_source,kCFRunLoopCommonModes);
+			CFRelease(self.event_tap);
+			CFRelease(self.runloop_source);
 		}
 	}
 }

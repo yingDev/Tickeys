@@ -4,6 +4,10 @@
 		"selected_items":
 		[
 			[
+				"run",
+				"runloop_source"
+			],
+			[
 				"msg",
 				"msg_send"
 			],
@@ -152,11 +156,55 @@
 	"buffers":
 	[
 		{
-			"file": "/Volumes/C/Users/me665/Desktop/GameOverviewList/2/Json/BaccaratDataTable.json",
+			"file": "build.rs",
 			"settings":
 			{
-				"buffer_size": 35758,
-				"line_ending": "Windows"
+				"buffer_size": 122,
+				"line_ending": "Unix",
+				"name": "fn main()"
+			}
+		},
+		{
+			"file": "Cargo.toml",
+			"settings":
+			{
+				"buffer_size": 294,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/alut.rs",
+			"settings":
+			{
+				"buffer_size": 406,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "\nextern crate libc;\nextern crate openal;\nextern crate cocoa;\nextern crate time;\nextern crate hyper;\nextern crate toml;\n\n\n#[macro_use]\nextern crate objc;\n\nuse std::collections::{VecDeque, VecMap};\nuse std::option::Option;\nuse std::any::Any;\nuse std::boxed::Box;\nuse std::thread;\nuse std::io::Read;\nuse std::sync::{Once, ONCE_INIT};\nuse std::string::String;\nuse std::fs::File;\n\nuse libc::{c_void};\nuse core_foundation::*;\nuse core_graphics::*;\nuse openal::al::*;\nuse openal::al::ffi::*;\nuse alut::*;\nuse cocoa::appkit::{NSEvent};\nuse cocoa::foundation::{NSString};\nuse objc::*;\nuse objc::runtime::*;\nuse cocoa::base::{class,id,nil};\nuse cocoa::foundation::NSAutoreleasePool;\n\n\nuse hyper::Client;\nuse hyper::header::{Connection, ConnectionOption};\nuse hyper::status::StatusCode;\n\n//自己的modules才需要声明\nmod core_graphics;\nmod core_foundation;\nmod alut;\nmod event_tap;\n\n\nconst QUIT_KEY_SEQ: &'static[u8] = &[12, 0, 6, 18, 19, 20]; //QAZ123\nstatic AUDIO_FILES: [&'static str; 9] = [\"1.wav\",\"2.wav\",\"3.wav\",\"4.wav\",\"5.wav\",\"6.wav\",\"7.wav\",\"8.wav\", \"enter.wav\"];\nconst NON_UNIQ_AUDIO_COUNT:u8 = 8;\n\nfn main() \n{	\n	let mut data_path = get_data_path();\n	data_path.push(\"app_config.toml\");\n	let cfg_path = data_path.as_path().to_str().unwrap();\n\n	let mut toml_file = match File::open(cfg_path)\n	{\n		Ok(f) => f, \n		Err(e) => panic!(\"Error open file:{} : {}\", e, cfg_path)\n	};\n	let mut toml_str = String::new();\n	let n_read = toml_file.read_to_string(&mut toml_str);\n	match n_read\n	{\n		Ok(_) => {},\n		Err(e) => panic!(\"Failed Reading file content:{}\", e)\n	};\n \n	let app_cfg: toml::Value = toml_str.parse().unwrap();\n	println!(\"app_config:{:?}\", app_cfg.lookup(\"config.check_update_api\").unwrap());\n\n	thread::spawn(||\n	{\n	    let mut client = Client::new();\n\n		//todo: test only\n	    let mut result = client.get(\"http://www.yingdev.com/projects/latestVersion?product=WGestures\")\n	        .header(Connection(vec![ConnectionOption::Close]))\n	        .send();\n	    \n	    let mut resp;\n	    match result\n	    {\n	    	Ok(mut r) => resp = r,\n	    	Err(e) => {\n	    		println!(\"Failed to check for update: {}\", e);\n	    		return;\n	    	}\n	    }\n\n	    if resp.status == StatusCode::Ok\n	    {\n	    	let mut content = String::new();\n	    	match resp.read_to_string(&mut content)\n	    	{\n	    		Ok(_) => {},\n	    		Err(e) => {\n	    			println!(\"Failed to read http content: {}\", e);\n	    			return;\n	    		}\n	    	}\n	    	println!(\"Response: {}\", content);\n	    }else\n	    {\n	    	println!(\"Failed to check for update: Status {}\", resp.status);\n	    }\n	});\n\n	unsafe\n	{\n		alutInit(std::ptr::null_mut(), std::ptr::null_mut());\n	}\n\n	let _pool = unsafe{NSAutoreleasePool::new(nil)};\n\n	let mut app = App::new();\n	let mut audio_dir = get_data_path();\n	audio_dir.push(\"bubble\");\n	\n	\n	app.load_audio(&(audio_dir.into_os_string().into_string().unwrap()), &AUDIO_FILES);\n\n	app.show_notification(\"Tickeys正在运行\", \"按 QAZ123 退出\");\n\n	app.run();\n}\n\n\nfn get_data_path() -> std::path::PathBuf\n{\n	let args:Vec<_> = std::env::args().collect();\n	let mut data_path = std::path::PathBuf::from(&args[0]);\n	data_path.pop();\n	data_path.push(\"data\");\n	data_path\n}\n\n\nstruct App\n{\n	gain:f32,\n\n	audio_data: Vec<AudioData>,\n	//special_keymap: VecMap<u8>, //keycode -> index\n\n	last_keys: VecDeque<u8>,\n	keyboard_monitor: Option< event_tap::KeyboardMonitor>, //defered\n	notification_delegate: id,\n	msg_port: CFMessagePortRef\n}\n\nimpl App\n{\n	pub fn new() -> App\n	{\n		unsafe\n		{\n			let noti_center_del:id = UserNotificationCenterDelegate::new(nil).autorelease();\n			let center:id = msg_send![class(\"NSUserNotificationCenter\"), defaultUserNotificationCenter];\n			let center:id = msg_send![center, setDelegate: noti_center_del];\n\n			let msg_port = CFMessagePortCreateLocal(std::ptr::null_mut, )\n\n			let mut app = App{gain:0f32, audio_data: Vec::new(), last_keys: VecDeque::new(), keyboard_monitor:None, notification_delegate: noti_center_del};\n			app\n		}\n	}\n\n	pub fn run(&mut self)\n	{\n		let mut tap;\n\n		let ptr_to_self: *mut c_void = unsafe{std::mem::transmute(self)};\n\n		unsafe\n		{\n			let mut tap_result = event_tap::KeyboardMonitor::new(App::handle_keyboard_event, ptr_to_self);\n			match tap_result\n			{\n				Ok(t) => tap = t,\n				Err(msg) => panic!(\"error: KeyboardMonitor::new: {}\", msg)\n			}\n\n			let self_:&mut App = std::mem::transmute(ptr_to_self);\n			self_.keyboard_monitor = Some(tap);\n		}\n\n		\n		unsafe\n		{\n			CFRunLoopRun();\n		}\n	}\n\n	pub fn stop(&mut self)\n	{\n		unsafe\n		{\n			CFRunLoopStop(CFRunLoopGetCurrent());\n		}\n	}\n\n	pub fn load_audio(&mut self, dir: &str, files: &[&str])\n	{\n		self.audio_data.clear();\n\n		let mut path = dir.to_string();\n		path.push_str(\"/\");\n		let base_path_len = path.chars().count();\n\n		for f in files.iter()\n		{\n			path.push_str(f);\n			println!(\"loading audio:{}\", path);\n			let audio = AudioData::from_file(&path);\n\n			if audio.source == 0 as ALuint\n			{\n				panic!(\"failed to load audio file:{}\", f);\n			}\n\n			path.truncate(base_path_len);\n\n			self.audio_data.push(audio);\n		}\n	}\n\n	extern fn handle_keyboard_event(proxy: CGEventTapProxy, etype: CGEventType, event: CGEventRef, refcon: *mut c_void) -> CGEventRef\n	{\n		let keycode = unsafe{CGEventGetIntegerValueField(event, CGEventField::kCGKeyboardEventKeycode)} as u16;\n\n		assert!(refcon != 0 as *mut c_void);\n\n		//todo: temp\n		let app: &mut App = unsafe{ std::mem::transmute(refcon)};\n		app.handle_keydown(keycode as u8);\n		//app.audios[(keycode % 8) as usize].play();\n		//play_keycode_audio(keycode);\n\n		event\n	}\n\n	fn handle_keydown(&mut self, keycode: u8)\n	{	\n		self.last_keys.push_back(keycode);\n		if self.last_keys.len() > 6 \n		{\n			self.last_keys.pop_front();\n		}\n\n		for i in self.last_keys.iter()\n		{\n			print!(\"{} \", i);\n		}\n\n		//todo: temp\n		if self.last_keys.iter().zip(QUIT_KEY_SEQ.iter()).filter(|&(a,b)| a == b).count() == QUIT_KEY_SEQ.len()\n		{\n			println!(\"Quit!\");\n			self.show_notification(\"Tickeys\", \"已退出\");\n			self.stop();\n		}\n\n		println!(\"key:{}\", keycode);\n\n\n\n		static mut last_time: u64 = 0;\n		static mut last_key: i16 = -1;\n		\n		let index = match keycode\n		{\n			36 => 8, //return\n			/*51 => 9, //back\n			49 => 8, //space\n			125 => 6, //down\n			126 => 7, //up*/\n			_ => (keycode % NON_UNIQ_AUDIO_COUNT) as usize\n		};\n\n		unsafe\n		{	\n			let now = time::precise_time_ns() / 1000 / 1000;\n\n			let delta = now - last_time ;\n			println!(\"interval:{}\", delta);\n			if delta < 60 && last_key == (keycode as i16)\n			{\n				last_time = now;\n				return;\n			}\n			last_key = keycode as i16;\n			last_time = now;\n		}\n\n		self.audio_data[index].play();\n	}\n\n	fn show_notification(&mut self, title: &str, msg: &str)\n	{\n		unsafe\n		{\n			let note:id = NSUserNotification::new(nil).autorelease();\n			note.setTitle_(NSString::alloc(nil).init_str(title));\n			note.setInformativeText_(NSString::alloc(nil).init_str(msg));\n			\n			let center:id = msg_send![class(\"NSUserNotificationCenter\"), defaultUserNotificationCenter];\n\n			msg_send![center, deliverNotification: note]\n		}\n	}\n}\n\n\n\nstruct AudioData\n{\n	buffer: ALuint,\n	source: ALuint,\n    state: ALuint\n}\n\nimpl AudioData\n{\n	//todo: how to handle error?\n	pub fn from_file(file: &str) -> AudioData\n	{\n		let file_ptr = std::ffi::CString::new(file).unwrap().as_ptr();\n		let mut audio = AudioData{buffer:0, source:0, state:0};\n		\n		unsafe\n		{\n			audio.buffer = alutCreateBufferFromFile(file_ptr);\n			\n			// Create sound source (use buffer to fill source)\n    		alGenSources(1, &mut audio.source);\n    		alSourcei(audio.source, AL_BUFFER, audio.buffer as ALint);\n\n    		if audio.buffer == 0\n    		{\n    			panic!(\"failed to load file: {}\", file);\n    		}\n		}\n\n		audio\n	}\n\n	pub fn play(self: &mut AudioData)\n	{\n		unsafe\n		{\n			alSourcePlay(self.source);\n		}\n	}\n\n	pub fn set_pitch(self: &mut AudioData, value: f32)\n	{\n    	unsafe{alSourcef(self.source, AL_PITCH, value);}\n	}\n\n	pub fn set_gain(self: &mut AudioData, value: f32)\n	{\n		unsafe{alSourcef(self.source, AL_GAIN, value);}\n	}\n}\n\nimpl Drop for AudioData\n{\n	fn drop(&mut self)\n	{\n		unsafe\n		{\n			alDeleteSources(1, &self.source);\n    		alDeleteBuffers(1, &self.buffer);\n		}\n		\n	}\n}\n\npub trait NSUserNotification\n{\n	unsafe fn new(_: Self) -> id\n	{\n		msg_send![class(\"NSUserNotification\"), new]\n	}\n\n	unsafe fn setTitle_(self, title: id);\n	unsafe fn setInformativeText_(self, txt: id);\n}\n\nimpl NSUserNotification for id\n{\n	unsafe fn setTitle_(self, title: id)\n	{\n		msg_send![self, setTitle: title]\n	}\n\n	unsafe fn setInformativeText_(self, txt: id)\n	{\n		msg_send![self, setInformativeText: txt]\n	}\n}\n\n\npub trait UserNotificationCenterDelegate //: <NSUserNotificationCenerDelegate>\n{\n	fn new(_: Self) -> id\n	{\n		static REGISTER_APPDELEGATE: Once = ONCE_INIT;\n		REGISTER_APPDELEGATE.call_once(||\n		{\n			let nsobjcet = objc::runtime::Class::get(\"NSObject\").unwrap();\n			let mut decl = objc::declare::ClassDecl::new(nsobjcet, \"UserNotificationCenterDelegate\").unwrap();\n\n			unsafe\n			{\n				let delivered_fn: extern fn(&mut Object, Sel, id, id) = Self::userNotificationCenterDidDeliverNotification;\n				decl.add_method(sel!(userNotificationCenter:didDeliverNotification:), delivered_fn);\n\n				let activated_fn: extern fn(&mut Object, Sel, id, id) = Self::userNotificationCenterDidActivateNotification;\n				decl.add_method(sel!(userNotificationCenter:didActivateNotification:), activated_fn);\n			}\n\n			decl.register();\n		});\n\n	    let cls = Class::get(\"UserNotificationCenterDelegate\").unwrap();\n	    unsafe \n	    {\n	        msg_send![cls, new]\n    	}\n	}\n\n	extern fn userNotificationCenterDidDeliverNotification(this: &mut Object, _cmd: Sel, center: id, note: id)\n	{\n		println!(\"userNotificationCenterDidDeliverNotification\");\n	}\n	\n	extern fn userNotificationCenterDidActivateNotification(this: &mut Object, _cmd: Sel, center: id, note: id)\n	{\n		println!(\"userNotificationCenterDidActivateNotification\");\n\n		unsafe\n		{\n			let workspace: id = msg_send![class(\"NSWorkspace\"), sharedWorkspace];\n			//todo: extract\n			let url:id = msg_send![class(\"NSURL\"), URLWithString: NSString::alloc(nil).init_str(\"http://www.yingDev.com/projects/Tickeys\")];\n\n			let ok:bool = msg_send![workspace, openURL: url];\n\n			msg_send![center, removeDeliveredNotification:note]\n		}\n	}\n}\n\nimpl UserNotificationCenterDelegate for id\n{\n\n}\n\n\n\n\n\n\n\n\n",
+			"file": "src/main.rs",
+			"file_size": 10093,
+			"file_write_time": 130749560940000000,
+			"settings":
+			{
+				"buffer_size": 10121,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/core_foundation.rs",
+			"settings":
+			{
+				"buffer_size": 2151,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/event_tap.rs",
+			"settings":
+			{
+				"buffer_size": 1613,
+				"line_ending": "Unix"
 			}
 		}
 	],
@@ -300,11 +348,12 @@
 	"expanded_folders":
 	[
 		"/Users/Ying/Desktop/Tickeys",
-		"/Users/Ying/Desktop/Tickeys/data",
-		"/Users/Ying/Desktop/Tickeys/target"
+		"/Users/Ying/Desktop/Tickeys/SharedSupport",
+		"/Users/Ying/Desktop/Tickeys/src"
 	],
 	"file_history":
 	[
+		"/Volumes/C/Users/me665/Desktop/GameOverviewList/2/Json/BaccaratDataTable.json",
 		"/Volumes/C/Users/me665/Desktop/GameOverviewList/2/2.xml.ui",
 		"/Users/Ying/Desktop/Tickeys/src/core_foundation.rs",
 		"/Users/Ying/Desktop/Tickeys/src/core_graphics.rs",
@@ -431,12 +480,11 @@
 		"/Users/Ying/Desktop/WorkSpace/ActionScript/games/ClientNewLebo/scnetlib/src/cmd/bac/CMD_SC_GamePayOut.as",
 		"/Users/Ying/Desktop/WorkSpace/ActionScript/games/ClientNewLebo/scnetlib/src/cmd/drag/CMD_SC_DragonTigerHistory.as",
 		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/MobileGame/3rd/src/ffmpeg_android/build_android.sh",
-		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/MobileGame/3rd/src/ffmpeg_android/Android.mk",
-		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/MobileGame/3rd/src/ffmpeg_android/Android_configure.mk"
+		"/Users/Ying/Documents/Projects/Beihe/MobileGameSolution/MobileGame/3rd/src/ffmpeg_android/Android.mk"
 	],
 	"find":
 	{
-		"height": 35.0
+		"height": 23.0
 	},
 	"find_in_files":
 	{
@@ -450,6 +498,7 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"CFTimeInterval ",
 			"ApAppDelegatep",
 			"Id",
 			"id",
@@ -586,35 +635,184 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 3,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "/Volumes/C/Users/me665/Desktop/GameOverviewList/2/Json/BaccaratDataTable.json",
+					"file": "build.rs",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 35758,
+						"buffer_size": 122,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1817,
-								1817
+								122,
+								122
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/JavaScript/JSON.tmLanguage"
+							"auto_name": "fn main()",
+							"syntax": "Packages/Rust/Rust.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 2090.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "Cargo.toml",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 294,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								244,
+								244
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/TOML/TOML.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "src/alut.rs",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 406,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								43,
+								43
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Rust/Rust.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "src/main.rs",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 10121,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								4333,
+								4333
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Rust/Rust.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 2458.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
+					"type": "text"
+				}
+			]
+		},
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 4,
+					"file": "src/core_foundation.rs",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2151,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								892,
+								892
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Rust/Rust.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "src/event_tap.rs",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1613,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								753,
+								782
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Rust/Rust.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
 					"type": "text"
 				}
 			]
@@ -637,11 +835,18 @@
 				0,
 				1,
 				1
+			],
+			[
+				1,
+				0,
+				2,
+				1
 			]
 		],
 		"cols":
 		[
 			0.0,
+			0.5,
 			1.0
 		],
 		"rows":
@@ -653,13 +858,13 @@
 	"menu_visible": true,
 	"output.exec":
 	{
-		"height": 207.0
+		"height": 222.0
 	},
 	"output.find_results":
 	{
 		"height": 0.0
 	},
-	"pinned_build_system": "Packages/Rust/Cargo.sublime-build",
+	"pinned_build_system": "",
 	"project": "Tickeys.sublime-project",
 	"replace":
 	{
@@ -697,7 +902,7 @@
 	"settings":
 	{
 	},
-	"show_minimap": true,
+	"show_minimap": false,
 	"show_open_files": false,
 	"show_tabs": true,
 	"side_bar_visible": true,

@@ -1,16 +1,17 @@
 [package]
 name = "Tickeys"
-version = "0.0.1"
+version = "0.1.0"
 authors = ["应元东 <ying@yingDev.com>"]
 build = "build.rs"
 
 [dependencies]
 libc = "0.1.6"
-glutin_cocoa = "0.1.4"
+glutin_cocoa = "0.1.5"
 time = "0.1.25"
-objc = "0.1.4"
-hyper = "0.3.11"
+objc = "0.1.5"
+hyper = "0.5.0"
 toml = "0.1.20"
+block = "*"
 
 [dependencies.openal-rs]
 git = "https://github.com/jpernst/openal-rs.git"

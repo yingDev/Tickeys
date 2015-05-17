@@ -5,6 +5,7 @@ extern crate cocoa;
 extern crate time;
 extern crate hyper;
 extern crate toml;
+extern crate block;
 
 
 #[macro_use]
@@ -38,12 +39,15 @@ use hyper::Client;
 use hyper::header::{Connection, ConnectionOption};
 use hyper::status::StatusCode;
 
+use self::block::{Block, ConcreteBlock};
+
 //自己的modules才需要声明
 mod core_graphics;
 mod core_foundation;
 mod alut;
 mod event_tap;
 
+const CURRENT_VERSION : &'static str = "0.1.0";
 
 const QUIT_KEY_SEQ: &'static[u8] = &[12, 0, 6, 18, 19, 20]; //QAZ123
 static AUDIO_FILES: [&'static str; 9] = ["1.wav","2.wav","3.wav","4.wav","5.wav","6.wav","7.wav","8.wav", "enter.wav"];
@@ -51,11 +55,27 @@ const NON_UNIQ_AUDIO_COUNT:u8 = 8;
 
 fn main() 
 {	
-	let mut data_path = get_data_path();
-	data_path.push("app_config.toml");
-	let cfg_path = data_path.as_path().to_str().unwrap();
+	let app_cfg = load_app_config();
 
-	let mut toml_file = match File::open(cfg_path)
+	let pool = unsafe{NSAutoreleasePool::new(nil)};
+
+	let mut app = App::new();
+
+	
+	app.load_audio(&(get_data_path("bubble")), &AUDIO_FILES);
+
+	App::show_notification("Tickeys正在运行", "按 QAZ123 退出");
+	
+	app.check_for_update(app_cfg.lookup("config.check_update_api").unwrap().as_str().unwrap());
+
+	app.run();
+}
+
+fn load_app_config() -> toml::Value
+{
+	let mut cfg_path = get_data_path("app_config.toml");
+
+	let mut toml_file = match File::open(cfg_path.clone())
 	{
 		Ok(f) => f, 
 		Err(e) => panic!("Error open file:{} : {}", e, cfg_path)
@@ -68,73 +88,19 @@ fn main()
 		Err(e) => panic!("Failed Reading file content:{}", e)
 	};
  
-	let app_cfg: toml::Value = toml_str.parse().unwrap();
-	println!("app_config:{:?}", app_cfg.lookup("config.check_update_api").unwrap());
-
-	thread::spawn(||
-	{
-	    let mut client = Client::new();
-
-		//todo: test only
-	    let mut result = client.get("http://www.yingdev.com/projects/latestVersion?product=WGestures")
-	        .header(Connection(vec![ConnectionOption::Close]))
-	        .send();
-	    
-	    let mut resp;
-	    match result
-	    {
-	    	Ok(mut r) => resp = r,
-	    	Err(e) => {
-	    		println!("Failed to check for update: {}", e);
-	    		return;
-	    	}
-	    }
-
-	    if resp.status == StatusCode::Ok
-	    {
-	    	let mut content = String::new();
-	    	match resp.read_to_string(&mut content)
-	    	{
-	    		Ok(_) => {},
-	    		Err(e) => {
-	    			println!("Failed to read http content: {}", e);
-	    			return;
-	    		}
-	    	}
-	    	println!("Response: {}", content);
-	    }else
-	    {
-	    	println!("Failed to check for update: Status {}", resp.status);
-	    }
-	});
-
-	unsafe
-	{
-		alutInit(std::ptr::null_mut(), std::ptr::null_mut());
-	}
-
-	let _pool = unsafe{NSAutoreleasePool::new(nil)};
-
-	let mut app = App::new();
-	let mut audio_dir = get_data_path();
-	audio_dir.push("bubble");
-	
-	
-	app.load_audio(&(audio_dir.into_os_string().into_string().unwrap()), &AUDIO_FILES);
-
-	app.show_notification("Tickeys正在运行", "按 QAZ123 退出");
-
-	app.run();
+	toml_str.parse().unwrap()
 }
 
 
-fn get_data_path() -> std::path::PathBuf
+fn get_data_path(sub_path: &str) -> String
 {
 	let args:Vec<_> = std::env::args().collect();
 	let mut data_path = std::path::PathBuf::from(&args[0]);
 	data_path.pop();
 	data_path.push("data");
-	data_path
+	data_path.push(sub_path);
+
+	data_path.into_os_string().into_string().unwrap()
 }
 
 
@@ -147,13 +113,19 @@ struct App
 
 	last_keys: VecDeque<u8>,
 	keyboard_monitor: Option< event_tap::KeyboardMonitor>, //defered
-	notification_delegate: id
+	notification_delegate: id,
+	//msg_port: CFMessagePortRef
 }
 
 impl App
 {
 	pub fn new() -> App
 	{
+		unsafe
+		{
+			alutInit(std::ptr::null_mut(), std::ptr::null_mut());
+		}
+
 		unsafe
 		{
 			let noti_center_del:id = UserNotificationCenterDelegate::new(nil).autorelease();
@@ -163,7 +135,6 @@ impl App
 			let mut app = App{gain:0f32, audio_data: Vec::new(), last_keys: VecDeque::new(), keyboard_monitor:None, notification_delegate: noti_center_del};
 			app
 		}
-
 	}
 
 	pub fn run(&mut self)
@@ -257,7 +228,7 @@ impl App
 		if self.last_keys.iter().zip(QUIT_KEY_SEQ.iter()).filter(|&(a,b)| a == b).count() == QUIT_KEY_SEQ.len()
 		{
 			println!("Quit!");
-			self.show_notification("Tickeys", "已退出");
+			App::show_notification("Tickeys", "已退出");
 			self.stop();
 		}
 
@@ -296,7 +267,7 @@ impl App
 		self.audio_data[index].play();
 	}
 
-	fn show_notification(&mut self, title: &str, msg: &str)
+	fn show_notification(title: &str, msg: &str)
 	{
 		unsafe
 		{
@@ -308,6 +279,71 @@ impl App
 
 			msg_send![center, deliverNotification: note]
 		}
+	}
+
+	fn check_for_update(&self, url: &str)
+	{
+		let runloopRef = unsafe{CFRunLoopGetCurrent() as usize};
+
+		let mut check_update_url = String::new();
+		check_update_url.push_str(url);
+
+		thread::spawn(move ||
+		{
+		    let mut client = Client::new();
+
+			//todo: test only
+		    let mut result = client.get(&check_update_url)
+		        .header(Connection::close())
+		        .send();
+		    
+		    let mut resp;
+		    match result
+		    {
+		    	Ok(mut r) => resp = r,
+		    	Err(e) => {
+		    		println!("Failed to check for update: {}", e);
+		    		return;
+		    	}
+		    }
+
+		    if resp.status == StatusCode::Ok
+		    {
+		    	let mut content = String::new();
+		    	match resp.read_to_string(&mut content)
+		    	{
+		    		Ok(_) => {},
+		    		Err(e) => {
+		    			println!("Failed to read http content: {}", e);
+		    			return;
+		    		}
+		    	}
+		    	println!("Response: {}", content);
+
+		    	if content != CURRENT_VERSION
+		    	{
+		    		let ver = content.clone();
+			    	let cblock : ConcreteBlock<(),(),_> = ConcreteBlock::new(move ||
+			    	{
+			    		println!("New Version Available!");
+			    		let info_str = format!("{} -> {}", CURRENT_VERSION, ver);
+			    		App::show_notification("新版本可用!", &info_str);
+			    	});
+			    	
+			    	let mut block = &mut *cblock.copy();
+
+			    	unsafe
+			    	{
+			    		CFRunLoopPerformBlock(runloopRef as *mut c_void, kCFRunLoopDefaultMode, block);
+			    	}
+		    	}
+
+
+		    }else
+		    {
+		    	println!("Failed to check for update: Status {}", resp.status);
+		    }
+		});
 	}
 }
 
