@@ -1,0 +1,423 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2EB67D291B0978C90078AA5F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EB67D281B0978C90078AA5F /* AppDelegate.m */; };
+		2EB67D2B1B0978C90078AA5F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EB67D2A1B0978C90078AA5F /* main.m */; };
+		2EB67D2D1B0978C90078AA5F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2EB67D2C1B0978C90078AA5F /* Images.xcassets */; };
+		2EB67D301B0978C90078AA5F /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2EB67D2E1B0978C90078AA5F /* MainMenu.xib */; };
+		2EB67D3C1B0978C90078AA5F /* TickeysGUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EB67D3B1B0978C90078AA5F /* TickeysGUITests.m */; };
+		2EB67D461B0978E80078AA5F /* Settings.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2EB67D451B0978E80078AA5F /* Settings.xib */; };
+		2EB67D491B097AD40078AA5F /* SettingsDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EB67D481B097AD40078AA5F /* SettingsDelegate.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		2EB67D361B0978C90078AA5F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2EB67D1A1B0978C90078AA5F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2EB67D211B0978C90078AA5F;
+			remoteInfo = TickeysGUI;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		2EB67D221B0978C90078AA5F /* TickeysGUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TickeysGUI.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2EB67D261B0978C90078AA5F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2EB67D271B0978C90078AA5F /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		2EB67D281B0978C90078AA5F /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		2EB67D2A1B0978C90078AA5F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		2EB67D2C1B0978C90078AA5F /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		2EB67D2F1B0978C90078AA5F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		2EB67D351B0978C90078AA5F /* TickeysGUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TickeysGUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		2EB67D3A1B0978C90078AA5F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2EB67D3B1B0978C90078AA5F /* TickeysGUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TickeysGUITests.m; sourceTree = "<group>"; };
+		2EB67D451B0978E80078AA5F /* Settings.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Settings.xib; sourceTree = "<group>"; };
+		2EB67D471B097AD40078AA5F /* SettingsDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsDelegate.h; sourceTree = "<group>"; };
+		2EB67D481B097AD40078AA5F /* SettingsDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsDelegate.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		2EB67D1F1B0978C90078AA5F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2EB67D321B0978C90078AA5F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		2EB67D191B0978C90078AA5F = {
+			isa = PBXGroup;
+			children = (
+				2EB67D241B0978C90078AA5F /* TickeysGUI */,
+				2EB67D381B0978C90078AA5F /* TickeysGUITests */,
+				2EB67D231B0978C90078AA5F /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		2EB67D231B0978C90078AA5F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2EB67D221B0978C90078AA5F /* TickeysGUI.app */,
+				2EB67D351B0978C90078AA5F /* TickeysGUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2EB67D241B0978C90078AA5F /* TickeysGUI */ = {
+			isa = PBXGroup;
+			children = (
+				2EB67D271B0978C90078AA5F /* AppDelegate.h */,
+				2EB67D281B0978C90078AA5F /* AppDelegate.m */,
+				2EB67D2C1B0978C90078AA5F /* Images.xcassets */,
+				2EB67D2E1B0978C90078AA5F /* MainMenu.xib */,
+				2EB67D251B0978C90078AA5F /* Supporting Files */,
+				2EB67D451B0978E80078AA5F /* Settings.xib */,
+				2EB67D471B097AD40078AA5F /* SettingsDelegate.h */,
+				2EB67D481B097AD40078AA5F /* SettingsDelegate.m */,
+			);
+			path = TickeysGUI;
+			sourceTree = "<group>";
+		};
+		2EB67D251B0978C90078AA5F /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				2EB67D261B0978C90078AA5F /* Info.plist */,
+				2EB67D2A1B0978C90078AA5F /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		2EB67D381B0978C90078AA5F /* TickeysGUITests */ = {
+			isa = PBXGroup;
+			children = (
+				2EB67D3B1B0978C90078AA5F /* TickeysGUITests.m */,
+				2EB67D391B0978C90078AA5F /* Supporting Files */,
+			);
+			path = TickeysGUITests;
+			sourceTree = "<group>";
+		};
+		2EB67D391B0978C90078AA5F /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				2EB67D3A1B0978C90078AA5F /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		2EB67D211B0978C90078AA5F /* TickeysGUI */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2EB67D3F1B0978C90078AA5F /* Build configuration list for PBXNativeTarget "TickeysGUI" */;
+			buildPhases = (
+				2EB67D1E1B0978C90078AA5F /* Sources */,
+				2EB67D1F1B0978C90078AA5F /* Frameworks */,
+				2EB67D201B0978C90078AA5F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TickeysGUI;
+			productName = TickeysGUI;
+			productReference = 2EB67D221B0978C90078AA5F /* TickeysGUI.app */;
+			productType = "com.apple.product-type.application";
+		};
+		2EB67D341B0978C90078AA5F /* TickeysGUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2EB67D421B0978C90078AA5F /* Build configuration list for PBXNativeTarget "TickeysGUITests" */;
+			buildPhases = (
+				2EB67D311B0978C90078AA5F /* Sources */,
+				2EB67D321B0978C90078AA5F /* Frameworks */,
+				2EB67D331B0978C90078AA5F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				2EB67D371B0978C90078AA5F /* PBXTargetDependency */,
+			);
+			name = TickeysGUITests;
+			productName = TickeysGUITests;
+			productReference = 2EB67D351B0978C90078AA5F /* TickeysGUITests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		2EB67D1A1B0978C90078AA5F /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0610;
+				ORGANIZATIONNAME = YingDev.com;
+				TargetAttributes = {
+					2EB67D211B0978C90078AA5F = {
+						CreatedOnToolsVersion = 6.1;
+					};
+					2EB67D341B0978C90078AA5F = {
+						CreatedOnToolsVersion = 6.1;
+						TestTargetID = 2EB67D211B0978C90078AA5F;
+					};
+				};
+			};
+			buildConfigurationList = 2EB67D1D1B0978C90078AA5F /* Build configuration list for PBXProject "TickeysGUI" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 2EB67D191B0978C90078AA5F;
+			productRefGroup = 2EB67D231B0978C90078AA5F /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				2EB67D211B0978C90078AA5F /* TickeysGUI */,
+				2EB67D341B0978C90078AA5F /* TickeysGUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		2EB67D201B0978C90078AA5F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2EB67D461B0978E80078AA5F /* Settings.xib in Resources */,
+				2EB67D2D1B0978C90078AA5F /* Images.xcassets in Resources */,
+				2EB67D301B0978C90078AA5F /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2EB67D331B0978C90078AA5F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		2EB67D1E1B0978C90078AA5F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2EB67D491B097AD40078AA5F /* SettingsDelegate.m in Sources */,
+				2EB67D2B1B0978C90078AA5F /* main.m in Sources */,
+				2EB67D291B0978C90078AA5F /* AppDelegate.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2EB67D311B0978C90078AA5F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2EB67D3C1B0978C90078AA5F /* TickeysGUITests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		2EB67D371B0978C90078AA5F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2EB67D211B0978C90078AA5F /* TickeysGUI */;
+			targetProxy = 2EB67D361B0978C90078AA5F /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		2EB67D2E1B0978C90078AA5F /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2EB67D2F1B0978C90078AA5F /* Base */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		2EB67D3D1B0978C90078AA5F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = NO;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		2EB67D3E1B0978C90078AA5F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = NO;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		2EB67D401B0978C90078AA5F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = TickeysGUI/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		2EB67D411B0978C90078AA5F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = TickeysGUI/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		2EB67D431B0978C90078AA5F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(inherited)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = TickeysGUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TickeysGUI.app/Contents/MacOS/TickeysGUI";
+			};
+			name = Debug;
+		};
+		2EB67D441B0978C90078AA5F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = TickeysGUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TickeysGUI.app/Contents/MacOS/TickeysGUI";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2EB67D1D1B0978C90078AA5F /* Build configuration list for PBXProject "TickeysGUI" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2EB67D3D1B0978C90078AA5F /* Debug */,
+				2EB67D3E1B0978C90078AA5F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2EB67D3F1B0978C90078AA5F /* Build configuration list for PBXNativeTarget "TickeysGUI" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2EB67D401B0978C90078AA5F /* Debug */,
+				2EB67D411B0978C90078AA5F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		2EB67D421B0978C90078AA5F /* Build configuration list for PBXNativeTarget "TickeysGUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2EB67D431B0978C90078AA5F /* Debug */,
+				2EB67D441B0978C90078AA5F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 2EB67D1A1B0978C90078AA5F /* Project object */;
+}
