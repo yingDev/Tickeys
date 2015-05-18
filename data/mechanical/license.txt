@@ -1,0 +1,35 @@
+Sound pack downloaded from Freesound.org
+----------------------------------------
+
+This pack of sounds contains sounds by jim-ph ( http://www.freesound.org/people/jim-ph/  )
+You can find this pack online at: http://www.freesound.org/people/jim-ph/packs/12363/
+
+
+License details
+---------------
+
+Sampling+: http://creativecommons.org/licenses/sampling+/1.0/
+Creative Commons 0: http://creativecommons.org/publicdomain/zero/1.0/
+Attribution: http://creativecommons.org/licenses/by/3.0/
+Attribution Noncommercial: http://creativecommons.org/licenses/by-nc/3.0/
+
+
+Sounds in this pack
+-------------------
+
+  * 194799__jim-ph__keyboard5.wav
+    * url: http://www.freesound.org/people/jim-ph/sounds/194799/
+    * license: Creative Commons 0
+  * 194798__jim-ph__vintage-keyboard-4.wav
+    * url: http://www.freesound.org/people/jim-ph/sounds/194798/
+    * license: Creative Commons 0
+  * 194797__jim-ph__vintage-keyboard-3.wav
+    * url: http://www.freesound.org/people/jim-ph/sounds/194797/
+    * license: Creative Commons 0
+  * 194796__jim-ph__vintage-keyboard-2.wav
+    * url: http://www.freesound.org/people/jim-ph/sounds/194796/
+    * license: Creative Commons 0
+  * 194795__jim-ph__vintage-keyboard-1.wav
+    * url: http://www.freesound.org/people/jim-ph/sounds/194795/
+    * license: Creative Commons 0
+
