@@ -105,9 +105,6 @@ fn main()
 	app.set_volume(pref.volume);
 	app.set_pitch(pref.pitch);
 
-
-
-	App::show_notification("Tickeys正在运行", "按 QAZ123 打开设置");
 	
 	app.check_for_update(app_cfg.lookup("config.check_update_api").unwrap().as_str().unwrap());
 
@@ -276,7 +273,8 @@ impl App
 			self_.keyboard_monitor = Some(tap);
 		}
 
-		
+		App::show_notification("Tickeys正在运行", "按 QAZ123 打开设置");
+
 		unsafe
 		{
 			let app = NSApp();
@@ -494,22 +492,27 @@ impl App
 		    		}
 		    	}
 		    	println!("Response: {}", content);
+		    	
 
-		    	if content != CURRENT_VERSION
-		    	{
-		    		let ver = content.clone();
-			    	let cblock : ConcreteBlock<(),(),_> = ConcreteBlock::new(move ||
-			    	{
-			    		println!("New Version Available!");
-			    		let info_str = format!("{} -> {}", CURRENT_VERSION, ver);
-			    		App::show_notification("新版本可用!", &info_str);
-			    	});
-			    	
-			    	let mut block = &mut *cblock.copy();
+		    	if content.contains("Version")
+		    	{		    	
+		    		let ver = (content.split('\"').collect::<Vec<&str>>()[3]).to_string();
+		    		println!("ver={}",ver);
+		    		if ver != CURRENT_VERSION
+		    		{
+		    			let cblock : ConcreteBlock<(),(),_> = ConcreteBlock::new(move ||
+				    	{
+				    		println!("New Version Available!");
+				    		let info_str = format!("{} -> {}", CURRENT_VERSION, ver);
+				    		App::show_notification("新版本可用!", &info_str);
+				    	});
+				    	
+				    	let mut block = &mut *cblock.copy();
 
-			    	unsafe
-			    	{
-			    		CFRunLoopPerformBlock(runloopRef as *mut c_void, kCFRunLoopDefaultMode, block);
+				    	unsafe
+				    	{
+				    		CFRunLoopPerformBlock(runloopRef as *mut c_void, kCFRunLoopDefaultMode, block);
+				    	}
 			    	}
 		    	}
 
@@ -655,7 +658,7 @@ pub trait UserNotificationCenterDelegate //: <NSUserNotificationCenerDelegate>
 		{
 			let workspace: id = msg_send![class("NSWorkspace"), sharedWorkspace];
 			//todo: extract
-			let url:id = msg_send![class("NSURL"), URLWithString: NSString::alloc(nil).init_str("http://www.yingDev.com/projects/Tickeys")];
+			let url:id = msg_send![class("NSURL"), URLWithString: NSString::alloc(nil).init_str("http://www.yingDev.com/projects/tickeys")];
 
 			let ok:bool = msg_send![workspace, openURL: url];
 
