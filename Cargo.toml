@@ -5,7 +5,7 @@ authors = ["应元东 <ying@yingDev.com>"]
 build = "build.rs"
 
 [dependencies]
-libc = "0.1.6"
+libc = "0.1.7"
 glutin_cocoa = "0.1.5"
 time = "0.1.25"
 objc = "0.1.5"

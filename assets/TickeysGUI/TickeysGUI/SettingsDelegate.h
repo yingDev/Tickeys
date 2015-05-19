@@ -9,9 +9,11 @@
 #import <Foundation/Foundation.h>
 #import <Cocoa/Cocoa.h>
 
-@interface SettingsDelegate : NSObject
+@interface SettingsDelegate : NSObject//<NSWindowDelegate>
 @property (assign) IBOutlet NSPopUpButton *popup_audio_scheme;
 @property (assign) IBOutlet NSSlider *slide_volume;
 @property (assign) IBOutlet NSSlider *slide_pitch;
+@property (assign) IBOutlet NSTextField *label_version;
+@property (assign) void* user_data;
 
 @end
