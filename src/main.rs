@@ -137,7 +137,7 @@ fn get_data_path(sub_path: &str) -> String
 	let args:Vec<_> = std::env::args().collect();
 	let mut data_path = std::path::PathBuf::from(&args[0]);
 	data_path.pop();
-	data_path.push("data");
+	data_path.push("../Resources/data");
 	data_path.push(sub_path);
 
 	data_path.into_os_string().into_string().unwrap()
@@ -801,7 +801,7 @@ trait SettingsDelegate
 			let tag:i64 = msg_send![sender, tag];
 			let url = match tag
 			{
-				0 => "http://www.yingDev.com/projects/Tickeys",
+				0 => "http://www.yingDev.com/projects/tickeys",
 				1 => "http://www.yingdev.com/home/donate",
 				_ => panic!("SettingsDelegate::follow_link_")
 			};
