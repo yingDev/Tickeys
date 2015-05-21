@@ -70,6 +70,9 @@ fn main()
 
 	let pool = unsafe{NSAutoreleasePool::new(nil)};
 
+	request_accessiblility();
+	
+
 	let mut app = App::new();
 
 	let pref = Pref::load();
@@ -109,6 +112,45 @@ fn main()
 	app.check_for_update(app_cfg.lookup("config.check_update_api").unwrap().as_str().unwrap());
 
 	app.run();
+}
+
+fn request_accessiblility()
+{
+	#[link(name = "ApplicationServices", kind = "framework")]
+	extern "system"
+	{
+	 	fn AXIsProcessTrustedWithOptions (options: id) -> bool;
+	}
+
+ 	unsafe fn is_enabled() -> bool
+ 	{ 
+		let dict:id = msg_send![class("NSDictionary"), dictionaryWithObject:kCFBooleanTrue forKey:kAXTrustedCheckOptionPrompt];
+		dict.autorelease();
+		return AXIsProcessTrustedWithOptions(dict);
+	}
+
+	unsafe
+	{
+		while !is_enabled() 
+		{
+			std::thread::sleep_ms(1000);
+			let alert:id = msg_send![class("NSAlert"), new];
+			alert.autorelease();
+			let _:id = msg_send![alert, setMessageText: NSString::alloc(nil).init_str("您必须将Tickeys.app添加到 系统偏好设置 > 安全与隐私 > 辅助功能 列表中并√，否则Tickeys无法工作")];
+			let _:id = msg_send![alert, addButtonWithTitle: NSString::alloc(nil).init_str("退出")];
+			let _:id = msg_send![alert, addButtonWithTitle: NSString::alloc(nil).init_str("重试")];
+			
+			let btn:i32 = msg_send![alert, runModal];
+			println!("request_accessiblility alert: {}", btn);
+			match btn
+			{
+				1001 => continue,
+				1002 => {let _:id = msg_send![NSApp(), terminate:nil];},
+				_ => {panic!("request_accessiblility");}
+			}
+		}
+	}
+
 }
 
 fn load_app_config() -> toml::Value

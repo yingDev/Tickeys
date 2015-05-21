@@ -12,6 +12,7 @@ pub type CFAllocatorRef = *mut c_void;//opaque
 pub type CFRunLoopSourceRef = *mut c_void;//opaque
 pub type CFRunLoopRef = *mut c_void;//opaque
 pub type CFStringRef = *mut c_void;
+pub type CFBooleanRef = *mut c_void;
 pub type CFIndex = c_long;
 
 pub type CFMessagePortRef = *mut c_void;
@@ -32,6 +33,11 @@ extern
 	pub static kCFRunLoopDefaultMode: CFStringRef;
 	pub static kCFRunLoopCommonModes: CFStringRef;
 	pub static kCFAllocatorDefault: CFAllocatorRef;
+
+	pub static kCFBooleanTrue: CFBooleanRef;
+    pub static kCFBooleanFalse: CFBooleanRef;
+    pub static kAXTrustedCheckOptionPrompt: CFStringRef;
+
 }
 
 #[link(name = "CoreFoundation", kind = "framework")]
@@ -63,9 +69,6 @@ extern "system"
 									replyMode: CFStringRef,
 									returnData: *mut CFDataRef) -> i32;
 	pub fn CFMessagePortInvalidate(ms: CFMessagePortRef);
-
-
-
 
 }
 
