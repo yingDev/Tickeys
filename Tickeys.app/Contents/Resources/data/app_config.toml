@@ -1,0 +1,3 @@
+[config]
+site = "http://www.yingdev.com/projects/tickeys"
+check_update_api = "http://www.yingdev.com/projects/latestVersion?product=Tickeys"
