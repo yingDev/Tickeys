@@ -65,8 +65,10 @@ fn main()
 
 	let mut scheme_dir = "data/".to_string();
 	scheme_dir.push_str(&pref.audio_scheme);
+
+	println!("scheme:{}", pref.audio_scheme);
 	
-	tickeys.load_scheme(&get_res_path(&scheme_dir), &schemes[&pref.audio_scheme]);
+	tickeys.load_scheme(&get_res_path(&scheme_dir), &schemes.iter().filter(|s|{ *(s.name) == pref.audio_scheme}).next().unwrap());
 	tickeys.set_volume(pref.volume);
 	tickeys.set_pitch(pref.pitch);
 	tickeys.start();
@@ -143,7 +145,7 @@ fn load_app_config() -> toml::Value
 	toml_str.parse().unwrap()
 }
 
-fn load_audio_schemes() -> HashMap<String,AudioScheme>
+fn load_audio_schemes() -> Vec<AudioScheme>
 {
 	let path = get_res_path("data/schemes.json");
 	let mut file = File::open(path).unwrap();
@@ -155,7 +157,7 @@ fn load_audio_schemes() -> HashMap<String,AudioScheme>
 		Err(e) => panic!("Failed to read json")
 	}
 
-	let schemes:HashMap<String,AudioScheme> = json::decode(&json_str).unwrap();
+	let schemes:Vec<AudioScheme> = json::decode(&json_str).unwrap();
 
 	schemes
 }
@@ -284,7 +286,7 @@ struct Pref
 {
 	audio_scheme: String,
 	volume: f32,
-	pitch: f32
+	pitch: f32,
 }
 
 impl Pref
@@ -295,8 +297,11 @@ impl Pref
 		{		
 			let user_defaults: id = msg_send![class("NSUserDefaults"), standardUserDefaults];
 			let pref_exists_key:id = NSString::alloc(nil).init_str("pref_exists");
-				
-			let pref = Pref{audio_scheme: "bubble".to_string(), volume: 0.5f32, pitch: 1.0f32};
+					
+			//todo: 每次都要加载？
+			let schemes = load_audio_schemes();
+
+			let pref = Pref{audio_scheme: schemes[0].name.clone(), volume: 0.5f32, pitch: 1.0f32};
 
 			let pref_exists: id = msg_send![user_defaults, stringForKey: pref_exists_key];
 			if pref_exists == nil //first run 
@@ -314,9 +319,16 @@ impl Pref
 				let mut scheme_bytes:Vec<u8> = Vec::with_capacity(len);
         		scheme_bytes.set_len(len);
        			std::ptr::copy_nonoverlapping(audio_scheme.UTF8String() as *const u8, scheme_bytes.as_mut_ptr(), len);
-				let scheme_str = String::from_utf8(scheme_bytes).unwrap();
+				let mut scheme_str = String::from_utf8(scheme_bytes).unwrap();
+
+				//validate scheme
+				if schemes.iter().filter(|s|{*s.name == scheme_str}).count() == 0
+				{
+					scheme_str = pref.audio_scheme;
+				}
 				
 				Pref{audio_scheme:  scheme_str, volume: volume, pitch: pitch}
+
 			}
 
 		}
@@ -346,6 +358,8 @@ impl Pref
 #[derive(RustcDecodable, RustcEncodable)]
 struct AudioScheme
 {
+	name:String,
+	display_name: String,
 	files: Vec<String>,
 	non_unique_count: u8,
 	key_audio_map: HashMap<u8, u8>
@@ -879,21 +893,22 @@ trait SettingsDelegate
 				{
 
 					let value:i32 = msg_send![sender, indexOfSelectedItem];
-					let scheme = match value //GUI logic. acceptable?
+					/*let scheme = match value //GUI logic. acceptable?
 					{
 						0 => "bubble",
 						1 => "typewriter",
 						2 => "mechanical",
 						_ => panic!("GUI error")
-					};
+					};*/
 					
 					let schemes = load_audio_schemes();
+					let sch = &schemes[value as usize];
 
 					let mut scheme_dir = "data/".to_string();
-					scheme_dir.push_str(scheme);
-					tickeys_ptr.load_scheme(&get_res_path(&scheme_dir), &schemes[scheme]);
+					scheme_dir.push_str(&sch.name);
+					tickeys_ptr.load_scheme(&get_res_path(&scheme_dir), sch);
 
-					let _:id = msg_send![user_defaults, setObject: NSString::alloc(nil).init_str(scheme.to_string().as_ref()) 
+					let _:id = msg_send![user_defaults, setObject: NSString::alloc(nil).init_str(sch.name.as_ref()) 
 														   forKey: NSString::alloc(nil).init_str("audio_scheme")];
 				},
 
@@ -937,20 +952,22 @@ trait SettingsDelegate
 	{
 		println!("loadValues");
 		let user_defaults: id = msg_send![class("NSUserDefaults"), standardUserDefaults];
-
 		let popup_audio_scheme: id = msg_send![this, popup_audio_scheme];
 		let _: id = msg_send![popup_audio_scheme, removeAllItems];
-		let _: id = msg_send![popup_audio_scheme, addItemWithTitle: NSString::alloc(nil).init_str("冒泡")];
-		let _: id = msg_send![popup_audio_scheme, addItemWithTitle: NSString::alloc(nil).init_str("打字机")];
-		let _: id = msg_send![popup_audio_scheme, addItemWithTitle: NSString::alloc(nil).init_str("机械键盘")];
-
+		
 		let pref = Pref::load();
-		match pref.audio_scheme.as_ref()
+		let schemes = load_audio_schemes();
+		
+
+		for i in 0..schemes.len()
 		{
-			"bubble" => {let _:id = msg_send![popup_audio_scheme, selectItemAtIndex:0];},
-			"typewriter" => {let _:id = msg_send![popup_audio_scheme, selectItemAtIndex:1];},
-			"mechanical" => {let _:id = msg_send![popup_audio_scheme, selectItemAtIndex: 2];},
-			_ => {panic!("load_values: scheme={}", pref.audio_scheme);} 
+			let s = &schemes[i];
+
+			let _: id = msg_send![popup_audio_scheme, addItemWithTitle: NSString::alloc(nil).init_str(&s.display_name)];
+			if  *s.name == pref.audio_scheme
+			{
+				let _:id = msg_send![popup_audio_scheme, selectItemAtIndex:i];
+			}
 		}
 
 		let slide_volume: id = msg_send![this, slide_volume];
