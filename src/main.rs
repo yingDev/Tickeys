@@ -70,8 +70,8 @@ fn main()
 	let pref = Pref::load();
 
 	let schemes = load_audio_schemes();
-	app.load_scheme(&get_data_path(&pref.audio_scheme), &schemes[&pref.audio_scheme]);
 
+	app.load_scheme(&get_data_path(&pref.audio_scheme), &schemes[&pref.audio_scheme]);
 	app.set_volume(pref.volume);
 	app.set_pitch(pref.pitch);
 	app.start();
@@ -451,6 +451,7 @@ impl Tickeys
 
 	pub fn set_volume(&mut self, volume: f32)
 	{
+		if volume == self.volume {return;}
 		//todo:
 		self.volume = volume;
 		for audio in self.audio_data.iter_mut()
@@ -461,6 +462,7 @@ impl Tickeys
 
 	pub fn set_pitch(&mut self, pitch: f32)
 	{
+		if pitch == self.pitch {return;}
 		//todo:
 		self.pitch = pitch;
 		for audio in self.audio_data.iter_mut()
