@@ -29,12 +29,8 @@ use alut::*;
 use objc::*;
 use objc::runtime::*;
 use cocoa::base::{class,id,nil};
-use cocoa::foundation::{NSUInteger, NSRect, NSPoint, NSSize,
-						NSAutoreleasePool, NSProcessInfo, NSString};
-use cocoa::appkit::{NSApp,
-					NSApplication, NSApplicationActivationPolicyRegular,
-					NSWindow, NSTitledWindowMask, NSBackingStoreBuffered,
-					NSMenu, NSMenuItem};
+use cocoa::foundation::{NSUInteger, NSRect, NSPoint, NSSize,NSAutoreleasePool, NSProcessInfo, NSString};
+use cocoa::appkit::{NSApp,NSApplication, NSApplicationActivationPolicyRegular,NSWindow, NSTitledWindowMask, NSBackingStoreBuffered,NSMenu, NSMenuItem};
 
 use hyper::Client;
 use hyper::header::{Connection, ConnectionOption};
@@ -50,31 +46,30 @@ mod alut;
 mod event_tap;
 
 const CURRENT_VERSION : &'static str = "0.2.0";
-
 const QUIT_KEY_SEQ: &'static[u8] = &[12, 0, 6, 18, 19, 20]; //QAZ123
-
-
-
 
 fn main() 
 {	
-	let app_cfg = load_app_config();
-
 	let pool = unsafe{NSAutoreleasePool::new(nil)};
+
+	let app_cfg = load_app_config();
 
 	request_accessiblility();	
 
-	let mut app = Tickeys::new();
+	let mut tickeys = Tickeys::new();
 	check_for_update(app_cfg.lookup("config.check_update_api").unwrap().as_str().unwrap());
 
 	let pref = Pref::load();
 
 	let schemes = load_audio_schemes();
 
-	app.load_scheme(&get_data_path(&pref.audio_scheme), &schemes[&pref.audio_scheme]);
-	app.set_volume(pref.volume);
-	app.set_pitch(pref.pitch);
-	app.start();
+	let mut scheme_dir = "data/".to_string();
+	scheme_dir.push_str(&pref.audio_scheme);
+	
+	tickeys.load_scheme(&get_res_path(&scheme_dir), &schemes[&pref.audio_scheme]);
+	tickeys.set_volume(pref.volume);
+	tickeys.set_pitch(pref.pitch);
+	tickeys.start();
 
 	app_run();
 }
@@ -89,30 +84,39 @@ fn request_accessiblility()
 	 	fn AXIsProcessTrustedWithOptions (options: id) -> bool;
 	}
 
- 	unsafe fn is_enabled() -> bool
+ 	unsafe fn is_enabled(prompt: bool) -> bool
  	{ 
-		let dict:id = msg_send![class("NSDictionary"), dictionaryWithObject:kCFBooleanTrue forKey:kAXTrustedCheckOptionPrompt];
+		let dict:id = msg_send![class("NSDictionary"), dictionaryWithObject:(if prompt {kCFBooleanTrue}else{kCFBooleanFalse}) forKey:kAXTrustedCheckOptionPrompt];
 		dict.autorelease();
 		return AXIsProcessTrustedWithOptions(dict);
 	}
 
 	unsafe
 	{
-		while !is_enabled() 
+		if is_enabled(true) {return;}
+
+		let mut loop_n = 0;
+		loop 
 		{
-			std::thread::sleep_ms(1000);
+			std::thread::sleep_ms(500);
+
+			if is_enabled(false) {return;}
+
+			loop_n += 1;
+			if loop_n <= 10 {continue;}
+
 			let alert:id = msg_send![class("NSAlert"), new];
 			alert.autorelease();
 			let _:id = msg_send![alert, setMessageText: NSString::alloc(nil).init_str("您必须将Tickeys.app添加到 系统偏好设置 > 安全与隐私 > 辅助功能 列表中并√，否则Tickeys无法工作")];
 			let _:id = msg_send![alert, addButtonWithTitle: NSString::alloc(nil).init_str("退出")];
-			let _:id = msg_send![alert, addButtonWithTitle: NSString::alloc(nil).init_str("重试")];
+			let _:id = msg_send![alert, addButtonWithTitle: NSString::alloc(nil).init_str("我已照做，继续运行！")];
 			
 			let btn:i32 = msg_send![alert, runModal];
 			println!("request_accessiblility alert: {}", btn);
 			match btn
 			{
 				1001 => continue,
-				1002 => {let _:id = msg_send![NSApp(), terminate:nil];},
+				1002 => {app_terminate();},
 				_ => {panic!("request_accessiblility");}
 			}
 		}
@@ -121,7 +125,7 @@ fn request_accessiblility()
 
 fn load_app_config() -> toml::Value
 {
-	let mut cfg_path = get_data_path("app_config.toml");
+	let mut cfg_path = get_res_path("app_config.toml");
 
 	let mut toml_file = match File::open(cfg_path.clone())
 	{
@@ -141,7 +145,7 @@ fn load_app_config() -> toml::Value
 
 fn load_audio_schemes() -> HashMap<String,AudioScheme>
 {
-	let path = get_data_path("schemes.json");
+	let path = get_res_path("data/schemes.json");
 	let mut file = File::open(path).unwrap();
 
 	let mut json_str = String::new();
@@ -156,12 +160,12 @@ fn load_audio_schemes() -> HashMap<String,AudioScheme>
 	schemes
 }
 
-fn get_data_path(sub_path: &str) -> String
+fn get_res_path(sub_path: &str) -> String
 {
 	let args:Vec<_> = std::env::args().collect();
 	let mut data_path = std::path::PathBuf::from(&args[0]);
 	data_path.pop();
-	data_path.push("../Resources/data");
+	data_path.push("../Resources/");
 	data_path.push(sub_path);
 
 	data_path.into_os_string().into_string().unwrap()
@@ -884,7 +888,10 @@ trait SettingsDelegate
 					};
 					
 					let schemes = load_audio_schemes();
-					tickeys_ptr.load_scheme(&get_data_path(scheme), &schemes[scheme]);
+
+					let mut scheme_dir = "data/".to_string();
+					scheme_dir.push_str(scheme);
+					tickeys_ptr.load_scheme(&get_res_path(&scheme_dir), &schemes[scheme]);
 
 					let _:id = msg_send![user_defaults, setObject: NSString::alloc(nil).init_str(scheme.to_string().as_ref()) 
 														   forKey: NSString::alloc(nil).init_str("audio_scheme")];
