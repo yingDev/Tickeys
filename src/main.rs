@@ -49,20 +49,12 @@ mod core_foundation;
 mod alut;
 mod event_tap;
 
-const CURRENT_VERSION : &'static str = "0.1.0";
+const CURRENT_VERSION : &'static str = "0.2.0";
 
 const QUIT_KEY_SEQ: &'static[u8] = &[12, 0, 6, 18, 19, 20]; //QAZ123
 
 
-//todo: 暂时写死。以后应该从配置加载。
-static BUBBLE_AUDIO_FILES: [&'static str; 9] = ["1.wav","2.wav","3.wav","4.wav","5.wav","6.wav","7.wav","8.wav", "enter.wav"];
-const BUBBLE_NON_UNIQ_AUDIO_COUNT:u8 = 8;
 
-static TYPEWRITER_AUDIO_FILES: [&'static str; 10] = ["key-new-05.wav","key-new-04.wav","key-new-03.wav","key-new-02.wav","key-new-01.wav","space-new.wav","scrollUp.wav","scrollDown.wav","backspace.wav", "return-new.wav"];
-const TYPEWRITER_NON_UNIQ_AUDIO_COUNT:u8 = 5;
-
-static MECHANICAL_AUDIO_FILES: [&'static str; 5] = ["1.wav", "2.wav", "3.wav", "4.wav", "5.wav"];
-const MECHANICAL_NON_UNIQ_AUDIO_COUNT:u8 = 4;
 
 fn main() 
 {	
@@ -77,34 +69,9 @@ fn main()
 
 	let pref = Pref::load();
 
-	//todo: dirty
-	match pref.audio_scheme.as_ref()
-	{
-		"bubble" => 
-		{
-			app.load_audio(&(get_data_path("bubble")), &BUBBLE_AUDIO_FILES);
-			let mut keymap:HashMap<u8, u8> = HashMap::new();
-			keymap.insert(36, 8);
-			app.set_keymap(keymap, BUBBLE_NON_UNIQ_AUDIO_COUNT);
-		},
-		"typewriter" => 
-		{
-			app.load_audio(&(get_data_path("typewriter")), &TYPEWRITER_AUDIO_FILES);
-			let mut keymap:HashMap<u8, u8> = HashMap::new();
-			keymap.insert(36, 9);
-			keymap.insert(49, 5);
-			keymap.insert(51, 8);
-			app.set_keymap(keymap, BUBBLE_NON_UNIQ_AUDIO_COUNT);
-		},
-		"mechanical" => 
-		{
-			app.load_audio(&(get_data_path("mechanical")), &MECHANICAL_AUDIO_FILES);
-			let mut keymap:HashMap<u8, u8> = HashMap::new();
-			keymap.insert(36, 4);
-			app.set_keymap(keymap, MECHANICAL_NON_UNIQ_AUDIO_COUNT);
-		},
-		_ => panic!("unrecognized scheme:{}", pref.audio_scheme)
-	}
+	let schemes = load_audio_schemes();
+	app.load_scheme(&get_data_path(&pref.audio_scheme), &schemes[&pref.audio_scheme]);
+
 	app.set_volume(pref.volume);
 	app.set_pitch(pref.pitch);
 	app.start();
@@ -172,6 +139,22 @@ fn load_app_config() -> toml::Value
 	toml_str.parse().unwrap()
 }
 
+fn load_audio_schemes() -> HashMap<String,AudioScheme>
+{
+	let path = get_data_path("schemes.json");
+	let mut file = File::open(path).unwrap();
+
+	let mut json_str = String::new();
+	match file.read_to_string(&mut json_str)
+	{
+		Ok(_) => {},
+		Err(e) => panic!("Failed to read json")
+	}
+
+	let schemes:HashMap<String,AudioScheme> = json::decode(&json_str).unwrap();
+
+	schemes
+}
 
 fn get_data_path(sub_path: &str) -> String
 {
@@ -356,6 +339,13 @@ impl Pref
 	}
 }
 
+#[derive(RustcDecodable, RustcEncodable)]
+struct AudioScheme
+{
+	files: Vec<String>,
+	non_unique_count: u8,
+	key_audio_map: HashMap<u8, u8>
+}
 
 struct Tickeys
 {
@@ -428,7 +418,7 @@ impl Tickeys
 		//todo: stop the kbd monitor?
 	}
 
-	pub fn load_audio(&mut self, dir: &str, files: &[&str])
+	pub fn load_scheme(&mut self, dir: &str, scheme: &AudioScheme)
 	{
 		self.audio_data.clear();
 
@@ -436,7 +426,7 @@ impl Tickeys
 		path.push_str("/");
 		let base_path_len = path.chars().count();
 
-		for f in files.iter()
+		for f in scheme.files.iter()
 		{
 			path.push_str(f);
 			println!("loading audio:{}", path);
@@ -455,8 +445,8 @@ impl Tickeys
 			self.audio_data.push(audio);
 		}
 
-		self.keymap.clear();
-		self.first_n_non_unique = self.audio_data.len() as i16;
+		self.keymap = scheme.key_audio_map.clone();
+		self.first_n_non_unique = scheme.non_unique_count as i16;
 	}
 
 	pub fn set_volume(&mut self, volume: f32)
@@ -556,11 +546,11 @@ impl Tickeys
 		audio.play();
 	}
 
-	fn set_keymap(&mut self, keymap: HashMap<u8, u8>, first_n_non_unique: u8)
+	/*fn set_keymap(&mut self, keymap: HashMap<u8, u8>, first_n_non_unique: u8)
 	{
 		self.keymap = keymap;
 		self.first_n_non_unique = first_n_non_unique as i16;
-	}
+	}*/
 
 
 	fn show_settings(&mut self)
@@ -874,48 +864,25 @@ trait SettingsDelegate
 		unsafe
 		{
 			let user_defaults: id = msg_send![class("NSUserDefaults"), standardUserDefaults];
-			println!("0");
-			let app_ptr:&mut Tickeys = msg_send![this, user_data];
-			println!("1");
+			let tickeys_ptr:&mut Tickeys = msg_send![this, user_data];
 			let tag:i64 = msg_send![sender, tag];
+			
 			match tag
 			{
 				TAG_POPUP_SCHEME => 
 				{
+
 					let value:i32 = msg_send![sender, indexOfSelectedItem];
-					let scheme;
-					
-					//todo: dirty
-					match value
+					let scheme = match value //GUI logic. acceptable?
 					{
-						0 => 
-						{
-							scheme = "bubble";
-							app_ptr.load_audio(&(get_data_path("bubble")), &BUBBLE_AUDIO_FILES);
-							let mut keymap:HashMap<u8, u8> = HashMap::new();
-							keymap.insert(36, 8);
-							app_ptr.set_keymap(keymap, BUBBLE_NON_UNIQ_AUDIO_COUNT);
-						},
-						1 => 
-						{
-							scheme = "typewriter";
-							app_ptr.load_audio(&(get_data_path("typewriter")), &TYPEWRITER_AUDIO_FILES);
-							let mut keymap:HashMap<u8, u8> = HashMap::new();
-							keymap.insert(36, 9);
-							keymap.insert(49, 5);
-							keymap.insert(51, 8);
-							app_ptr.set_keymap(keymap, TYPEWRITER_NON_UNIQ_AUDIO_COUNT);
-						},
-						2 => 
-						{
-							scheme = "mechanical";
-							app_ptr.load_audio(&(get_data_path("mechanical")), &MECHANICAL_AUDIO_FILES);
-							let mut keymap:HashMap<u8, u8> = HashMap::new();
-							keymap.insert(36, 4);
-							app_ptr.set_keymap(keymap, MECHANICAL_NON_UNIQ_AUDIO_COUNT);
-						},
-						_ => panic!("value_changed_")
-					}
+						0 => "bubble",
+						1 => "typewriter",
+						2 => "mechanical",
+						_ => panic!("GUI error")
+					};
+					
+					let schemes = load_audio_schemes();
+					tickeys_ptr.load_scheme(&get_data_path(scheme), &schemes[scheme]);
 
 					let _:id = msg_send![user_defaults, setObject: NSString::alloc(nil).init_str(scheme.to_string().as_ref()) 
 														   forKey: NSString::alloc(nil).init_str("audio_scheme")];
@@ -924,7 +891,7 @@ trait SettingsDelegate
 				TAG_SLIDE_VOLUME =>
 				{
 					let value:f32 = msg_send![sender, floatValue];
-					app_ptr.set_volume(value);
+					tickeys_ptr.set_volume(value);
 
 					let _:id = msg_send![user_defaults, setFloat: value forKey: NSString::alloc(nil).init_str("volume")];
 				},
@@ -932,7 +899,7 @@ trait SettingsDelegate
 				TAG_SLIDE_PITCH =>
 				{
 					let value:f32 = msg_send![sender, floatValue];
-					app_ptr.set_pitch(value);
+					tickeys_ptr.set_pitch(value);
 
 					let _:id = msg_send![user_defaults, setFloat: value forKey: NSString::alloc(nil).init_str("pitch")];
 				}
@@ -948,17 +915,12 @@ trait SettingsDelegate
 		println!("SettingsDelegate::windowWillClose");
 		unsafe
 		{
-			println!("-1");
 			let app_ptr: *mut Tickeys = msg_send![this, user_data];
-			println!("-2");
 			(*app_ptr).showing_gui = false;
-			println!("0");
 
 			let user_defaults: id = msg_send![class("NSUserDefaults"), standardUserDefaults];
-			println!("1");
 			let _:id = msg_send![user_defaults, synchronize];
 			let _:id = msg_send![this, release];
-			println!("3");
 		}
 	}
 

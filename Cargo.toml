@@ -4,13 +4,6 @@ version = "0.1.0"
 authors = ["应元东 <ying@yingDev.com>"]
 build = "build.rs"
 
-[profile.dev]
-debug = true
-
-
-[profile.release]
-debug = false
-
 
 [dependencies]
 libc = "0.1.7"

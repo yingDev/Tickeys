@@ -1,0 +1,20 @@
+{
+	"bubble":
+	{
+		"files":["1.wav","2.wav","3.wav","4.wav","5.wav","6.wav","7.wav","8.wav", "enter.wav"],
+		"non_unique_count":8,
+		"key_audio_map":{"36":8}
+	},
+	"typewriter":
+	{
+		"files":["key-new-05.wav","key-new-04.wav","key-new-03.wav","key-new-02.wav","key-new-01.wav","space-new.wav","scrollUp.wav","scrollDown.wav","backspace.wav", "return-new.wav"],
+		"non_unique_count":5,
+		"key_audio_map":{"36":9, "49":5, "51":8}
+	},
+	"mechanical":
+	{
+		"files":["1.wav", "2.wav", "3.wav", "4.wav", "5.wav"],
+		"non_unique_count":4,
+		"key_audio_map":{"36":4}
+	}
+}
