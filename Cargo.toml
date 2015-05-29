@@ -4,14 +4,23 @@ version = "0.1.0"
 authors = ["应元东 <ying@yingDev.com>"]
 build = "build.rs"
 
+[profile.dev]
+debug = true
+
+
+[profile.release]
+debug = false
+
+
 [dependencies]
 libc = "0.1.7"
-glutin_cocoa = "0.1.5"
+glutin_cocoa = "0.1.6"
 time = "0.1.25"
 objc = "0.1.5"
-hyper = "0.5.0"
+hyper = "0.5.1"
 toml = "0.1.20"
 block = "*"
+rustc-serialize = "0.3.14"
 
 [dependencies.openal-rs]
 git = "https://github.com/jpernst/openal-rs.git"

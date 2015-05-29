@@ -6,8 +6,7 @@ extern crate time;
 extern crate hyper;
 extern crate toml;
 extern crate block;
-
-
+extern crate rustc_serialize;
 #[macro_use]
 extern crate objc;
 
@@ -42,6 +41,7 @@ use hyper::header::{Connection, ConnectionOption};
 use hyper::status::StatusCode;
 
 use self::block::{Block, ConcreteBlock};
+use rustc_serialize::json;
 
 //自己的modules才需要声明
 mod core_graphics;
@@ -70,10 +70,10 @@ fn main()
 
 	let pool = unsafe{NSAutoreleasePool::new(nil)};
 
-	request_accessiblility();
-	
+	request_accessiblility();	
 
-	let mut app = App::new();
+	let mut app = Tickeys::new();
+	check_for_update(app_cfg.lookup("config.check_update_api").unwrap().as_str().unwrap());
 
 	let pref = Pref::load();
 
@@ -107,15 +107,15 @@ fn main()
 	}
 	app.set_volume(pref.volume);
 	app.set_pitch(pref.pitch);
+	app.start();
 
-	
-	app.check_for_update(app_cfg.lookup("config.check_update_api").unwrap().as_str().unwrap());
-
-	app.run();
+	app_run();
 }
 
 fn request_accessiblility()
 {
+	println!("request_accessiblility");
+
 	#[link(name = "ApplicationServices", kind = "framework")]
 	extern "system"
 	{
@@ -150,7 +150,6 @@ fn request_accessiblility()
 			}
 		}
 	}
-
 }
 
 fn load_app_config() -> toml::Value
@@ -185,6 +184,114 @@ fn get_data_path(sub_path: &str) -> String
 	data_path.into_os_string().into_string().unwrap()
 }
 
+fn check_for_update(url: &str)
+{
+	let runloopRef = unsafe{CFRunLoopGetCurrent() as usize};
+
+	let mut check_update_url = String::new();
+	check_update_url.push_str(url);
+
+	thread::spawn(move ||
+	{
+	    let mut client = Client::new();
+
+	    let mut result = client.get(&check_update_url)
+	        .header(Connection::close())
+	        .send();
+	    
+	    let mut resp;
+	    match result
+	    {
+	    	Ok(mut r) => resp = r,
+	    	Err(e) => {
+	    		println!("Failed to check for update: {}", e);
+	    		return;
+	    	}
+	    }
+
+	    if resp.status == StatusCode::Ok
+	    {
+	    	let mut content = String::new();
+	    	match resp.read_to_string(&mut content)
+	    	{
+	    		Ok(_) => {},
+	    		Err(e) => {
+	    			println!("Failed to read http content: {}", e);
+	    			return;
+	    		}
+	    	}
+	    	println!("Response: {}", content);
+	    	
+
+	    	if content.contains("Version")
+	    	{		    	
+	    		//let ver = (content.split('\"').collect::<Vec<&str>>()[3]).to_string();
+	    		let ver:Version = json::decode(&content).unwrap();
+	    		println!("ver={}",ver.Version);
+	    		if ver.Version != CURRENT_VERSION
+	    		{
+	    			let cblock : ConcreteBlock<(),(),_> = ConcreteBlock::new(move ||
+			    	{
+			    		println!("New Version Available!");
+			    		let info_str = format!("{} -> {}", CURRENT_VERSION, ver.Version);
+			    		show_notification("新版本可用!", &info_str);
+			    	});
+			    	
+			    	let block = & *cblock.copy();
+
+			    	unsafe
+			    	{
+			    		CFRunLoopPerformBlock(runloopRef as *mut c_void, kCFRunLoopDefaultMode, block);
+			    	}
+		    	}
+	    	}
+
+
+	    }else
+	    {
+	    	println!("Failed to check for update: Status {}", resp.status);
+	    }
+	});
+}
+
+fn show_notification(title: &str, msg: &str)
+{
+	unsafe
+	{
+		let note:id = NSUserNotification::new(nil).autorelease();
+		note.setTitle(NSString::alloc(nil).init_str(title));
+		note.setInformativeText(NSString::alloc(nil).init_str(msg));
+		
+		let center:id = msg_send![class("NSUserNotificationCenter"), defaultUserNotificationCenter];
+
+		msg_send![center, deliverNotification: note]
+	}
+}
+
+fn app_run()
+{
+	unsafe
+	{
+		show_notification("Tickeys正在运行", "按 QAZ123 打开设置");
+		let app = NSApp();
+		app.run();
+	}
+}
+
+fn app_terminate()
+{
+	unsafe
+	{
+		//self.settings_delegate.release();
+		msg_send![NSApp(), terminate:nil]
+	}
+}
+
+#[derive(RustcDecodable, RustcEncodable)]
+struct Version
+{
+	Version: String
+}
 
 struct Pref
 {
@@ -250,7 +357,7 @@ impl Pref
 }
 
 
-struct App
+struct Tickeys
 {
 	volume:f32,
 	pitch:f32,
@@ -265,9 +372,9 @@ struct App
 	showing_gui:bool
 }
 
-impl App
+impl Tickeys
 {
-	pub fn new() -> App
+	pub fn new() -> Tickeys
 	{
 		unsafe
 		{
@@ -280,7 +387,7 @@ impl App
 			let center:id = msg_send![class("NSUserNotificationCenter"), defaultUserNotificationCenter];
 			let center:id = msg_send![center, setDelegate: noti_center_del];
 
-			let mut app = App{
+			let mut app = Tickeys{
 				volume:1f32,
 				pitch:1f32, 
 				audio_data: Vec::new(), 
@@ -296,7 +403,7 @@ impl App
 		}
 	}
 
-	pub fn run(&mut self)
+	pub fn start(&mut self)
 	{
 		let mut tap;
 
@@ -304,34 +411,21 @@ impl App
 
 		unsafe
 		{
-			let mut tap_result = event_tap::KeyboardMonitor::new(App::handle_keyboard_event, ptr_to_self);
+			let mut tap_result = event_tap::KeyboardMonitor::new(Tickeys::handle_keyboard_event, ptr_to_self);
 			match tap_result
 			{
 				Ok(t) => tap = t,
 				Err(msg) => panic!("error: KeyboardMonitor::new: {}", msg)
 			}
 
-			let self_:&mut App = std::mem::transmute(ptr_to_self);
+			let self_:&mut Tickeys = std::mem::transmute(ptr_to_self);
 			self_.keyboard_monitor = Some(tap);
-		}
-
-		App::show_notification("Tickeys正在运行", "按 QAZ123 打开设置");
-
-		unsafe
-		{
-			let app = NSApp();
-			app.run();
-
 		}
 	}
 
 	pub fn stop(&mut self)
 	{
-		unsafe
-		{
-			//self.settings_delegate.release();
-			msg_send![NSApp(), terminate:nil]
-		}
+		//todo: stop the kbd monitor?
 	}
 
 	pub fn load_audio(&mut self, dir: &str, files: &[&str])
@@ -392,7 +486,7 @@ impl App
 		assert!(refcon != 0 as *mut c_void);
 
 		//todo: temp
-		let app: &mut App = unsafe{ std::mem::transmute(refcon)};
+		let app: &mut Tickeys = unsafe{ std::mem::transmute(refcon)};
 		app.handle_keydown(keycode as u8);
 		//app.audios[(keycode % 8) as usize].play();
 		//play_keycode_audio(keycode);
@@ -468,19 +562,6 @@ impl App
 		self.first_n_non_unique = first_n_non_unique as i16;
 	}
 
-	fn show_notification(title: &str, msg: &str)
-	{
-		unsafe
-		{
-			let note:id = NSUserNotification::new(nil).autorelease();
-			note.setTitle(NSString::alloc(nil).init_str(title));
-			note.setInformativeText(NSString::alloc(nil).init_str(msg));
-			
-			let center:id = msg_send![class("NSUserNotificationCenter"), defaultUserNotificationCenter];
-
-			msg_send![center, deliverNotification: note]
-		}
-	}
 
 	fn show_settings(&mut self)
 	{
@@ -496,78 +577,7 @@ impl App
 
 	}
 
-	fn check_for_update(&self, url: &str)
-	{
-		let runloopRef = unsafe{CFRunLoopGetCurrent() as usize};
-
-		let mut check_update_url = String::new();
-		check_update_url.push_str(url);
-
-		thread::spawn(move ||
-		{
-		    let mut client = Client::new();
-
-			//todo: test only
-		    let mut result = client.get(&check_update_url)
-		        .header(Connection::close())
-		        .send();
-		    
-		    let mut resp;
-		    match result
-		    {
-		    	Ok(mut r) => resp = r,
-		    	Err(e) => {
-		    		println!("Failed to check for update: {}", e);
-		    		return;
-		    	}
-		    }
-
-		    if resp.status == StatusCode::Ok
-		    {
-		    	let mut content = String::new();
-		    	match resp.read_to_string(&mut content)
-		    	{
-		    		Ok(_) => {},
-		    		Err(e) => {
-		    			println!("Failed to read http content: {}", e);
-		    			return;
-		    		}
-		    	}
-		    	println!("Response: {}", content);
-		    	
-
-		    	if content.contains("Version")
-		    	{		    	
-		    		let ver = (content.split('\"').collect::<Vec<&str>>()[3]).to_string();
-		    		println!("ver={}",ver);
-		    		if ver != CURRENT_VERSION
-		    		{
-		    			let cblock : ConcreteBlock<(),(),_> = ConcreteBlock::new(move ||
-				    	{
-				    		println!("New Version Available!");
-				    		let info_str = format!("{} -> {}", CURRENT_VERSION, ver);
-				    		App::show_notification("新版本可用!", &info_str);
-				    	});
-				    	
-				    	let mut block = &mut *cblock.copy();
-
-				    	unsafe
-				    	{
-				    		CFRunLoopPerformBlock(runloopRef as *mut c_void, kCFRunLoopDefaultMode, block);
-				    	}
-			    	}
-		    	}
-
-
-		    }else
-		    {
-		    	println!("Failed to check for update: Status {}", resp.status);
-		    }
-		});
-	}
 }
-
-
 
 struct AudioData
 {
@@ -601,7 +611,7 @@ impl AudioData
 		audio
 	}
 
-	pub fn play(self: &mut AudioData)
+	pub fn play(&mut self)
 	{
 		unsafe
 		{
@@ -609,12 +619,12 @@ impl AudioData
 		}
 	}
 
-	pub fn set_pitch(self: &mut AudioData, value: f32)
+	pub fn set_pitch(&mut self, value: f32)
 	{
     	unsafe{alSourcef(self.source, AL_PITCH, value);}
 	}
 
-	pub fn set_gain(self: &mut AudioData, value: f32)
+	pub fn set_gain(&mut self, value: f32)
 	{
 		unsafe{alSourcef(self.source, AL_GAIN, value);}
 	}
@@ -716,7 +726,7 @@ impl UserNotificationCenterDelegate for id
 
 trait SettingsDelegate
 {
-	fn new(_:Self, ptr_to_app: *mut App) -> id
+	fn new(_:Self, ptr_to_app: *mut Tickeys) -> id
 	{
 		static REGISTER_APPDELEGATE: Once = ONCE_INIT;
 		REGISTER_APPDELEGATE.call_once(||
@@ -795,7 +805,7 @@ trait SettingsDelegate
 	       	obj.retain();
 	       	let _:id = msg_send![obj, setUser_data: ptr_to_app];
 
-	       	let data: *mut App = msg_send![obj, user_data];
+	       	let data: *mut Tickeys = msg_send![obj, user_data];
 	       	assert!(data == ptr_to_app);
 
 			let nib_name = NSString::alloc(nil).init_str("Settings");
@@ -830,10 +840,7 @@ trait SettingsDelegate
 	extern fn quit_(this: &mut Object, _cmd: Sel, sender: id)
 	{
 		println!("Quit");
-		unsafe
-		{
-			let _:id = msg_send![NSApp(), terminate: nil];
-		}
+		app_terminate();
 	}
 
 	extern fn follow_link_(this: &mut Object, _cmd: Sel, sender: id)
@@ -855,6 +862,7 @@ trait SettingsDelegate
 			msg_send![workspace, openURL: url]
 		}
 	}
+
 	extern fn value_changed_(this: &mut Object, _cmd:Sel, sender: id)
 	{
 		println!("SettingsDelegate::value_changed_");
@@ -867,7 +875,7 @@ trait SettingsDelegate
 		{
 			let user_defaults: id = msg_send![class("NSUserDefaults"), standardUserDefaults];
 			println!("0");
-			let app_ptr:&mut App = msg_send![this, user_data];
+			let app_ptr:&mut Tickeys = msg_send![this, user_data];
 			println!("1");
 			let tag:i64 = msg_send![sender, tag];
 			match tag
@@ -941,7 +949,7 @@ trait SettingsDelegate
 		unsafe
 		{
 			println!("-1");
-			let app_ptr: *mut App = msg_send![this, user_data];
+			let app_ptr: *mut Tickeys = msg_send![this, user_data];
 			println!("-2");
 			(*app_ptr).showing_gui = false;
 			println!("0");
@@ -949,7 +957,6 @@ trait SettingsDelegate
 			let user_defaults: id = msg_send![class("NSUserDefaults"), standardUserDefaults];
 			println!("1");
 			let _:id = msg_send![user_defaults, synchronize];
-println!("2");
 			let _:id = msg_send![this, release];
 			println!("3");
 		}

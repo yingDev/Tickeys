@@ -53,7 +53,7 @@ extern "system"
 	pub fn CFRunLoopStop(rl: CFRunLoopRef);
 
 
-	pub fn CFRunLoopPerformBlock(rl: CFRunLoopRef,mode: CFTypeRef, block: &mut Block<(),()> ); 
+	pub fn CFRunLoopPerformBlock(rl: CFRunLoopRef,mode: CFTypeRef, block: &Block<(),()> ); 
 
 	pub fn CFMessagePortCreateLocal(allocator: CFAllocatorRef, 
 									name: CFStringRef, 
