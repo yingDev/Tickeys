@@ -67,7 +67,6 @@ fn main()
 	let pref = Pref::load();
 
 	let mut tickeys = tickeys::Tickeys::new();
-	
 	tickeys.load_scheme(&get_data_path(&pref.audio_scheme), &find_scheme(&pref.audio_scheme, &load_audio_schemes()));
 	tickeys.set_volume(pref.volume);
 	tickeys.set_pitch(pref.pitch);
@@ -189,6 +188,12 @@ fn find_scheme<'a>(name: &str, from: &'a Vec<AudioScheme>) -> &'a AudioScheme
 
 fn check_for_update(url: &str)
 {
+	#[derive(RustcDecodable, RustcEncodable)]
+	struct Version
+	{
+		Version: String
+	}
+
 	let runloopRef = unsafe{CFRunLoopGetCurrent() as usize};
 
 	let mut check_update_url = String::new();
@@ -324,11 +329,6 @@ fn app_terminate()
 	}
 }
 
-#[derive(RustcDecodable, RustcEncodable)]
-struct Version
-{
-	Version: String
-}
 
 struct Pref
 {
