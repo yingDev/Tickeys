@@ -10,10 +10,7 @@ extern crate rustc_serialize;
 #[macro_use]
 extern crate objc;
 
-use std::collections::{VecDeque, HashMap};
 use std::option::Option;
-use std::any::Any;
-use std::boxed::Box;
 use std::thread;
 use std::io::Read;
 use std::sync::{Once, ONCE_INIT};
@@ -22,24 +19,19 @@ use std::fs::File;
 
 use libc::{c_void};
 use core_foundation::*;
-use core_graphics::*;
-use openal::al::*;
-use openal::al::ffi::*;
-use alut::*;
 use objc::*;
 use objc::runtime::*;
 use cocoa::base::{class,id,nil};
-use cocoa::foundation::{NSUInteger, NSRect, NSPoint, NSSize,NSAutoreleasePool, NSProcessInfo, NSString};
-use cocoa::appkit::{NSApp,NSApplication, NSApplicationActivationPolicyRegular,NSWindow, NSTitledWindowMask, NSBackingStoreBuffered,NSMenu, NSMenuItem};
+use cocoa::foundation::{NSAutoreleasePool, NSString};
+use cocoa::appkit::{NSApp,NSApplication};
 
 use hyper::Client;
-use hyper::header::{Connection, ConnectionOption};
+use hyper::header::{Connection};
 use hyper::status::StatusCode;
 
 use self::block::{Block, ConcreteBlock};
 use rustc_serialize::json;
 
-//自己的modules才需要声明
 mod core_graphics;
 mod core_foundation;
 mod alut;
@@ -47,7 +39,7 @@ mod event_tap;
 mod tickeys;
 mod cocoa_ext;
 
-use tickeys::{Tickeys, AudioScheme, AudioData};
+use tickeys::{Tickeys, AudioScheme};
 use cocoa_ext::{NSUserNotification, RetainRelease};
 
 
