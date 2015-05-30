@@ -44,9 +44,15 @@ mod core_graphics;
 mod core_foundation;
 mod alut;
 mod event_tap;
+mod tickeys;
+
+use tickeys::{Tickeys, AudioScheme, AudioData};
+
 
 const CURRENT_VERSION : &'static str = "0.2.0";
 const QUIT_KEY_SEQ: &'static[u8] = &[12, 0, 6, 18, 19, 20]; //QAZ123
+
+static mut SHOWING_GUI:bool = false;
 
 fn main() 
 {	
@@ -56,8 +62,16 @@ fn main()
 
 	request_accessiblility();	
 
-	let mut tickeys = Tickeys::new();
+	let mut tickeys = tickeys::Tickeys::new();
 	check_for_update(app_cfg.lookup("config.check_update_api").unwrap().as_str().unwrap());
+			
+	unsafe
+	{
+		let noti_center_del:id = UserNotificationCenterDelegate::new(nil).autorelease();
+		let center:id = msg_send![class("NSUserNotificationCenter"), defaultUserNotificationCenter];
+		let center:id = msg_send![center, setDelegate: noti_center_del];
+	}
+
 
 	let pref = Pref::load();
 
@@ -71,6 +85,9 @@ fn main()
 	tickeys.load_scheme(&get_res_path(&scheme_dir), &schemes.iter().filter(|s|{ *(s.name) == pref.audio_scheme}).next().unwrap());
 	tickeys.set_volume(pref.volume);
 	tickeys.set_pitch(pref.pitch);
+
+	tickeys.on_keydown = Option::Some(handle_keydown);
+
 	tickeys.start();
 
 	app_run();
@@ -243,6 +260,29 @@ fn check_for_update(url: &str)
 	});
 }
 
+fn handle_keydown(tickeys: &Tickeys, key:u8)
+{
+	if tickeys.last_keys.iter().zip(QUIT_KEY_SEQ.iter()).filter(|&(a,b)| a == b).count() == QUIT_KEY_SEQ.len()
+	{
+		show_settings(tickeys);
+	}
+}
+
+fn show_settings(tickeys: &Tickeys)
+{
+	println!("Settings!");
+
+	unsafe
+	{
+		if SHOWING_GUI
+		{
+			return;
+		}
+		SHOWING_GUI = true;
+		let settings_delegate = SettingsDelegate::new(nil, std::mem::transmute(tickeys));
+	}
+}
+
 fn show_notification(title: &str, msg: &str)
 {
 	unsafe
@@ -355,303 +395,6 @@ impl Pref
 	}
 }
 
-#[derive(RustcDecodable, RustcEncodable)]
-struct AudioScheme
-{
-	name:String,
-	display_name: String,
-	files: Vec<String>,
-	non_unique_count: u8,
-	key_audio_map: HashMap<u8, u8>
-}
-
-struct Tickeys
-{
-	volume:f32,
-	pitch:f32,
-
-	audio_data: Vec<AudioData>,
-	keymap: HashMap<u8, u8>,
-	first_n_non_unique: i16,
-
-	last_keys: VecDeque<u8>,
-	keyboard_monitor: Option< event_tap::KeyboardMonitor>, //defered
-	notification_delegate: id,
-	showing_gui:bool
-}
-
-impl Tickeys
-{
-	pub fn new() -> Tickeys
-	{
-		unsafe
-		{
-			alutInit(std::ptr::null_mut(), std::ptr::null_mut());
-		}
-
-		unsafe
-		{
-			let noti_center_del:id = UserNotificationCenterDelegate::new(nil).autorelease();
-			let center:id = msg_send![class("NSUserNotificationCenter"), defaultUserNotificationCenter];
-			let center:id = msg_send![center, setDelegate: noti_center_del];
-
-			let mut app = Tickeys{
-				volume:1f32,
-				pitch:1f32, 
-				audio_data: Vec::new(), 
-				keymap: HashMap::new(),
-				first_n_non_unique: -1,
-				last_keys: VecDeque::new(), 
-				keyboard_monitor:None, 
-				notification_delegate: noti_center_del,
-				//settings_delegate: settings_delegate,
-				showing_gui: false
-			};
-			app
-		}
-	}
-
-	pub fn start(&mut self)
-	{
-		let mut tap;
-
-		let ptr_to_self: *mut c_void = unsafe{std::mem::transmute(self)};
-
-		unsafe
-		{
-			let mut tap_result = event_tap::KeyboardMonitor::new(Tickeys::handle_keyboard_event, ptr_to_self);
-			match tap_result
-			{
-				Ok(t) => tap = t,
-				Err(msg) => panic!("error: KeyboardMonitor::new: {}", msg)
-			}
-
-			let self_:&mut Tickeys = std::mem::transmute(ptr_to_self);
-			self_.keyboard_monitor = Some(tap);
-		}
-	}
-
-	pub fn stop(&mut self)
-	{
-		//todo: stop the kbd monitor?
-	}
-
-	pub fn load_scheme(&mut self, dir: &str, scheme: &AudioScheme)
-	{
-		self.audio_data.clear();
-
-		let mut path = dir.to_string();
-		path.push_str("/");
-		let base_path_len = path.chars().count();
-
-		for f in scheme.files.iter()
-		{
-			path.push_str(f);
-			println!("loading audio:{}", path);
-			let mut audio = AudioData::from_file(&path);
-
-			if audio.source == 0 as ALuint
-			{
-				panic!("failed to load audio file:{}", f);
-			}
-
-			path.truncate(base_path_len);
-
-			audio.set_gain(self.volume);
-			audio.set_pitch(self.pitch);
-
-			self.audio_data.push(audio);
-		}
-
-		self.keymap = scheme.key_audio_map.clone();
-		self.first_n_non_unique = scheme.non_unique_count as i16;
-	}
-
-	pub fn set_volume(&mut self, volume: f32)
-	{
-		if volume == self.volume {return;}
-		//todo:
-		self.volume = volume;
-		for audio in self.audio_data.iter_mut()
-		{
-			audio.set_gain(volume);
-		}
-	}
-
-	pub fn set_pitch(&mut self, pitch: f32)
-	{
-		if pitch == self.pitch {return;}
-		//todo:
-		self.pitch = pitch;
-		for audio in self.audio_data.iter_mut()
-		{
-			audio.set_pitch(pitch);
-		}
-	}
-
-	extern fn handle_keyboard_event(proxy: CGEventTapProxy, etype: CGEventType, event: CGEventRef, refcon: *mut c_void) -> CGEventRef
-	{
-		let keycode = unsafe{CGEventGetIntegerValueField(event, CGEventField::kCGKeyboardEventKeycode)} as u16;
-
-		assert!(refcon != 0 as *mut c_void);
-
-		//todo: temp
-		let app: &mut Tickeys = unsafe{ std::mem::transmute(refcon)};
-		app.handle_keydown(keycode as u8);
-		//app.audios[(keycode % 8) as usize].play();
-		//play_keycode_audio(keycode);
-
-		event
-	}
-
-	fn handle_keydown(&mut self, keycode: u8)
-	{	
-		self.last_keys.push_back(keycode);
-		if self.last_keys.len() > 6 
-		{
-			self.last_keys.pop_front();
-		}
-
-		if self.last_keys.iter().zip(QUIT_KEY_SEQ.iter()).filter(|&(a,b)| a == b).count() == QUIT_KEY_SEQ.len()
-		{
-			self.show_settings();
-		}
-
-		println!("key:{}", keycode);
-
-
-		static mut last_time: u64 = 0;
-		static mut last_key: i16 = -1;
-
-		let index:i32 = match self.keymap.get(&keycode)
-		{
-			Some(idx) => *idx as i32,
-			None => 
-			{
-				if self.first_n_non_unique <= 0 
-				{
-					-1
-				}else
-				{
-					(keycode % (self.first_n_non_unique as u8)) as i32
-				}
-			}
-		};
-		
-		
-
-		unsafe
-		{	
-			let now = time::precise_time_ns() / 1000 / 1000;
-
-			let delta = now - last_time ;
-			println!("interval:{}", delta);
-			if delta < 60 && last_key == (keycode as i16)
-			{
-				last_time = now;
-				return;
-			}
-			last_key = keycode as i16;
-			last_time = now;
-		}
-
-		if index == -1 
-		{
-			return;
-		}
-
-		let audio = &mut self.audio_data[index as usize];
-		//audio.set_gain(self.volume);
-		//audio.set_pitch(self.pitch);
-		audio.play();
-	}
-
-	/*fn set_keymap(&mut self, keymap: HashMap<u8, u8>, first_n_non_unique: u8)
-	{
-		self.keymap = keymap;
-		self.first_n_non_unique = first_n_non_unique as i16;
-	}*/
-
-
-	fn show_settings(&mut self)
-	{
-		println!("Settings!");
-
-		if self.showing_gui
-		{
-			return;
-		}
-		self.showing_gui = true;
-					
-		let settings_delegate = SettingsDelegate::new(nil, self);
-
-	}
-
-}
-
-struct AudioData
-{
-	buffer: ALuint,
-	source: ALuint,
-    state: ALuint
-}
-
-impl AudioData
-{
-	//todo: how to handle error?
-	pub fn from_file(file: &str) -> AudioData
-	{
-		let file_ptr = std::ffi::CString::new(file).unwrap().as_ptr();
-		let mut audio = AudioData{buffer:0, source:0, state:0};
-		
-		unsafe
-		{
-			audio.buffer = alutCreateBufferFromFile(file_ptr);
-			
-			// Create sound source (use buffer to fill source)
-    		alGenSources(1, &mut audio.source);
-    		alSourcei(audio.source, AL_BUFFER, audio.buffer as ALint);
-
-    		if audio.buffer == 0
-    		{
-    			panic!("failed to load file: {}", file);
-    		}
-		}
-
-		audio
-	}
-
-	pub fn play(&mut self)
-	{
-		unsafe
-		{
-			alSourcePlay(self.source);
-		}
-	}
-
-	pub fn set_pitch(&mut self, value: f32)
-	{
-    	unsafe{alSourcef(self.source, AL_PITCH, value);}
-	}
-
-	pub fn set_gain(&mut self, value: f32)
-	{
-		unsafe{alSourcef(self.source, AL_GAIN, value);}
-	}
-}
-
-impl Drop for AudioData
-{
-	fn drop(&mut self)
-	{
-		unsafe
-		{
-			alDeleteSources(1, &self.source);
-    		alDeleteBuffers(1, &self.buffer);
-		}
-		
-	}
-}
 
 pub trait NSUserNotification
 {
@@ -893,13 +636,6 @@ trait SettingsDelegate
 				{
 
 					let value:i32 = msg_send![sender, indexOfSelectedItem];
-					/*let scheme = match value //GUI logic. acceptable?
-					{
-						0 => "bubble",
-						1 => "typewriter",
-						2 => "mechanical",
-						_ => panic!("GUI error")
-					};*/
 					
 					let schemes = load_audio_schemes();
 					let sch = &schemes[value as usize];
@@ -940,7 +676,7 @@ trait SettingsDelegate
 		unsafe
 		{
 			let app_ptr: *mut Tickeys = msg_send![this, user_data];
-			(*app_ptr).showing_gui = false;
+			SHOWING_GUI = false;
 
 			let user_defaults: id = msg_send![class("NSUserDefaults"), standardUserDefaults];
 			let _:id = msg_send![user_defaults, synchronize];
