@@ -67,12 +67,12 @@ pub struct Tickeys
 	keymap: HashMap<u8, u8>,
 	first_n_non_unique: i16,
 
-	pub last_keys: VecDeque<u8>,
+	last_keys: VecDeque<u8>,
 	//keyseq_registry: HashMap<u8, VecDeque<u8>>,
 	
 	keyboard_monitor: Option< event_tap::KeyboardMonitor>, //defered
 
-	pub on_keydown: Option<fn(sender:&Tickeys, key: u8)>,
+	on_keydown: Option<fn(sender:&Tickeys, key: u8)>,
 	//pub on_keyseq: Option<fn(sender:&Tickeys, seq_id:u8)>
 }
 
@@ -182,6 +182,21 @@ impl Tickeys
 		}
 	}
 
+	pub fn get_volume(&self) -> f32
+	{
+		self.volume
+	}
+
+	pub fn get_pitch(&self) -> f32
+	{
+		self.pitch
+	}
+
+	pub fn get_last_keys(&self) -> &VecDeque<u8>
+	{
+		&self.last_keys
+	}
+
 	extern fn handle_keyboard_event(proxy: CGEventTapProxy, etype: CGEventType, event: CGEventRef, refcon: *mut c_void) -> CGEventRef
 	{
 		let keycode = unsafe{CGEventGetIntegerValueField(event, CGEventField::kCGKeyboardEventKeycode)} as u16;
@@ -262,6 +277,11 @@ impl Tickeys
 		//audio.set_gain(self.volume);
 		//audio.set_pitch(self.pitch);
 		audio.play();
+	}
+
+	pub fn set_on_keydown(&mut self, on_keydown: Option<fn(sender:&Tickeys, key: u8)>)
+	{
+		self.on_keydown = on_keydown;
 	}
 
 	/*fn register_keyseq(&mut self, seq_id:u8, seq:VecDeque<u8>)

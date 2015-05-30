@@ -67,13 +67,11 @@ fn main()
 	let pref = Pref::load();
 
 	let mut tickeys = tickeys::Tickeys::new();
-
-	//let schemes = load_audio_schemes();
 	
 	tickeys.load_scheme(&get_data_path(&pref.audio_scheme), &find_scheme(&pref.audio_scheme, &load_audio_schemes()));
 	tickeys.set_volume(pref.volume);
 	tickeys.set_pitch(pref.pitch);
-	tickeys.on_keydown = Option::Some(handle_keydown);
+	tickeys.set_on_keydown(Option::Some(handle_keydown));
 	tickeys.start();
 
 	app_run();
@@ -261,7 +259,7 @@ fn check_for_update(url: &str)
 
 fn handle_keydown(tickeys: &Tickeys, key:u8)
 {
-	if tickeys.last_keys.iter().zip(QUIT_KEY_SEQ.iter()).filter(|&(a,b)| a == b).count() == QUIT_KEY_SEQ.len()
+	if tickeys.get_last_keys().iter().zip(QUIT_KEY_SEQ.iter()).filter(|&(a,b)| a == b).count() == QUIT_KEY_SEQ.len()
 	{
 		show_settings(tickeys);
 	}
