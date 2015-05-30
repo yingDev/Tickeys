@@ -52,7 +52,7 @@ use cocoa_ext::{NSUserNotification, RetainRelease};
 
 
 const CURRENT_VERSION : &'static str = "0.3.0";
-const QUIT_KEY_SEQ: &'static[u8] = &[12, 0, 6, 18, 19, 20]; //QAZ123
+const OPEN_SETTINGS_KEY_SEQ: &'static[u8] = &[12, 0, 6, 18, 19, 20]; //QAZ123
 
 static mut SHOWING_GUI:bool = false;
 
@@ -264,7 +264,7 @@ fn begin_check_for_update(url: &str)
 
 fn handle_keydown(tickeys: &Tickeys, key:u8)
 {
-	if tickeys.get_last_keys().iter().zip(QUIT_KEY_SEQ.iter()).filter(|&(a,b)| a == b).count() == QUIT_KEY_SEQ.len()
+	if tickeys.get_last_keys().iter().zip(OPEN_SETTINGS_KEY_SEQ.iter()).filter(|&(a,b)| a == b).count() == OPEN_SETTINGS_KEY_SEQ.len()
 	{
 		show_settings(tickeys);
 	}
