@@ -45,8 +45,10 @@ mod core_foundation;
 mod alut;
 mod event_tap;
 mod tickeys;
+mod cocoa_ext;
 
 use tickeys::{Tickeys, AudioScheme, AudioData};
+use cocoa_ext::{NSUserNotification, RetainRelease};
 
 
 const CURRENT_VERSION : &'static str = "0.2.0";
@@ -57,37 +59,21 @@ static mut SHOWING_GUI:bool = false;
 fn main() 
 {	
 	let pool = unsafe{NSAutoreleasePool::new(nil)};
-
 	let app_cfg = load_app_config();
 
 	request_accessiblility();	
-
-	let mut tickeys = tickeys::Tickeys::new();
 	check_for_update(app_cfg.lookup("config.check_update_api").unwrap().as_str().unwrap());
-			
-	unsafe
-	{
-		let noti_center_del:id = UserNotificationCenterDelegate::new(nil).autorelease();
-		let center:id = msg_send![class("NSUserNotificationCenter"), defaultUserNotificationCenter];
-		let center:id = msg_send![center, setDelegate: noti_center_del];
-	}
-
-
+	
 	let pref = Pref::load();
 
-	let schemes = load_audio_schemes();
+	let mut tickeys = tickeys::Tickeys::new();
 
-	let mut scheme_dir = "data/".to_string();
-	scheme_dir.push_str(&pref.audio_scheme);
-
-	println!("scheme:{}", pref.audio_scheme);
+	//let schemes = load_audio_schemes();
 	
-	tickeys.load_scheme(&get_res_path(&scheme_dir), &schemes.iter().filter(|s|{ *(s.name) == pref.audio_scheme}).next().unwrap());
+	tickeys.load_scheme(&get_data_path(&pref.audio_scheme), &find_scheme(&pref.audio_scheme, &load_audio_schemes()));
 	tickeys.set_volume(pref.volume);
 	tickeys.set_pitch(pref.pitch);
-
 	tickeys.on_keydown = Option::Some(handle_keydown);
-
 	tickeys.start();
 
 	app_run();
@@ -190,6 +176,19 @@ fn get_res_path(sub_path: &str) -> String
 	data_path.into_os_string().into_string().unwrap()
 }
 
+fn get_data_path(sub_path: &str) -> String
+{
+	let mut data_dir = "data/".to_string();
+	data_dir.push_str(sub_path);
+
+	get_res_path(&data_dir)
+}
+
+fn find_scheme<'a>(name: &str, from: &'a Vec<AudioScheme>) -> &'a AudioScheme
+{
+	from.iter().filter(|s|{ *(s.name) == *name}).next().unwrap()
+}
+
 fn check_for_update(url: &str)
 {
 	let runloopRef = unsafe{CFRunLoopGetCurrent() as usize};
@@ -285,6 +284,17 @@ fn show_settings(tickeys: &Tickeys)
 
 fn show_notification(title: &str, msg: &str)
 {
+	static REGISTER_DELEGATE: Once = ONCE_INIT;
+	REGISTER_DELEGATE.call_once(||
+	{
+		unsafe
+		{
+			let noti_center_del:id = UserNotificationCenterDelegate::new(nil).autorelease();
+			let center:id = msg_send![class("NSUserNotificationCenter"), defaultUserNotificationCenter];
+			let center:id = msg_send![center, setDelegate: noti_center_del];
+		}
+	});
+
 	unsafe
 	{
 		let note:id = NSUserNotification::new(nil).autorelease();
@@ -392,31 +402,6 @@ impl Pref
 		}
 
 
-	}
-}
-
-
-pub trait NSUserNotification
-{
-	unsafe fn new(_: Self) -> id
-	{
-		msg_send![class("NSUserNotification"), new]
-	}
-
-	unsafe fn setTitle(self, title: id);
-	unsafe fn setInformativeText(self, txt: id);
-}
-
-impl NSUserNotification for id
-{
-	unsafe fn setTitle(self, title: id)
-	{
-		msg_send![self, setTitle: title]
-	}
-
-	unsafe fn setInformativeText(self, txt: id)
-	{
-		msg_send![self, setInformativeText: txt]
 	}
 }
 
@@ -720,24 +705,6 @@ trait SettingsDelegate
 
 impl SettingsDelegate for id
 {
-}
-
-pub trait RetainRelease
-{
-	unsafe fn retain(self) -> id;
-	unsafe fn release(self) -> id;
-}
-
-impl RetainRelease for id
-{
-	unsafe fn retain(self) -> id
-	{
-		msg_send![self, retain]
-	}
-	unsafe fn release(self) -> id
-	{
-		msg_send![self, release]
-	}
 }
 
 
