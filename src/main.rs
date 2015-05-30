@@ -51,7 +51,7 @@ use tickeys::{Tickeys, AudioScheme, AudioData};
 use cocoa_ext::{NSUserNotification, RetainRelease};
 
 
-const CURRENT_VERSION : &'static str = "0.2.0";
+const CURRENT_VERSION : &'static str = "0.3.0";
 const QUIT_KEY_SEQ: &'static[u8] = &[12, 0, 6, 18, 19, 20]; //QAZ123
 
 static mut SHOWING_GUI:bool = false;
@@ -62,7 +62,7 @@ fn main()
 	let app_cfg = load_app_config();
 
 	request_accessiblility();	
-	check_for_update(app_cfg.lookup("config.check_update_api").unwrap().as_str().unwrap());
+	begin_check_for_update(app_cfg.lookup("config.check_update_api").unwrap().as_str().unwrap());
 	
 	let pref = Pref::load();
 
@@ -186,7 +186,7 @@ fn find_scheme<'a>(name: &str, from: &'a Vec<AudioScheme>) -> &'a AudioScheme
 	from.iter().filter(|s|{ *(s.name) == *name}).next().unwrap()
 }
 
-fn check_for_update(url: &str)
+fn begin_check_for_update(url: &str)
 {
 	#[derive(RustcDecodable, RustcEncodable)]
 	struct Version
