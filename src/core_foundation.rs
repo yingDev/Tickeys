@@ -1,4 +1,4 @@
-#[allow(non_snake_case)]
+#[allow(non_camel_case_types)]
 
 extern crate libc;
 extern crate block;
@@ -19,6 +19,9 @@ pub type CFMessagePortRef = *mut c_void;
 pub type CFDataRef = *mut c_void;
 pub type CFMessagePortCallBack = extern fn (local: CFMessagePortRef, msgid: i32, data: CFDataRef, info: *mut c_void) -> CFDataRef;
 
+#[allow(dead_code)]
+#[allow(non_snake_case)]
+#[repr(C)]
 struct CFMessagePortContext
 {
 	version: CFIndex,
@@ -40,6 +43,7 @@ extern
 
 }
 
+#[allow(dead_code)]
 #[link(name = "CoreFoundation", kind = "framework")]
 extern "system"
 {

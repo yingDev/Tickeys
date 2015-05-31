@@ -1,6 +1,7 @@
 #![macro_use]
 #[allow(non_snake_case)]
 #[allow(non_camel_case_types)]
+#[allow(non_upper_case_globals)]
 
 extern crate libc;
 extern crate cocoa;
@@ -9,6 +10,8 @@ use self::libc::{c_void};
 use core_foundation::CFMachPortRef;
 
 #[repr(u32)]
+#[allow(non_camel_case_types)]
+#[allow(dead_code)]
 pub enum CGEventTapLocation 
 {
    kCGHIDEventTap = 0,
@@ -17,6 +20,8 @@ pub enum CGEventTapLocation
 }
 
 #[repr(u32)]
+#[allow(dead_code)]
+#[allow(non_camel_case_types)]
 pub enum CGEventTapPlacement 
 {
    kCGHeadInsertEventTap = 0,
@@ -24,6 +29,8 @@ pub enum CGEventTapPlacement
 }
 
 #[repr(u32)]
+#[allow(dead_code)]
+#[allow(non_camel_case_types)]
 pub enum CGEventTapOptions 
 {
    kCGEventTapOptionDefault = 0x00000000,
@@ -31,6 +38,8 @@ pub enum CGEventTapOptions
 }
 
 #[repr(u32)]
+#[allow(dead_code)]
+#[allow(non_camel_case_types)]
 pub enum CGEventType
 {
   /* The null event. */
@@ -65,6 +74,8 @@ pub enum CGEventType
 }
 
 #[repr(u32)]
+#[allow(dead_code)]
+#[allow(non_camel_case_types)]
 pub enum CGEventField 
 {
   /* Key to access an integer field that contains the mouse button event
@@ -319,9 +330,14 @@ macro_rules! CGEventMaskBit
 {
     ($eventType: expr) => { 1 << ($eventType as CGEventMask)};
 }
+
+#[allow(non_upper_case_globals)]
+#[allow(dead_code)]
 pub const kCGEventMaskForAllEvents:u64 = !0;
 
 #[link(name = "CoreGraphics", kind = "framework")]
+#[allow(dead_code)]
+#[allow(non_camel_case_types)]
 extern "system"
 {
 	pub fn CGEventTapCreate (

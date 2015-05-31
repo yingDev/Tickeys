@@ -10,7 +10,6 @@ dependencies = [
  "openal-rs 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "rustc-serialize 0.3.14 (registry+https://github.com/rust-lang/crates.io-index)",
  "time 0.1.25 (registry+https://github.com/rust-lang/crates.io-index)",
- "toml 0.1.20 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -211,14 +210,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "gcc 0.3.5 (registry+https://github.com/rust-lang/crates.io-index)",
  "libc 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)",
-]
-
-[[package]]
-name = "toml"
-version = "0.1.20"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-dependencies = [
- "rustc-serialize 0.3.14 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]

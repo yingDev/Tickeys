@@ -2,51 +2,23 @@ extern crate libc;
 extern crate openal;
 extern crate cocoa;
 extern crate time;
-extern crate hyper;
-extern crate toml;
-extern crate block;
 extern crate rustc_serialize;
-//#[macro_use]
 extern crate objc;
 extern crate std;
 
 use std::collections::{VecDeque, HashMap};
 use std::option::Option;
-use std::any::Any;
-use std::boxed::Box;
-use std::thread;
 use std::io::Read;
-use std::sync::{Once, ONCE_INIT};
 use std::string::String;
-use std::fs::File;
-use std::ptr;
 
 use libc::{c_void};
-use core_foundation::*;
 use core_graphics::*;
 use openal::al::*;
 use openal::al::ffi::*;
 use alut::*;
 use objc::*;
-use objc::runtime::*;
-use cocoa::base::{class,id,nil};
-use cocoa::foundation::{NSUInteger, NSRect, NSPoint, NSSize,NSAutoreleasePool, NSProcessInfo, NSString};
-use cocoa::appkit::{NSApp,NSApplication, NSApplicationActivationPolicyRegular,NSWindow, NSTitledWindowMask, NSBackingStoreBuffered,NSMenu, NSMenuItem};
-
-use hyper::Client;
-use hyper::header::{Connection, ConnectionOption};
-use hyper::status::StatusCode;
-
-use self::block::{Block, ConcreteBlock};
-use rustc_serialize::json;
 
 use event_tap;
-
-//自己的modules才需要声明
-//mod core_graphics;
-//mod core_foundation;
-//mod alut;
-//mod event_tap;
 
 #[derive(RustcDecodable, RustcEncodable)]
 pub struct AudioScheme
@@ -85,23 +57,16 @@ impl Tickeys
 			alutInit(std::ptr::null_mut(), std::ptr::null_mut());
 		}
 
-		unsafe
-		{
-
-			let mut tk = Tickeys{
+			Tickeys{
 				volume:1f32,
 				pitch:1f32, 
 				audio_data: Vec::new(), 
 				keymap: HashMap::new(),
 				first_n_non_unique: -1,
 				last_keys: VecDeque::new(), 
-				//keyseq_registry: HashMap::new(),
 				keyboard_monitor:None, 
-				on_keydown: Option::None,
-				//on_keyseq: Option::None
-			};
-			tk
-		}
+				on_keydown: Option::None		
+			}
 	}
 
 	pub fn start(&mut self)
@@ -112,7 +77,7 @@ impl Tickeys
 
 		unsafe
 		{
-			let mut tap_result = event_tap::KeyboardMonitor::new(Tickeys::handle_keyboard_event, ptr_to_self);
+			let tap_result = event_tap::KeyboardMonitor::new(Tickeys::handle_keyboard_event, ptr_to_self);
 			match tap_result
 			{
 				Ok(t) => tap = t,
@@ -163,7 +128,6 @@ impl Tickeys
 	pub fn set_volume(&mut self, volume: f32)
 	{
 		if volume == self.volume {return;}
-		//todo:
 		self.volume = volume;
 		for audio in self.audio_data.iter_mut()
 		{
@@ -174,7 +138,6 @@ impl Tickeys
 	pub fn set_pitch(&mut self, pitch: f32)
 	{
 		if pitch == self.pitch {return;}
-		//todo:
 		self.pitch = pitch;
 		for audio in self.audio_data.iter_mut()
 		{
@@ -182,11 +145,13 @@ impl Tickeys
 		}
 	}
 
+	#[allow(dead_code)]
 	pub fn get_volume(&self) -> f32
 	{
 		self.volume
 	}
 
+	#[allow(dead_code)]
 	pub fn get_pitch(&self) -> f32
 	{
 		self.pitch
@@ -197,17 +162,15 @@ impl Tickeys
 		&self.last_keys
 	}
 
+	#[allow(unused_variables)]
 	extern fn handle_keyboard_event(proxy: CGEventTapProxy, etype: CGEventType, event: CGEventRef, refcon: *mut c_void) -> CGEventRef
 	{
 		let keycode = unsafe{CGEventGetIntegerValueField(event, CGEventField::kCGKeyboardEventKeycode)} as u16;
 
 		assert!(refcon != 0 as *mut c_void);
 
-		//todo: temp
 		let tickeys: &mut Tickeys = unsafe{ std::mem::transmute(refcon)};
 		tickeys.handle_keydown(keycode as u8);
-		//app.audios[(keycode % 8) as usize].play();
-		//play_keycode_audio(keycode);
 
 		event
 	}

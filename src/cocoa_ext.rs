@@ -1,7 +1,8 @@
 extern crate objc;
-use cocoa::base::{class,id,nil};
+use cocoa::base::{class,id};
 
-
+#[allow(non_snake_case)]
+#[allow(unused_variables)]
 pub trait NSUserNotification
 {
 	unsafe fn new(_: Self) -> id
@@ -13,6 +14,8 @@ pub trait NSUserNotification
 	unsafe fn setInformativeText(self, txt: id);
 }
 
+#[allow(non_snake_case)]
+#[allow(unused_variables)]
 impl NSUserNotification for id
 {
 	unsafe fn setTitle(self, title: id)

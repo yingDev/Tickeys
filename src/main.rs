@@ -4,7 +4,6 @@ extern crate openal;
 extern crate cocoa;
 extern crate time;
 extern crate hyper;
-extern crate toml;
 extern crate block;
 extern crate rustc_serialize;
 #[macro_use]
@@ -29,7 +28,7 @@ use hyper::Client;
 use hyper::header::{Connection};
 use hyper::status::StatusCode;
 
-use self::block::{Block, ConcreteBlock};
+use self::block::{ConcreteBlock};
 use rustc_serialize::json;
 
 mod core_graphics;
@@ -53,7 +52,7 @@ static mut SHOWING_GUI:bool = false;
 
 fn main() 
 {	
-	let pool = unsafe{NSAutoreleasePool::new(nil)};
+	unsafe{NSAutoreleasePool::new(nil)};
 
 	request_accessiblility();	
 	begin_check_for_update(CHECK_UPDATE_API);
@@ -91,7 +90,7 @@ fn request_accessiblility()
 
 	unsafe
 	{
-		if(!is_enabled(true)) 
+		if !is_enabled(true)
 		{
 			let alert:id = msg_send![class("NSAlert"), new];
 			alert.autorelease();
@@ -120,7 +119,7 @@ fn load_audio_schemes() -> Vec<AudioScheme>
 	match file.read_to_string(&mut json_str)
 	{
 		Ok(_) => {},
-		Err(e) => panic!("Failed to read json")
+		Err(e) => panic!("Failed to read json:{}",e)
 	}
 
 	let schemes:Vec<AudioScheme> = json::decode(&json_str).unwrap();
@@ -155,12 +154,13 @@ fn find_scheme<'a>(name: &str, from: &'a Vec<AudioScheme>) -> &'a AudioScheme
 fn begin_check_for_update(url: &str)
 {
 	#[derive(RustcDecodable, RustcEncodable)]
+	#[allow(non_snake_case)]
 	struct Version
 	{
 		Version: String
 	}
 
-	let runloopRef = unsafe{CFRunLoopGetCurrent() as usize};
+	let run_loop_ref = unsafe{CFRunLoopGetCurrent() as usize};
 
 	let mut check_update_url = String::new();
 	check_update_url.push_str(url);
@@ -169,14 +169,14 @@ fn begin_check_for_update(url: &str)
 	{
 	    let mut client = Client::new();
 
-	    let mut result = client.get(&check_update_url)
+	    let result = client.get(&check_update_url)
 	        .header(Connection::close())
 	        .send();
 	    
 	    let mut resp;
 	    match result
 	    {
-	    	Ok(mut r) => resp = r,
+	    	Ok(r) => resp = r,
 	    	Err(e) => {
 	    		println!("Failed to check for update: {}", e);
 	    		return;
@@ -215,7 +215,7 @@ fn begin_check_for_update(url: &str)
 
 			    	unsafe
 			    	{
-			    		CFRunLoopPerformBlock(runloopRef as *mut c_void, kCFRunLoopDefaultMode, block);
+			    		CFRunLoopPerformBlock(run_loop_ref as *mut c_void, kCFRunLoopDefaultMode, block);
 			    	}
 		    	}
 	    	}
@@ -228,7 +228,7 @@ fn begin_check_for_update(url: &str)
 	});
 }
 
-fn handle_keydown(tickeys: &Tickeys, key:u8)
+fn handle_keydown(tickeys: &Tickeys, _:u8)
 {
 	if tickeys.get_last_keys().iter().zip(OPEN_SETTINGS_KEY_SEQ.iter()).filter(|&(a,b)| a == b).count() == OPEN_SETTINGS_KEY_SEQ.len()
 	{
@@ -247,7 +247,7 @@ fn show_settings(tickeys: &Tickeys)
 			return;
 		}
 		SHOWING_GUI = true;
-		let settings_delegate = SettingsDelegate::new(nil, std::mem::transmute(tickeys));
+		SettingsDelegate::new(nil, std::mem::transmute(tickeys));
 	}
 }
 
@@ -260,7 +260,7 @@ fn show_notification(title: &str, msg: &str)
 		{
 			let noti_center_del:id = UserNotificationCenterDelegate::new(nil).autorelease();
 			let center:id = msg_send![class("NSUserNotificationCenter"), defaultUserNotificationCenter];
-			let center:id = msg_send![center, setDelegate: noti_center_del];
+			let _:id = msg_send![center, setDelegate: noti_center_del];
 		}
 	});
 
@@ -394,6 +394,8 @@ impl Pref
 }
 
 
+#[allow(non_snake_case)]
+#[allow(unused_variables)]
 pub trait UserNotificationCenterDelegate //: <NSUserNotificationCenerDelegate>
 {
 	fn new(_: Self) -> id
@@ -450,6 +452,9 @@ impl UserNotificationCenterDelegate for id
 
 }
 
+
+#[allow(non_snake_case)]
+#[allow(unused_variables)]
 trait SettingsDelegate
 {
 	fn new(_:Self, ptr_to_app: *mut Tickeys) -> id

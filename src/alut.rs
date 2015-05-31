@@ -1,7 +1,11 @@
+#[allow(non_snake_case)]
+#[allow(non_camel_case_types)]
+
 extern crate openal;
 use openal::al::*;
 
 //#[link(name= "alut")]
+#[allow(dead_code)]
 extern "cdecl"
 {
 	pub fn alutInit(argcp:*mut i32, argv: *mut *mut u8) -> ALboolean;
