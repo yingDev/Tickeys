@@ -45,16 +45,18 @@ use cocoa_ext::{NSUserNotification, RetainRelease};
 
 const CURRENT_VERSION : &'static str = "0.3.1";
 const OPEN_SETTINGS_KEY_SEQ: &'static[u8] = &[12, 0, 6, 18, 19, 20]; //QAZ123
+//todo: what's the better way to store constants?
+const WEBSITE : &'static str = "http://www.yingdev.com/projects/tickeys";
+const CHECK_UPDATE_API : &'static str = "http://www.yingdev.com/projects/latestVersion?product=Tickeys";
 
 static mut SHOWING_GUI:bool = false;
 
 fn main() 
 {	
 	let pool = unsafe{NSAutoreleasePool::new(nil)};
-	let app_cfg = load_app_config();
 
 	request_accessiblility();	
-	begin_check_for_update(app_cfg.lookup("config.check_update_api").unwrap().as_str().unwrap());
+	begin_check_for_update(CHECK_UPDATE_API);
 	
 	let pref = Pref::load();
 
@@ -107,51 +109,6 @@ fn request_accessiblility()
 			}
 		}
 	}
-}
-
-fn app_relaunch_self()
-{
-	unsafe
-	{
-		let bundle:id = msg_send![class("NSBundle"),mainBundle];
-		let path:id = msg_send![bundle,  executablePath];
-
-		let proc_info:id = msg_send![class("NSProcessInfo"), processInfo];
-		let proc_id:i32 = msg_send![proc_info, processIdentifier];
-		let proc_id_str:id = NSString::alloc(nil).init_str(&format!("{}",proc_id)).autorelease();
-
-		let args:id = msg_send![class("NSMutableArray"), new];
-
-		let _:id = msg_send![args, addObject:path];
-
-		let _:id = msg_send![args, addObject:proc_id_str];
-
-		let _:id = msg_send![class("NSTask"), launchedTaskWithLaunchPath:path arguments:args];
-
-	}
-
-	std::process::exit(0);
-
-}
-
-fn load_app_config() -> toml::Value
-{
-	let mut cfg_path = get_res_path("app_config.toml");
-
-	let mut toml_file = match File::open(cfg_path.clone())
-	{
-		Ok(f) => f, 
-		Err(e) => panic!("Error open file:{} : {}", e, cfg_path)
-	};
-	let mut toml_str = String::new();
-	let n_read = toml_file.read_to_string(&mut toml_str);
-	match n_read
-	{
-		Ok(_) => {},
-		Err(e) => panic!("Failed Reading file content:{}", e)
-	};
- 
-	toml_str.parse().unwrap()
 }
 
 fn load_audio_schemes() -> Vec<AudioScheme>
@@ -328,6 +285,31 @@ fn app_run()
 	}
 }
 
+fn app_relaunch_self()
+{
+	unsafe
+	{
+		let bundle:id = msg_send![class("NSBundle"),mainBundle];
+		let path:id = msg_send![bundle,  executablePath];
+
+		let proc_info:id = msg_send![class("NSProcessInfo"), processInfo];
+		let proc_id:i32 = msg_send![proc_info, processIdentifier];
+		let proc_id_str:id = NSString::alloc(nil).init_str(&format!("{}",proc_id)).autorelease();
+
+		let args:id = msg_send![class("NSMutableArray"), new];
+
+		let _:id = msg_send![args, addObject:path];
+
+		let _:id = msg_send![args, addObject:proc_id_str];
+
+		let _:id = msg_send![class("NSTask"), launchedTaskWithLaunchPath:path arguments:args];
+
+	}
+
+	std::process::exit(0);
+
+}
+
 fn app_terminate()
 {
 	unsafe
@@ -454,7 +436,7 @@ pub trait UserNotificationCenterDelegate //: <NSUserNotificationCenerDelegate>
 		{
 			let workspace: id = msg_send![class("NSWorkspace"), sharedWorkspace];
 			//todo: extract
-			let url:id = msg_send![class("NSURL"), URLWithString: NSString::alloc(nil).init_str("http://www.yingdev.com/projects/tickeys")];
+			let url:id = msg_send![class("NSURL"), URLWithString: NSString::alloc(nil).init_str(WEBSITE)];
 
 			let ok:bool = msg_send![workspace, openURL: url];
 
