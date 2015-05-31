@@ -62,8 +62,10 @@ fn main()
 	tickeys.load_scheme(&get_data_path(&pref.audio_scheme), &find_scheme(&pref.audio_scheme, &load_audio_schemes()));
 	tickeys.set_volume(pref.volume);
 	tickeys.set_pitch(pref.pitch);
-	tickeys.set_on_keydown(Option::Some(handle_keydown));
+	tickeys.set_on_keydown(Option::Some(handle_keydown)); //handle qaz123
 	tickeys.start();
+
+	show_notification("Tickeys正在运行", "按 QAZ123 打开设置");
 
 	app_run();
 }
@@ -87,18 +89,8 @@ fn request_accessiblility()
 
 	unsafe
 	{
-		if is_enabled(true) {return;}
-
-		let mut loop_n = 0;
-		loop 
+		if(!is_enabled(true)) 
 		{
-			std::thread::sleep_ms(500);
-
-			if is_enabled(false) {return;}
-
-			loop_n += 1;
-			if loop_n <= 10 {continue;}
-
 			let alert:id = msg_send![class("NSAlert"), new];
 			alert.autorelease();
 			let _:id = msg_send![alert, setMessageText: NSString::alloc(nil).init_str("您必须将Tickeys.app添加到 系统偏好设置 > 安全与隐私 > 辅助功能 列表中并√，否则Tickeys无法工作")];
@@ -109,12 +101,37 @@ fn request_accessiblility()
 			println!("request_accessiblility alert: {}", btn);
 			match btn
 			{
-				1001 => continue,
+				1001 => {app_relaunch_self();},
 				1002 => {app_terminate();},
 				_ => {panic!("request_accessiblility");}
 			}
 		}
 	}
+}
+
+fn app_relaunch_self()
+{
+	unsafe
+	{
+		let bundle:id = msg_send![class("NSBundle"),mainBundle];
+		let path:id = msg_send![bundle,  executablePath];
+
+		let proc_info:id = msg_send![class("NSProcessInfo"), processInfo];
+		let proc_id:i32 = msg_send![proc_info, processIdentifier];
+		let proc_id_str:id = NSString::alloc(nil).init_str(&format!("{}",proc_id)).autorelease();
+
+		let args:id = msg_send![class("NSMutableArray"), new];
+
+		let _:id = msg_send![args, addObject:path];
+
+		let _:id = msg_send![args, addObject:proc_id_str];
+
+		let _:id = msg_send![class("NSTask"), launchedTaskWithLaunchPath:path arguments:args];
+
+	}
+
+	std::process::exit(0);
+
 }
 
 fn load_app_config() -> toml::Value
@@ -306,7 +323,6 @@ fn app_run()
 {
 	unsafe
 	{
-		show_notification("Tickeys正在运行", "按 QAZ123 打开设置");
 		let app = NSApp();
 		app.run();
 	}
@@ -438,7 +454,7 @@ pub trait UserNotificationCenterDelegate //: <NSUserNotificationCenerDelegate>
 		{
 			let workspace: id = msg_send![class("NSWorkspace"), sharedWorkspace];
 			//todo: extract
-			let url:id = msg_send![class("NSURL"), URLWithString: NSString::alloc(nil).init_str("http://www.yingDev.com/projects/tickeys")];
+			let url:id = msg_send![class("NSURL"), URLWithString: NSString::alloc(nil).init_str("http://www.yingdev.com/projects/tickeys")];
 
 			let ok:bool = msg_send![workspace, openURL: url];
 
