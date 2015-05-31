@@ -43,7 +43,7 @@ use tickeys::{Tickeys, AudioScheme};
 use cocoa_ext::{NSUserNotification, RetainRelease};
 
 
-const CURRENT_VERSION : &'static str = "0.3.0";
+const CURRENT_VERSION : &'static str = "0.3.1";
 const OPEN_SETTINGS_KEY_SEQ: &'static[u8] = &[12, 0, 6, 18, 19, 20]; //QAZ123
 
 static mut SHOWING_GUI:bool = false;
