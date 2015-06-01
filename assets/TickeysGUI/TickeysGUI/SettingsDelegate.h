@@ -15,5 +15,6 @@
 @property (assign) IBOutlet NSSlider *slide_pitch;
 @property (assign) IBOutlet NSTextField *label_version;
 @property (assign) void* user_data;
+@property (assign) IBOutlet NSPanel *window;
 
 @end

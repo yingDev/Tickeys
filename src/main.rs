@@ -42,7 +42,7 @@ use tickeys::{Tickeys, AudioScheme};
 use cocoa_ext::{NSUserNotification, RetainRelease};
 
 
-const CURRENT_VERSION : &'static str = "0.3.2";
+const CURRENT_VERSION : &'static str = "0.3.3";
 const OPEN_SETTINGS_KEY_SEQ: &'static[u8] = &[12, 0, 6, 18, 19, 20]; //QAZ123
 //todo: what's the better way to store constants?
 const WEBSITE : &'static str = "http://www.yingdev.com/projects/tickeys";
@@ -512,6 +512,14 @@ trait SettingsDelegate
 				let get_label_version_fn: extern fn(&Object, Sel)->id = Self::get_label_version_;
 				decl.add_method(sel!(label_version), get_label_version_fn);
 
+				//property window
+				decl.add_ivar::<id>("_window");
+				let set_window_fn: extern fn(&mut Object, Sel, id) = Self::set_window_;
+				decl.add_method(sel!(setWindow:), set_window_fn);
+
+				let get_window_fn: extern fn(& Object, Sel)->id = Self::get_window_;
+				decl.add_method(sel!(getWindow), get_window_fn);
+
 				//methods
 				let quit_fn: extern fn(&mut Object, Sel, id) = Self::quit_;
 				decl.add_method(sel!(quit:), quit_fn);
@@ -568,9 +576,13 @@ trait SettingsDelegate
 	extern fn set_slide_pitch_(this: &mut Object, _cmd:Sel, val: id){unsafe{this.set_ivar::<id>("_slide_pitch", val);}}
 	extern fn get_slide_pitch_(this: &Object, _cmd:Sel) -> id{unsafe{*this.get_ivar::<id>("_slide_pitch")}}
 
+	//property label_version
 	extern fn set_label_version_(this: &mut Object, _cmd: Sel, val: id){unsafe{this.set_ivar::<id>("_label_version", val);}}
 	extern fn get_label_version_(this: &Object, _cmd: Sel)->id{unsafe{*this.get_ivar::<id>("_label_version")}}
 	
+	//property window
+	extern fn set_window_(this: &mut Object, _cmd: Sel, val: id){unsafe{this.set_ivar::<id>("_window", val);}}
+	extern fn get_window_(this: &Object, _cmd: Sel)->id{unsafe{*this.get_ivar::<id>("_window")}}
 
 	extern fn quit_(this: &mut Object, _cmd: Sel, sender: id)
 	{
@@ -696,6 +708,13 @@ trait SettingsDelegate
 
 		let label_version: id = msg_send![this, label_version];
 		let _:id = msg_send![label_version, setStringValue:NSString::alloc(nil).init_str(format!("v{}",CURRENT_VERSION).as_ref())];
+
+		//let _:id = msg_send![this, show]
+
+		println!("makeKeyAndOrderFront:");
+		let win:id = msg_send![this, getWindow];		
+		let _:id = msg_send![win, makeKeyAndOrderFront:nil];
+		let _:id = msg_send![NSApp(), activateIgnoringOtherApps:true];
 	}
 
 }

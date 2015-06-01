@@ -10,12 +10,13 @@
                 <outlet property="popup_audio_scheme" destination="EkV-2p-KSX" id="E8d-nj-FOH"/>
                 <outlet property="slide_pitch" destination="uYF-2u-aqo" id="9Nz-fR-Opo"/>
                 <outlet property="slide_volume" destination="2h9-31-DYh" id="ce1-Et-PP8"/>
+                <outlet property="window" destination="QvC-M9-y7g" id="wJQ-Dm-je3"/>
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <window title="Tickeys" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" animationBehavior="alertPanel" id="QvC-M9-y7g" customClass="NSPanel">
-            <windowStyleMask key="styleMask" titled="YES" closable="YES" utility="YES" nonactivatingPanel="YES" HUD="YES"/>
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" utility="YES" HUD="YES"/>
             <windowCollectionBehavior key="collectionBehavior" canJoinAllSpaces="YES"/>
             <rect key="contentRect" x="196" y="240" width="293" height="233"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
@@ -130,12 +131,25 @@
                             <action selector="follow_link:" target="-2" id="yXM-7z-xWQ"/>
                         </connections>
                     </button>
+                    <button hidden="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8X8-63-6pE">
+                        <rect key="frame" x="149" y="36" width="64" height="32"/>
+                        <buttonCell key="cell" type="push" title="close" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="GYP-aS-8YC">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <string key="keyEquivalent" base64-UTF8="YES">
+Gw
+</string>
+                        </buttonCell>
+                        <connections>
+                            <action selector="performClose:" target="QvC-M9-y7g" id="1H3-6D-1nQ"/>
+                        </connections>
+                    </button>
                 </subviews>
             </view>
             <connections>
                 <outlet property="delegate" destination="-2" id="F6w-lY-fVo"/>
             </connections>
-            <point key="canvasLocation" x="166.5" y="301.5"/>
+            <point key="canvasLocation" x="239.5" y="235.5"/>
         </window>
     </objects>
     <resources>
