@@ -42,7 +42,7 @@ use tickeys::{Tickeys, AudioScheme};
 use cocoa_ext::{NSUserNotification, RetainRelease};
 
 
-const CURRENT_VERSION : &'static str = "0.3.1";
+const CURRENT_VERSION : &'static str = "0.3.2";
 const OPEN_SETTINGS_KEY_SEQ: &'static[u8] = &[12, 0, 6, 18, 19, 20]; //QAZ123
 //todo: what's the better way to store constants?
 const WEBSITE : &'static str = "http://www.yingdev.com/projects/tickeys";
@@ -90,7 +90,9 @@ fn request_accessiblility()
 
 	unsafe
 	{
-		if !is_enabled(true)
+		if is_enabled(false) {return;}
+
+		while !is_enabled(true)
 		{
 			let alert:id = msg_send![class("NSAlert"), new];
 			alert.autorelease();
@@ -102,11 +104,13 @@ fn request_accessiblility()
 			println!("request_accessiblility alert: {}", btn);
 			match btn
 			{
-				1001 => {app_relaunch_self();},
+				1001 => {continue},
 				1002 => {app_terminate();},
 				_ => {panic!("request_accessiblility");}
 			}
 		}
+
+		app_relaunch_self();
 	}
 }
 
