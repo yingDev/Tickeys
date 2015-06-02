@@ -46,6 +46,7 @@ const CURRENT_VERSION : &'static str = "0.3.3";
 const OPEN_SETTINGS_KEY_SEQ: &'static[u8] = &[12, 0, 6, 18, 19, 20]; //QAZ123
 //todo: what's the better way to store constants?
 const WEBSITE : &'static str = "http://www.yingdev.com/projects/tickeys";
+const DONATE_URL: &'static str = "http://www.yingdev.com/home/donate";
 const CHECK_UPDATE_API : &'static str = "http://www.yingdev.com/projects/latestVersion?product=Tickeys";
 
 static mut SHOWING_GUI:bool = false;
@@ -144,8 +145,7 @@ fn get_res_path(sub_path: &str) -> String
 
 fn get_data_path(sub_path: &str) -> String
 {
-	let mut data_dir = "data/".to_string();
-	data_dir.push_str(sub_path);
+	let mut data_dir = "data/".to_string() + sub_path;
 
 	get_res_path(&data_dir)
 }
@@ -166,8 +166,7 @@ fn begin_check_for_update(url: &str)
 
 	let run_loop_ref = unsafe{CFRunLoopGetCurrent() as usize};
 
-	let mut check_update_url = String::new();
-	check_update_url.push_str(url);
+	let mut check_update_url = url.to_string();
 
 	thread::spawn(move ||
 	{
@@ -203,7 +202,6 @@ fn begin_check_for_update(url: &str)
 
 	    	if content.contains("Version")
 	    	{		    	
-	    		//let ver = (content.split('\"').collect::<Vec<&str>>()[3]).to_string();
 	    		let ver:Version = json::decode(&content).unwrap();
 	    		println!("ver={}",ver.Version);
 	    		if ver.Version != CURRENT_VERSION
@@ -597,8 +595,8 @@ trait SettingsDelegate
 			let tag:i64 = msg_send![sender, tag];
 			let url = match tag
 			{
-				0 => "http://www.yingDev.com/projects/tickeys",
-				1 => "http://www.yingdev.com/home/donate",
+				0 => WEBSITE,
+				1 => DONATE_URL,
 				_ => panic!("SettingsDelegate::follow_link_")
 			};
 
@@ -634,8 +632,8 @@ trait SettingsDelegate
 					let schemes = load_audio_schemes();
 					let sch = &schemes[value as usize];
 
-					let mut scheme_dir = "data/".to_string();
-					scheme_dir.push_str(&sch.name);
+					let mut scheme_dir = "data/".to_string() + &sch.name;//.to_string();
+					//scheme_dir.push_str(&sch.name);
 					tickeys_ptr.load_scheme(&get_res_path(&scheme_dir), sch);
 
 					let _:id = msg_send![user_defaults, setObject: NSString::alloc(nil).init_str(sch.name.as_ref()) 
