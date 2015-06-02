@@ -40,7 +40,6 @@ pub struct Tickeys
 	first_n_non_unique: i16,
 
 	last_keys: VecDeque<u8>,
-	//keyseq_registry: HashMap<u8, VecDeque<u8>>,
 	
 	keyboard_monitor: Option< event_tap::KeyboardMonitor>, //defered
 
@@ -57,16 +56,16 @@ impl Tickeys
 			alutInit(std::ptr::null_mut(), std::ptr::null_mut());
 		}
 
-			Tickeys{
-				volume:1f32,
-				pitch:1f32, 
-				audio_data: Vec::new(), 
-				keymap: HashMap::new(),
-				first_n_non_unique: -1,
-				last_keys: VecDeque::new(), 
-				keyboard_monitor:None, 
-				on_keydown: Option::None		
-			}
+		Tickeys{
+			volume:1f32,
+			pitch:1f32, 
+			audio_data: Vec::new(), 
+			keymap: HashMap::new(),
+			first_n_non_unique: -1,
+			last_keys: VecDeque::new(), 
+			keyboard_monitor:None, 
+			on_keydown: Option::None		
+		}
 	}
 
 	pub fn start(&mut self)
@@ -78,6 +77,7 @@ impl Tickeys
 		unsafe
 		{
 			let tap_result = event_tap::KeyboardMonitor::new(Tickeys::handle_keyboard_event, ptr_to_self);
+
 			match tap_result
 			{
 				Ok(t) => tap = t,
@@ -98,8 +98,7 @@ impl Tickeys
 	{
 		self.audio_data.clear();
 
-		let mut path = dir.to_string();
-		path.push_str("/");
+		let mut path = dir.to_string() + "/";
 		let base_path_len = path.chars().count();
 
 		for f in scheme.files.iter()
@@ -183,10 +182,6 @@ impl Tickeys
 			self.last_keys.pop_front();
 		}
 
-		/*if self.last_keys.iter().zip(QUIT_KEY_SEQ.iter()).filter(|&(a,b)| a == b).count() == QUIT_KEY_SEQ.len()
-		{
-			self.show_settings();
-		}*/
 		match self.on_keydown
 		{
 			None => {},
@@ -194,10 +189,6 @@ impl Tickeys
 		}
 
 		println!("key:{}", keycode);
-
-
-		static mut last_time: u64 = 0;
-		static mut last_key: i16 = -1;
 
 		let index:i32 = match self.keymap.get(&keycode)
 		{
@@ -214,21 +205,9 @@ impl Tickeys
 			}
 		};
 		
-		
-
-		unsafe
-		{	
-			let now = time::precise_time_ns() / 1000 / 1000;
-
-			let delta = now - last_time ;
-			println!("interval:{}", delta);
-			if delta < 60 && last_key == (keycode as i16)
-			{
-				last_time = now;
-				return;
-			}
-			last_key = keycode as i16;
-			last_time = now;
+		if self.is_too_frequent(keycode)
+		{
+			return;
 		}
 
 		if index == -1 
@@ -237,8 +216,6 @@ impl Tickeys
 		}
 
 		let audio = &mut self.audio_data[index as usize];
-		//audio.set_gain(self.volume);
-		//audio.set_pitch(self.pitch);
 		audio.play();
 	}
 
@@ -247,36 +224,28 @@ impl Tickeys
 		self.on_keydown = on_keydown;
 	}
 
-	/*fn register_keyseq(&mut self, seq_id:u8, seq:VecDeque<u8>)
+	fn is_too_frequent(&self, keycode: u8) -> bool
 	{
-		self.keyseq_registry.insert(seq_id,seq);
-	}
-
-	fn remove_keyseq(&mut self, seq_id:u8)
-	{
-		self.keyseq_registry.remove(&seq_id);
-	}*/
-
-	/*fn set_keymap(&mut self, keymap: HashMap<u8, u8>, first_n_non_unique: u8)
-	{
-		self.keymap = keymap;
-		self.first_n_non_unique = first_n_non_unique as i16;
-	}*/
-
-
-	/*fn show_settings(&mut self)
-	{
-		println!("Settings!");
-
-		if self.showing_gui
+		unsafe
 		{
-			return;
-		}
-		self.showing_gui = true;
-					
-		let settings_delegate = SettingsDelegate::new(nil, self);
+			static mut last_time: u64 = 0;
+			static mut last_key: i16 = -1;
+			let now = time::precise_time_ns() / 1000 / 1000;
 
-	}*/
+			let delta = now - last_time ;
+			println!("interval:{}", delta);
+			if delta < 60 && last_key == (keycode as i16)
+			{
+				last_time = now;
+				return true;
+			}
+			last_key = keycode as i16;
+			last_time = now;
+
+			return false;
+		}
+
+	}
 
 }
 

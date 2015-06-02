@@ -42,7 +42,7 @@ use tickeys::{Tickeys, AudioScheme};
 use cocoa_ext::{NSUserNotification, RetainRelease};
 
 
-const CURRENT_VERSION : &'static str = "0.3.3";
+const CURRENT_VERSION : &'static str = "0.3.4";
 const OPEN_SETTINGS_KEY_SEQ: &'static[u8] = &[12, 0, 6, 18, 19, 20]; //QAZ123
 //todo: what's the better way to store constants?
 const WEBSITE : &'static str = "http://www.yingdev.com/projects/tickeys";
@@ -74,8 +74,6 @@ fn main()
 
 fn request_accessiblility()
 {
-	println!("request_accessiblility");
-
 	#[link(name = "ApplicationServices", kind = "framework")]
 	extern "system"
 	{
@@ -145,9 +143,7 @@ fn get_res_path(sub_path: &str) -> String
 
 fn get_data_path(sub_path: &str) -> String
 {
-	let mut data_dir = "data/".to_string() + sub_path;
-
-	get_res_path(&data_dir)
+	get_res_path(&("data/".to_string() + sub_path))
 }
 
 fn find_scheme<'a>(name: &str, from: &'a Vec<AudioScheme>) -> &'a AudioScheme
@@ -166,7 +162,7 @@ fn begin_check_for_update(url: &str)
 
 	let run_loop_ref = unsafe{CFRunLoopGetCurrent() as usize};
 
-	let mut check_update_url = url.to_string();
+	let check_update_url = url.to_string();
 
 	thread::spawn(move ||
 	{
@@ -199,7 +195,6 @@ fn begin_check_for_update(url: &str)
 	    	}
 	    	println!("Response: {}", content);
 	    	
-
 	    	if content.contains("Version")
 	    	{		    	
 	    		let ver:Version = json::decode(&content).unwrap();
@@ -650,7 +645,12 @@ trait SettingsDelegate
 
 				TAG_SLIDE_PITCH =>
 				{
-					let value:f32 = msg_send![sender, floatValue];
+					let mut value:f32 = msg_send![sender, floatValue];
+					if value > 1f32
+					{
+						//just map [1, 1.5] -> [1, 2]
+						value = value * (2.0f32/1.5f32);
+					}
 					tickeys_ptr.set_pitch(value);
 
 					let _:id = msg_send![user_defaults, setFloat: value forKey: NSString::alloc(nil).init_str("pitch")];
