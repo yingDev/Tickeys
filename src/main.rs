@@ -64,7 +64,7 @@ fn main()
 	tickeys.load_scheme(&get_data_path(&pref.audio_scheme), &find_scheme(&pref.audio_scheme, &load_audio_schemes()));
 	tickeys.set_volume(pref.volume);
 	tickeys.set_pitch(pref.pitch);
-	tickeys.set_on_keydown(Option::Some(handle_keydown)); //handle qaz123
+	tickeys.set_on_keydown(Some(handle_keydown)); //handle qaz123
 	tickeys.start();
 
 	show_notification("Tickeys正在运行", "按 QAZ123 打开设置");
@@ -73,7 +73,9 @@ fn main()
 }
 
 fn request_accessiblility()
-{
+{		
+	println!("request_accessiblility");
+
 	#[link(name = "ApplicationServices", kind = "framework")]
 	extern "system"
 	{
@@ -702,7 +704,14 @@ trait SettingsDelegate
 		let _:id = msg_send![slide_volume, setFloatValue: pref.volume];
 
 		let slide_pitch: id = msg_send![this, slide_pitch];
-		let _:id = msg_send![slide_pitch, setFloatValue: pref.pitch];
+		let value =  if pref.pitch > 1f32
+		{
+			pref.pitch * (1.5f32/2.0f32)	
+		} else
+		{
+			pref.pitch
+		};
+		let _:id = msg_send![slide_pitch, setFloatValue: value];
 
 		let label_version: id = msg_send![this, label_version];
 		let _:id = msg_send![label_version, setStringValue:NSString::alloc(nil).init_str(format!("v{}",CURRENT_VERSION).as_ref())];
