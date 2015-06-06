@@ -120,7 +120,7 @@ fn load_audio_schemes() -> Vec<AudioScheme>
 	let path = get_res_path("data/schemes.json");
 	let mut file = File::open(path).unwrap();
 
-	let mut json_str = String::new();
+	let mut json_str = String::with_capacity(512);
 	match file.read_to_string(&mut json_str)
 	{
 		Ok(_) => {},

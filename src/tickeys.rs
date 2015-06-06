@@ -44,7 +44,6 @@ pub struct Tickeys
 	keyboard_monitor: Option< event_tap::KeyboardMonitor>, //defered
 
 	on_keydown: Option<fn(sender:&Tickeys, key: u8)>,
-	//pub on_keyseq: Option<fn(sender:&Tickeys, seq_id:u8)>
 }
 
 impl Tickeys
@@ -62,7 +61,7 @@ impl Tickeys
 			audio_data: Vec::new(), 
 			keymap: BTreeMap::new(),
 			first_n_non_unique: -1,
-			last_keys: VecDeque::new(), 
+			last_keys: VecDeque::with_capacity(8), 
 			keyboard_monitor:None, 
 			on_keydown: Option::None		
 		}
@@ -188,7 +187,7 @@ impl Tickeys
 			Some(f) => f(self, keycode)
 		}
 
-		println!("key:{}", keycode);
+		//println!("key:{}", keycode);
 
 		let index:i32 = match self.keymap.get(&keycode)
 		{
@@ -233,7 +232,7 @@ impl Tickeys
 			let now = time::precise_time_ns() / 1000 / 1000;
 
 			let delta = now - last_time ;
-			println!("interval:{}", delta);
+
 			if delta < 60 && last_key == (keycode as i16)
 			{
 				last_time = now;
