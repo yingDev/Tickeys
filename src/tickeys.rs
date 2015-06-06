@@ -6,7 +6,7 @@ extern crate rustc_serialize;
 extern crate objc;
 extern crate std;
 
-use std::collections::{VecDeque, HashMap};
+use std::collections::{VecDeque, HashMap, BTreeMap};
 use std::option::Option;
 use std::io::Read;
 use std::string::String;
@@ -27,7 +27,7 @@ pub struct AudioScheme
 	pub display_name: String,
 	pub files: Vec<String>,
 	pub non_unique_count: u8,
-	pub key_audio_map: HashMap<u8, u8>
+	pub key_audio_map: BTreeMap<u8, u8>
 }
 
 pub struct Tickeys
@@ -36,7 +36,7 @@ pub struct Tickeys
 	pitch:f32,
 
 	audio_data: Vec<AudioData>,
-	keymap: HashMap<u8, u8>,
+	keymap: BTreeMap<u8, u8>,
 	first_n_non_unique: i16,
 
 	last_keys: VecDeque<u8>,
@@ -60,7 +60,7 @@ impl Tickeys
 			volume:1f32,
 			pitch:1f32, 
 			audio_data: Vec::new(), 
-			keymap: HashMap::new(),
+			keymap: BTreeMap::new(),
 			first_n_non_unique: -1,
 			last_keys: VecDeque::new(), 
 			keyboard_monitor:None, 

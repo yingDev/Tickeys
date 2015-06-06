@@ -1,6 +1,6 @@
 [package]
 name = "Tickeys"
-version = "0.3.4"
+version = "0.3.5"
 authors = ["应元东 <ying@yingDev.com>"]
 build = "build.rs"
 
