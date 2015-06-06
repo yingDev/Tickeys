@@ -219,7 +219,6 @@ fn begin_check_for_update(url: &str)
 		    	}
 	    	}
 
-
 	    }else
 	    {
 	    	println!("Failed to check for update: Status {}", resp.status);
@@ -229,10 +228,22 @@ fn begin_check_for_update(url: &str)
 
 fn handle_keydown(tickeys: &Tickeys, _:u8)
 {
-	if tickeys.get_last_keys().iter().zip(OPEN_SETTINGS_KEY_SEQ.iter()).filter(|&(a,b)| a == b).count() == OPEN_SETTINGS_KEY_SEQ.len()
+	let last_keys = tickeys.get_last_keys();
+	let last_keys_len = last_keys.len();
+	let seq_len = OPEN_SETTINGS_KEY_SEQ.len();
+
+	if last_keys_len < seq_len {return;}
+
+	//cmp from tail to head
+	for i in 1..(seq_len+1)
 	{
-		show_settings(tickeys);
+		if last_keys[last_keys_len - i] != OPEN_SETTINGS_KEY_SEQ[seq_len - i]
+		{
+			return;
+		}
 	}
+
+	show_settings(tickeys);
 }
 
 fn show_settings(tickeys: &Tickeys)
@@ -306,14 +317,12 @@ fn app_relaunch_self()
 	}
 
 	std::process::exit(0);
-
 }
 
 fn app_terminate()
 {
 	unsafe
 	{
-		//self.settings_delegate.release();
 		msg_send![NSApp(), terminate:nil]
 	}
 }
@@ -365,11 +374,9 @@ impl Pref
 				}
 				
 				Pref{audio_scheme:  scheme_str, volume: volume, pitch: pitch}
-
 			}
-
 		}
-
+		
 	}
 
 	fn save(&self)
