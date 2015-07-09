@@ -42,7 +42,7 @@ use tickeys::{Tickeys, AudioScheme};
 use cocoa_ext::{NSUserNotification, RetainRelease};
 
 
-const CURRENT_VERSION : &'static str = "0.3.5";
+const CURRENT_VERSION : &'static str = "0.3.6";
 const OPEN_SETTINGS_KEY_SEQ: &'static[&'static[u8]] = &[&[12, 0, 6, 18, 19, 20], &[12, 0, 6, 83, 84, 85]]; //QAZ123 & numpad qaz123
 
 //todo: what's the better way to store constants?
@@ -68,7 +68,7 @@ fn main()
 	tickeys.set_on_keydown(Some(handle_keydown)); //handle qaz123
 	tickeys.start();
 
-	show_notification("Tickeys正在运行", "按 QAZ123 打开设置");
+	show_notification("Tickeys正在运行", "依次按 QAZ123 打开设置");
 
 	app_run();
 }
