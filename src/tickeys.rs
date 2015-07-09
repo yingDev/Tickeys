@@ -233,7 +233,7 @@ impl Tickeys
 
 			let delta = now - last_time ;
 
-			if delta < 60 && last_key == (keycode as i16)
+			if delta < 120 && last_key == (keycode as i16)
 			{
 				last_time = now;
 				return true;
