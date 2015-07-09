@@ -43,7 +43,8 @@ use cocoa_ext::{NSUserNotification, RetainRelease};
 
 
 const CURRENT_VERSION : &'static str = "0.3.5";
-const OPEN_SETTINGS_KEY_SEQ: &'static[u8] = &[12, 0, 6, 18, 19, 20]; //QAZ123
+const OPEN_SETTINGS_KEY_SEQ: &'static[&'static[u8]] = &[&[12, 0, 6, 18, 19, 20], &[12, 0, 6, 83, 84, 85]]; //QAZ123 & numpad qaz123
+
 //todo: what's the better way to store constants?
 const WEBSITE : &'static str = "http://www.yingdev.com/projects/tickeys";
 const DONATE_URL: &'static str = "http://www.yingdev.com/home/donate";
@@ -51,13 +52,13 @@ const CHECK_UPDATE_API : &'static str = "http://www.yingdev.com/projects/latestV
 
 static mut SHOWING_GUI:bool = false;
 
-fn main() 
-{	
+fn main()
+{
 	unsafe{NSAutoreleasePool::new(nil)};
 
-	request_accessiblility();	
+	request_accessiblility();
 	begin_check_for_update(CHECK_UPDATE_API);
-	
+
 	let pref = Pref::load();
 
 	let mut tickeys = Tickeys::new();
@@ -73,7 +74,7 @@ fn main()
 }
 
 fn request_accessiblility()
-{		
+{
 	println!("request_accessiblility");
 
 	#[link(name = "ApplicationServices", kind = "framework")]
@@ -83,7 +84,7 @@ fn request_accessiblility()
 	}
 
  	unsafe fn is_enabled(prompt: bool) -> bool
- 	{ 
+ 	{
 		let dict:id = msg_send![class("NSDictionary"), dictionaryWithObject:(if prompt {kCFBooleanTrue}else{kCFBooleanFalse}) forKey:kAXTrustedCheckOptionPrompt];
 		dict.autorelease();
 		return AXIsProcessTrustedWithOptions(dict);
@@ -100,7 +101,7 @@ fn request_accessiblility()
 			let _:id = msg_send![alert, setMessageText: NSString::alloc(nil).init_str("您必须将Tickeys.app添加到 系统偏好设置 > 安全与隐私 > 辅助功能 列表中并√，否则Tickeys无法工作")];
 			let _:id = msg_send![alert, addButtonWithTitle: NSString::alloc(nil).init_str("退出")];
 			let _:id = msg_send![alert, addButtonWithTitle: NSString::alloc(nil).init_str("我已照做，继续运行！")];
-			
+
 			let btn:i32 = msg_send![alert, runModal];
 			println!("request_accessiblility alert: {}", btn);
 			match btn
@@ -173,7 +174,7 @@ fn begin_check_for_update(url: &str)
 	    let result = client.get(&check_update_url)
 	        .header(Connection::close())
 	        .send();
-	    
+
 	    let mut resp;
 	    match result
 	    {
@@ -190,15 +191,16 @@ fn begin_check_for_update(url: &str)
 	    	match resp.read_to_string(&mut content)
 	    	{
 	    		Ok(_) => {},
-	    		Err(e) => {
+	    		Err(e) =>
+	    		{
 	    			println!("Failed to read http content: {}", e);
 	    			return;
 	    		}
 	    	}
 	    	println!("Response: {}", content);
-	    	
+
 	    	if content.contains("Version")
-	    	{		    	
+	    	{
 	    		let ver:Version = json::decode(&content).unwrap();
 	    		println!("ver={}",ver.Version);
 	    		if ver.Version != CURRENT_VERSION
@@ -209,7 +211,7 @@ fn begin_check_for_update(url: &str)
 			    		let info_str = format!("{} -> {}", CURRENT_VERSION, ver.Version);
 			    		show_notification("新版本可用!", &info_str);
 			    	});
-			    	
+
 			    	let block = & *cblock.copy();
 
 			    	unsafe
@@ -230,20 +232,31 @@ fn handle_keydown(tickeys: &Tickeys, _:u8)
 {
 	let last_keys = tickeys.get_last_keys();
 	let last_keys_len = last_keys.len();
-	let seq_len = OPEN_SETTINGS_KEY_SEQ.len();
 
-	if last_keys_len < seq_len {return;}
-
-	//cmp from tail to head
-	for i in 1..(seq_len+1)
+	let mut pass = false;
+	for seq in OPEN_SETTINGS_KEY_SEQ
 	{
-		if last_keys[last_keys_len - i] != OPEN_SETTINGS_KEY_SEQ[seq_len - i]
+		let seq_len = seq.len();
+		if last_keys_len < seq_len {return;}
+
+		pass = true;
+		//cmp from tail to head
+		for i in 1..(seq_len+1)
 		{
-			return;
+			if last_keys[last_keys_len - i] != seq[seq_len - i]
+			{
+				pass = false;
+				break;
+			}
 		}
+
+		if pass { break;}
 	}
 
-	show_settings(tickeys);
+	if pass
+	{
+		show_settings(tickeys);
+	}
 }
 
 fn show_settings(tickeys: &Tickeys)
@@ -279,7 +292,7 @@ fn show_notification(title: &str, msg: &str)
 		let note:id = NSUserNotification::new(nil).autorelease();
 		note.setTitle(NSString::alloc(nil).init_str(title));
 		note.setInformativeText(NSString::alloc(nil).init_str(msg));
-		
+
 		let center:id = msg_send![class("NSUserNotificationCenter"), defaultUserNotificationCenter];
 
 		msg_send![center, deliverNotification: note]
@@ -340,17 +353,17 @@ impl Pref
 	fn load() -> Pref
 	{
 		unsafe
-		{		
+		{
 			let user_defaults: id = msg_send![class("NSUserDefaults"), standardUserDefaults];
 			let pref_exists_key:id = NSString::alloc(nil).init_str("pref_exists");
-					
+
 			//todo: 每次都要加载？
 			let schemes = load_audio_schemes();
 
 			let pref = Pref{audio_scheme: schemes[0].name.clone(), volume: 0.5f32, pitch: 1.0f32};
 
 			let pref_exists: id = msg_send![user_defaults, stringForKey: pref_exists_key];
-			if pref_exists == nil //first run 
+			if pref_exists == nil //first run
 			{
 				pref.save();
 				return pref;
@@ -359,9 +372,9 @@ impl Pref
 				let audio_scheme: id = msg_send![user_defaults, stringForKey:NSString::alloc(nil).init_str("audio_scheme")];
 				let volume: f32 = msg_send![user_defaults, floatForKey: NSString::alloc(nil).init_str("volume")];
 				let pitch: f32 = msg_send![user_defaults, floatForKey: NSString::alloc(nil).init_str("pitch")];
-				
+
 				let len:usize = msg_send![audio_scheme, length];
-				
+
 				let mut scheme_bytes:Vec<u8> = Vec::with_capacity(len);
         		scheme_bytes.set_len(len);
        			std::ptr::copy_nonoverlapping(audio_scheme.UTF8String() as *const u8, scheme_bytes.as_mut_ptr(), len);
@@ -372,11 +385,11 @@ impl Pref
 				{
 					scheme_str = pref.audio_scheme;
 				}
-				
+
 				Pref{audio_scheme:  scheme_str, volume: volume, pitch: pitch}
 			}
 		}
-		
+
 	}
 
 	fn save(&self)
@@ -425,7 +438,7 @@ pub trait UserNotificationCenterDelegate //: <NSUserNotificationCenerDelegate>
 		});
 
 	    let cls = Class::get("UserNotificationCenterDelegate").unwrap();
-	    unsafe 
+	    unsafe
 	    {
 	        msg_send![cls, new]
     	}
@@ -435,7 +448,7 @@ pub trait UserNotificationCenterDelegate //: <NSUserNotificationCenerDelegate>
 	{
 		println!("userNotificationCenterDidDeliverNotification");
 	}
-	
+
 	extern fn userNotificationCenterDidActivateNotification(this: &mut Object, _cmd: Sel, center: id, note: id)
 	{
 		println!("userNotificationCenterDidActivateNotification");
@@ -509,7 +522,7 @@ trait SettingsDelegate
 				//property label_version
 				decl.add_ivar::<id>("_label_version");
 				let set_label_version_fn: extern fn(&mut Object, Sel, id) = Self::set_label_version_;
-				decl.add_method(sel!(setLabel_version:), set_label_version_fn);				
+				decl.add_method(sel!(setLabel_version:), set_label_version_fn);
 
 				let get_label_version_fn: extern fn(&Object, Sel)->id = Self::get_label_version_;
 				decl.add_method(sel!(label_version), get_label_version_fn);
@@ -544,9 +557,9 @@ trait SettingsDelegate
 
 
 	    let cls = Class::get("SettingsDelegate").unwrap();
-	    unsafe 
+	    unsafe
 	    {
-	       	let obj: id = msg_send![cls, new];	       
+	       	let obj: id = msg_send![cls, new];
 	       	obj.retain();
 	       	let _:id = msg_send![obj, setUser_data: ptr_to_app];
 
@@ -554,12 +567,12 @@ trait SettingsDelegate
 	       	assert!(data == ptr_to_app);
 
 			let nib_name = NSString::alloc(nil).init_str("Settings");
-			let _: id = msg_send![class("NSBundle"), loadNibNamed:nib_name owner: obj];	
+			let _: id = msg_send![class("NSBundle"), loadNibNamed:nib_name owner: obj];
 
 			Self::load_values(obj);
 
 	       obj
-    	}    
+    	}
 	}
 
 	//property ptr_to_app
@@ -581,7 +594,7 @@ trait SettingsDelegate
 	//property label_version
 	extern fn set_label_version_(this: &mut Object, _cmd: Sel, val: id){unsafe{this.set_ivar::<id>("_label_version", val);}}
 	extern fn get_label_version_(this: &Object, _cmd: Sel)->id{unsafe{*this.get_ivar::<id>("_label_version")}}
-	
+
 	//property window
 	extern fn set_window_(this: &mut Object, _cmd: Sel, val: id){unsafe{this.set_ivar::<id>("_window", val);}}
 	extern fn get_window_(this: &Object, _cmd: Sel)->id{unsafe{*this.get_ivar::<id>("_window")}}
@@ -605,7 +618,7 @@ trait SettingsDelegate
 			};
 
 			let workspace: id = msg_send![class("NSWorkspace"), sharedWorkspace];
-			let url:id = msg_send![class("NSURL"), 
+			let url:id = msg_send![class("NSURL"),
 			URLWithString: NSString::alloc(nil).init_str(url)];
 
 			msg_send![workspace, openURL: url]
@@ -617,7 +630,7 @@ trait SettingsDelegate
 		println!("SettingsDelegate::value_changed_");
 
 		const TAG_POPUP_SCHEME: i64 = 0;
-		const TAG_SLIDE_VOLUME: i64 = 1; 
+		const TAG_SLIDE_VOLUME: i64 = 1;
 		const TAG_SLIDE_PITCH: i64 = 2;
 
 		unsafe
@@ -625,14 +638,14 @@ trait SettingsDelegate
 			let user_defaults: id = msg_send![class("NSUserDefaults"), standardUserDefaults];
 			let tickeys_ptr:&mut Tickeys = msg_send![this, user_data];
 			let tag:i64 = msg_send![sender, tag];
-			
+
 			match tag
 			{
-				TAG_POPUP_SCHEME => 
+				TAG_POPUP_SCHEME =>
 				{
 
 					let value:i32 = msg_send![sender, indexOfSelectedItem];
-					
+
 					let schemes = load_audio_schemes();
 					let sch = &schemes[value as usize];
 
@@ -640,7 +653,7 @@ trait SettingsDelegate
 					//scheme_dir.push_str(&sch.name);
 					tickeys_ptr.load_scheme(&get_res_path(&scheme_dir), sch);
 
-					let _:id = msg_send![user_defaults, setObject: NSString::alloc(nil).init_str(sch.name.as_ref()) 
+					let _:id = msg_send![user_defaults, setObject: NSString::alloc(nil).init_str(sch.name.as_ref())
 														   forKey: NSString::alloc(nil).init_str("audio_scheme")];
 				},
 
@@ -668,7 +681,7 @@ trait SettingsDelegate
 				_ => {panic!("WTF");}
 			}
 		}
-		
+
 	}
 
 	extern fn windowWillClose(this: &Object, _cmd: Sel, note: id)
@@ -691,10 +704,10 @@ trait SettingsDelegate
 		let user_defaults: id = msg_send![class("NSUserDefaults"), standardUserDefaults];
 		let popup_audio_scheme: id = msg_send![this, popup_audio_scheme];
 		let _: id = msg_send![popup_audio_scheme, removeAllItems];
-		
+
 		let pref = Pref::load();
 		let schemes = load_audio_schemes();
-		
+
 
 		for i in 0..schemes.len()
 		{
@@ -713,7 +726,7 @@ trait SettingsDelegate
 		let slide_pitch: id = msg_send![this, slide_pitch];
 		let value =  if pref.pitch > 1f32
 		{
-			pref.pitch * (1.5f32/2.0f32)	
+			pref.pitch * (1.5f32/2.0f32)
 		} else
 		{
 			pref.pitch
@@ -726,7 +739,7 @@ trait SettingsDelegate
 		//let _:id = msg_send![this, show]
 
 		println!("makeKeyAndOrderFront:");
-		let win:id = msg_send![this, getWindow];		
+		let win:id = msg_send![this, getWindow];
 		let _:id = msg_send![win, makeKeyAndOrderFront:nil];
 		let _:id = msg_send![NSApp(), activateIgnoringOtherApps:true];
 	}
@@ -736,8 +749,3 @@ trait SettingsDelegate
 impl SettingsDelegate for id
 {
 }
-
-
-
-
-
