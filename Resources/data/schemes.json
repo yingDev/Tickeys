@@ -25,7 +25,7 @@
 
 	{
 		"name": "sword",
-		"display_name": "练剑",
+		"display_name": "剑气",
 		"files": ["1.wav", "2.wav", "3.wav", "4.wav", "5.wav", "6.wav", "back.wav", "enter.wav", "space.wav"],
 		"non_unique_count": 6,
 		"key_audio_map":{"36": 7,"49":8, "51":6}
