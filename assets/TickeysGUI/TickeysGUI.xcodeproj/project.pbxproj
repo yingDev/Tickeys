@@ -408,6 +408,7 @@
 				2EB67D411B0978C90078AA5F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		2EB67D421B0978C90078AA5F /* Build configuration list for PBXNativeTarget "TickeysGUITests" */ = {
 			isa = XCConfigurationList;
@@ -416,6 +417,7 @@
 				2EB67D441B0978C90078AA5F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

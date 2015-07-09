@@ -21,8 +21,9 @@
 	
 	SettingsDelegate* del = [[SettingsDelegate alloc] init];
 	[del retain];
-	
+
 	[NSBundle loadNibNamed:@"Settings" owner:del];
+	
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {

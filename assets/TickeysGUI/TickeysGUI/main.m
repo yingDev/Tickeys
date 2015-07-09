@@ -10,10 +10,12 @@
 #import "AppDelegate.h"
 
 int main(int argc, const char * argv[]) {
+	
 	//return NSApplicationMain(argc, argv);
 	
 	@autoreleasepool
 	{
+		
 		NSApp = [NSApplication sharedApplication];
 		AppDelegate* del = [[[AppDelegate alloc] init] autorelease];
 		
