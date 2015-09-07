@@ -42,7 +42,7 @@ use tickeys::{Tickeys, AudioScheme};
 use cocoa_ext::{NSUserNotification, RetainRelease};
 
 
-const CURRENT_VERSION : &'static str = "0.3.6";
+const CURRENT_VERSION : &'static str = env!("CARGO_PKG_VERSION");//"0.3.6";
 const OPEN_SETTINGS_KEY_SEQ: &'static[&'static[u8]] = &[&[12, 0, 6, 18, 19, 20], &[12, 0, 6, 83, 84, 85]]; //QAZ123 & numpad qaz123
 
 //todo: what's the better way to store constants?

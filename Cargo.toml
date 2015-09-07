@@ -1,6 +1,6 @@
 [package]
 name = "Tickeys"
-version = "0.3.6"
+version = "0.3.7"
 authors = ["应元东 <ying@yingDev.com>"]
 build = "build.rs"
 
@@ -12,7 +12,7 @@ time = "0.1.25"
 objc = "0.1.6"
 hyper = "0.6.13"
 block = "0.1.1"
-rustc-serialize = "0.3.15"
+rustc-serialize = "0.3.16"
 openal-rs = "0.1.1"
 
 
