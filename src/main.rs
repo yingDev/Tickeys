@@ -107,7 +107,7 @@ fn request_accessiblility()
 			match btn
 			{
 				1001 => {continue},
-				1002 => {app_terminate();},
+				1000 => {app_terminate();},
 				_ => {panic!("request_accessiblility");}
 			}
 		}
