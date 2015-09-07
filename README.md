@@ -10,5 +10,9 @@ A demo for learning `Rust`.
 ```sh
 brew install freealut
 ```
+
+## Todo
+* i18n & L10n
+
 ## License
 * MIT
