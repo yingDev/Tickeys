@@ -35,7 +35,7 @@ pub struct Tickeys
 	volume:f32,
 	pitch:f32,
 
-	audio_data: Vec<AudioData>,
+	audio_player: SimpleAudioPlayer,
 	keymap: BTreeMap<u8, u8>,
 	first_n_non_unique: i16,
 
@@ -58,7 +58,7 @@ impl Tickeys
 		Tickeys{
 			volume:1f32,
 			pitch:1f32, 
-			audio_data: Vec::new(), 
+			audio_player: SimpleAudioPlayer::new(4), 
 			keymap: BTreeMap::new(),
 			first_n_non_unique: -1,
 			last_keys: VecDeque::with_capacity(8), 
@@ -95,7 +95,7 @@ impl Tickeys
 
 	pub fn load_scheme(&mut self, dir: &str, scheme: &AudioScheme)
 	{
-		self.audio_data.clear();
+		let mut audio_data = Vec::with_capacity(scheme.files.len());
 
 		let mut path = dir.to_string() + "/";
 		let base_path_len = path.chars().count();
@@ -106,19 +106,21 @@ impl Tickeys
 			println!("loading audio:{}", path);
 			let mut audio = AudioData::from_file(&path);
 
-			if audio.source == 0 as ALuint
+			if audio.buffer == 0 as ALuint
 			{
 				panic!("failed to load audio file:{}", f);
 			}
 
 			path.truncate(base_path_len);
-
-			audio.set_gain(self.volume);
-			audio.set_pitch(self.pitch);
-
-			self.audio_data.push(audio);
+			
+			audio_data.push(audio);
 		}
 
+		self.audio_player.load_data(audio_data);
+		
+		self.audio_player.set_gain(self.volume);
+		self.audio_player.set_pitch(self.pitch);
+		
 		self.keymap = scheme.key_audio_map.clone();
 		self.first_n_non_unique = scheme.non_unique_count as i16;
 	}
@@ -127,20 +129,16 @@ impl Tickeys
 	{
 		if volume == self.volume {return;}
 		self.volume = volume;
-		for audio in self.audio_data.iter_mut()
-		{
-			audio.set_gain(volume);
-		}
+		
+		self.audio_player.set_gain(volume);
 	}
 
 	pub fn set_pitch(&mut self, pitch: f32)
 	{
 		if pitch == self.pitch {return;}
 		self.pitch = pitch;
-		for audio in self.audio_data.iter_mut()
-		{
-			audio.set_pitch(pitch);
-		}
+
+		self.audio_player.set_pitch(pitch);
 	}
 
 	#[allow(dead_code)]
@@ -214,8 +212,7 @@ impl Tickeys
 			return;
 		}
 
-		let audio = &mut self.audio_data[index as usize];
-		audio.play();
+		self.audio_player.play(index as usize);
 	}
 
 	pub fn set_on_keydown(&mut self, on_keydown: Option<fn(sender:&Tickeys, key: u8)>)
@@ -251,8 +248,6 @@ impl Tickeys
 pub struct AudioData
 {
 	buffer: ALuint,
-	source: ALuint,
-    state: ALuint
 }
 
 impl AudioData
@@ -261,42 +256,29 @@ impl AudioData
 	pub fn from_file(file: &str) -> AudioData
 	{
 		let file_ptr = std::ffi::CString::new(file).unwrap().as_ptr();
-		let mut audio = AudioData{buffer:0, source:0, state:0};
+		let mut audio = AudioData{buffer:0};
 		
 		unsafe
 		{
 			audio.buffer = alutCreateBufferFromFile(file_ptr);
-			
 			// Create sound source (use buffer to fill source)
-    		alGenSources(1, &mut audio.source);
-    		alSourcei(audio.source, AL_BUFFER, audio.buffer as ALint);
+    		//alGenSources(1, &mut audio.source);
+    		//alSourcei(audio.source, AL_BUFFER, audio.buffer as ALint);
 
     		if audio.buffer == 0
     		{
-    			panic!("failed to load file: {}", file);
+    			panic!("failed to load file [{}]: {}", alutGetError() ,file);
     		}
 		}
 
 		audio
 	}
 
-	pub fn play(&mut self)
+	pub fn id(&self) -> ALuint
 	{
-		unsafe
-		{
-			alSourcePlay(self.source);
-		}
+		self.buffer
 	}
 
-	pub fn set_pitch(&mut self, value: f32)
-	{
-    	unsafe{alSourcef(self.source, AL_PITCH, value);}
-	}
-
-	pub fn set_gain(&mut self, value: f32)
-	{
-		unsafe{alSourcef(self.source, AL_GAIN, value);}
-	}
 }
 
 impl Drop for AudioData
@@ -305,9 +287,167 @@ impl Drop for AudioData
 	{
 		unsafe
 		{
-			alDeleteSources(1, &self.source);
     		alDeleteBuffers(1, &self.buffer);
 		}
 		
 	}
 }
+
+struct AudioSource 
+{
+	id: ALuint,
+}
+
+impl AudioSource 
+{
+	pub fn new() -> Option<AudioSource>
+	{
+		let mut id = 0;
+		unsafe{ alGenSources(1, &mut id); }
+
+		match unsafe { alGetError() }
+		{
+			AL_NO_ERROR => Some(AudioSource{id: id}),
+			_ => None
+		}
+	}
+
+	pub fn connect_to_buffer(&mut self, data: &AudioData)
+	{
+		self.stop();
+		unsafe
+		{ 
+			alSourcei(self.id, AL_BUFFER, data.id() as ALint); 
+
+		}
+	}
+
+	pub fn disconnect_from_buffer(&mut self)
+	{
+		unsafe
+		{		
+			alSourceStop(self.id);
+			alSourcei(self.id, AL_BUFFER, 0);
+		}
+	}
+
+	pub fn set_gain(&mut self, gain: f32)
+	{
+		unsafe{ alSourcef(self.id, AL_GAIN, gain); }
+	}
+
+	pub fn set_pitch(&mut self, pitch: f32)
+	{
+		unsafe{alSourcef(self.id, AL_PITCH, pitch);}
+	}
+
+	pub fn play(&mut self)
+	{
+		unsafe{ alSourcePlay(self.id); }
+	}
+
+	pub fn stop(&mut self)
+	{
+		unsafe{ alSourceStop(self.id); }
+	}
+
+	//pub fn state()
+}
+
+impl Drop for AudioSource
+{
+	fn drop(&mut self)
+	{
+		self.stop();
+		unsafe{ alDeleteSources(1, &self.id); }
+	}
+}
+
+struct SimpleAudioPlayer
+{
+	data: Vec<AudioData>,
+	source_cache: VecDeque<AudioSource>,
+	max_source_count: usize,
+}
+
+impl SimpleAudioPlayer
+{
+	pub fn new(max_source_count: usize) -> SimpleAudioPlayer
+	{
+		assert!(max_source_count > 0);
+
+		let mut sources = VecDeque::with_capacity(max_source_count);
+		for _ in 0..max_source_count
+		{
+			sources.push_back(AudioSource::new().unwrap());
+		}
+
+		SimpleAudioPlayer{data: Vec::new(), source_cache: sources, max_source_count: max_source_count}
+	}
+
+	pub fn load_data(&mut self, data: Vec<AudioData>)
+	{
+		for s in self.source_cache.iter_mut()
+		{
+			s.disconnect_from_buffer();
+		}
+
+		self.data = data;
+	}
+
+	pub fn set_gain(&mut self, gain: f32)
+	{
+		for s in self.source_cache.iter_mut()
+		{
+			s.set_gain(gain);
+		}
+	}
+
+	pub fn set_pitch(&mut self, pitch: f32)
+	{
+		for s in self.source_cache.iter_mut()
+		{
+			s.set_pitch(pitch);
+		}
+	}
+
+	pub fn play(&mut self, index: usize)
+	{
+		let data = match self.data.get(index)
+		{
+			Some(val) => val,
+			None => return
+		};
+
+		let mut oldest_source = self.source_cache.pop_front().unwrap();
+
+		oldest_source.connect_to_buffer(&data);
+		oldest_source.play();
+
+		self.source_cache.push_back(oldest_source);
+
+	}
+
+	pub fn unload_data(&mut self)
+	{
+		self.source_cache.clear();
+		self.data.clear();
+	}
+}
+
+impl Drop for SimpleAudioPlayer
+{
+	fn drop(&mut self)
+	{
+		self.unload_data();
+	}
+}
+
+
+
+
+
+
+
+
+
