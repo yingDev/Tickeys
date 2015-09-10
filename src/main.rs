@@ -48,7 +48,7 @@ const OPEN_SETTINGS_KEY_SEQ: &'static[&'static[u8]] = &[&[12, 0, 6, 18, 19, 20],
 //todo: what's the better way to store constants?
 const WEBSITE : &'static str = "http://www.yingdev.com/projects/tickeys";
 const DONATE_URL: &'static str = "http://www.yingdev.com/home/donate";
-const CHECK_UPDATE_API : &'static str = "http://www.yingdev.com/projects/latestVersion?product=Tickeys";
+const CHECK_UPDATE_API : &'static str = "http://www.yingdev.com/projects/latestVersion?product=Tickeys_0.4.0";
 
 static mut SHOWING_GUI:bool = false;
 
@@ -160,7 +160,8 @@ fn begin_check_for_update(url: &str)
 	#[allow(non_snake_case)]
 	struct Version
 	{
-		Version: String
+		Version: String,
+		WhatsNew: String,
 	}
 
 	let run_loop_ref = unsafe{CFRunLoopGetCurrent() as usize};
@@ -208,8 +209,11 @@ fn begin_check_for_update(url: &str)
 	    			let cblock : ConcreteBlock<(),(),_> = ConcreteBlock::new(move ||
 			    	{
 			    		println!("New Version Available!");
-			    		let info_str = format!("{} -> {}", CURRENT_VERSION, ver.Version);
-			    		show_notification("新版本可用!", &info_str);
+			    		
+			    		//TODO: 更新版本显示
+			    		let title = format!("新版本可用: {} -> {}", CURRENT_VERSION, ver.Version);
+			    		
+			    		show_notification(&title, &ver.WhatsNew);
 			    	});
 
 			    	let block = & *cblock.copy();
