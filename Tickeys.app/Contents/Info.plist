@@ -4,12 +4,12 @@
 <dict>
 	<key>BuildMachineOSBuild</key>
 	<string>14B25</string>
-	<key>CFBundleIconFile</key>
-	<string>tickeys</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleExecutable</key>
 	<string>Tickeys</string>
+	<key>CFBundleIconFile</key>
+	<string>tickeys</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.yingDev.Tickeys</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -19,7 +19,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>0.3.6</string>
+	<string>0.3.8</string>
 	<key>DTCompiler</key>
 	<string>com.apple.compilers.llvm.clang.1_0</string>
 	<key>DTPlatformBuild</key>
@@ -34,9 +34,9 @@
 	<string>0610</string>
 	<key>DTXcodeBuild</key>
 	<string>6A1042b</string>
-	<key>LSUIElement</key>
-	<true/>
 	<key>LSMultipleInstancesProhibited</key>
+	<true/>
+	<key>LSUIElement</key>
 	<true/>
 	<key>NSHighResolutionCapable</key>
 	<true/>
