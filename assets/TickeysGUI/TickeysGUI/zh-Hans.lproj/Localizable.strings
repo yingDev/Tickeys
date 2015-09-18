@@ -5,3 +5,14 @@
   Created by Ying on 9/18/15.
   Copyright © 2015 YingDev.com. All rights reserved.
 */
+"Tickeys_Running" = "Tickeys正在运行";
+"press_qaz123" = "依次按 QAZ123 打开设置";
+"ax_tip" = "您必须将Tickeys.app添加到 系统偏好设置 > 安全与隐私 > 辅助功能 列表中并√，否则Tickeys无法工作";
+"quit" = "退出";
+"doneWithThis" = "我已照做，继续运行！";
+"newVersion" = "新版本可用!";
+"check_update_url" = "http://www.yingdev.com/projects/latestVersion?product=Tickeys_0.4.0&lang=zh-CN";
+"bubble" = "冒泡";
+"typewriter" = "打字机";
+"mechanical" = "机械键盘";
+"sword" = "剑气";

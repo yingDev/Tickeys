@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="7706" systemVersion="14F27" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="8191" systemVersion="14F27" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="7706"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="8191"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="SettingsDelegate">
@@ -26,7 +26,7 @@
                 <subviews>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0By-bL-3yf">
                         <rect key="frame" x="43" y="155" width="67" height="17"/>
-                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Volume:" id="bq9-Cp-1c6">
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="音  量:" id="bq9-Cp-1c6">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -39,14 +39,6 @@
                             <action selector="value_changed:" target="-2" id="ksW-rK-yQe"/>
                         </connections>
                     </slider>
-                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1LB-V7-bvV">
-                        <rect key="frame" x="43" y="116" width="67" height="17"/>
-                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Pitch:" id="2Vw-XN-n2a">
-                            <font key="font" metaFont="system"/>
-                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                        </textFieldCell>
-                    </textField>
                     <slider verticalHuggingPriority="750" fixedFrame="YES" tag="2" translatesAutoresizingMaskIntoConstraints="NO" id="uYF-2u-aqo">
                         <rect key="frame" x="114" y="109" width="135" height="25"/>
                         <sliderCell key="cell" state="on" alignment="left" minValue="0.5" maxValue="1.5" doubleValue="1" tickMarkPosition="below" numberOfTickMarks="9" allowsTickMarkValuesOnly="YES" sliderType="linear" id="XYY-R3-tM5"/>
@@ -56,7 +48,7 @@
                     </slider>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gPD-H0-DEl">
                         <rect key="frame" x="43" y="195" width="67" height="17"/>
-                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Sound:" id="HyJ-hw-B10">
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="声音方案:" id="HyJ-hw-B10">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -81,7 +73,7 @@
                     </popUpButton>
                     <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PRW-hD-gLZ">
                         <rect key="frame" x="110" y="62" width="143" height="32"/>
-                        <buttonCell key="cell" type="push" title="Quit Tickeys" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="w4s-2V-eb0">
+                        <buttonCell key="cell" type="push" title="退出Tickeys" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="w4s-2V-eb0">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
@@ -91,7 +83,7 @@
                     </button>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gML-EK-C6g">
                         <rect key="frame" x="43" y="72" width="67" height="17"/>
-                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Quit:" id="1Jp-Rc-Uo0">
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="退出程序:" id="1Jp-Rc-Uo0">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -99,7 +91,7 @@
                     </textField>
                     <button fixedFrame="YES" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="WUI-BD-6a8">
                         <rect key="frame" x="203" y="10" width="70" height="24"/>
-                        <buttonCell key="cell" type="bevel" title="Donate" bezelStyle="rounded" image="NSFollowLinkFreestandingTemplate" imagePosition="right" alignment="center" imageScaling="proportionallyDown" inset="2" id="lqL-DT-FRN">
+                        <buttonCell key="cell" type="bevel" title="捐助支持" bezelStyle="rounded" image="NSFollowLinkFreestandingTemplate" imagePosition="right" alignment="center" imageScaling="proportionallyDown" inset="2" id="lqL-DT-FRN">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="smallSystem"/>
                         </buttonCell>
@@ -144,12 +136,20 @@ Gw
                             <action selector="performClose:" target="QvC-M9-y7g" id="1H3-6D-1nQ"/>
                         </connections>
                     </button>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1LB-V7-bvV">
+                        <rect key="frame" x="43" y="115" width="67" height="17"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="音  调:" id="2Vw-XN-n2a">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
                 </subviews>
             </view>
             <connections>
                 <outlet property="delegate" destination="-2" id="F6w-lY-fVo"/>
             </connections>
-            <point key="canvasLocation" x="174.5" y="266.5"/>
+            <point key="canvasLocation" x="342.5" y="259.5"/>
         </window>
     </objects>
     <resources>
