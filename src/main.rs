@@ -98,9 +98,9 @@ fn request_accessiblility()
 		{
 			let alert:id = msg_send![class("NSAlert"), new];
 			alert.autorelease();
-			let _:id = msg_send![alert, setMessageText: NSString::alloc(nil).init_str("您必须将Tickeys.app添加到 系统偏好设置 > 安全与隐私 > 辅助功能 列表中并√，否则Tickeys无法工作")];
-			let _:id = msg_send![alert, addButtonWithTitle: NSString::alloc(nil).init_str("退出")];
-			let _:id = msg_send![alert, addButtonWithTitle: NSString::alloc(nil).init_str("我已照做，继续运行！")];
+			let _:id = msg_send![alert, setMessageText: NSLocalizedString("ax_tip")];
+			let _:id = msg_send![alert, addButtonWithTitle: NSLocalizedString("quit")];
+			let _:id = msg_send![alert, addButtonWithTitle: NSLocalizedString("doneWithThis")];
 
 			let btn:i32 = msg_send![alert, runModal];
 			println!("request_accessiblility alert: {}", btn);
