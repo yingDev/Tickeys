@@ -12,7 +12,8 @@ brew install freealut
 ```
 
 ## Todo
-* i18n & L10n
+* ~~i18n & L10n~~
+
 
 ## License
 * MIT
