@@ -48,7 +48,7 @@ const OPEN_SETTINGS_KEY_SEQ: &'static[&'static[u8]] = &[&[12, 0, 6, 18, 19, 20],
 //todo: what's the better way to store constants?
 const WEBSITE : &'static str = "http://www.yingdev.com/projects/tickeys";
 const DONATE_URL: &'static str = "http://www.yingdev.com/home/donate";
-const CHECK_UPDATE_API : &'static str = "http://www.yingdev.com/projects/latestVersion?product=Tickeys_0.4.0";
+//const CHECK_UPDATE_API : &'static str = "http://www.yingdev.com/projects/latestVersion?product=Tickeys_0.4.0";
 
 static mut SHOWING_GUI:bool = false;
 
@@ -57,7 +57,7 @@ fn main()
 	unsafe{NSAutoreleasePool::new(nil)};
 
 	request_accessiblility();
-	begin_check_for_update(CHECK_UPDATE_API);
+	begin_check_for_update(&NSString_to_string(NSLocalizedString("check_update_url")));
 
 	let pref = Pref::load();
 
@@ -68,7 +68,7 @@ fn main()
 	tickeys.set_on_keydown(Some(handle_keydown)); //handle qaz123
 	tickeys.start();
 
-	show_notification("Tickeys正在运行", "依次按 QAZ123 打开设置");
+	show_notification_nsstring(NSLocalizedString("Tickeys_Running"), NSLocalizedString("press_qaz123"));
 
 	app_run();
 }
@@ -210,10 +210,10 @@ fn begin_check_for_update(url: &str)
 			    	{
 			    		println!("New Version Available!");
 			    		
-			    		//TODO: 更新版本显示
-			    		let title = format!("新版本可用: {} -> {}", CURRENT_VERSION, ver.Version);
+			    		let title = NSLocalizedString("newVersion");
+			    		let whatsNew = unsafe{NSString::alloc(nil).init_str(&format!("{} -> {}: {}",CURRENT_VERSION, ver.Version, ver.WhatsNew)).autorelease()};
 			    		
-			    		show_notification(&title, &ver.WhatsNew);
+			    		show_notification_nsstring(title, whatsNew)
 			    	});
 
 			    	let block = & *cblock.copy();
@@ -280,6 +280,14 @@ fn show_settings(tickeys: &Tickeys)
 
 fn show_notification(title: &str, msg: &str)
 {
+	unsafe
+	{
+		show_notification_nsstring(NSString::alloc(nil).init_str(title), NSString::alloc(nil).init_str(msg));
+	}
+}
+
+fn show_notification_nsstring(title: id, msg: id)
+{
 	static REGISTER_DELEGATE: Once = ONCE_INIT;
 	REGISTER_DELEGATE.call_once(||
 	{
@@ -294,13 +302,14 @@ fn show_notification(title: &str, msg: &str)
 	unsafe
 	{
 		let note:id = NSUserNotification::new(nil).autorelease();
-		note.setTitle(NSString::alloc(nil).init_str(title));
-		note.setInformativeText(NSString::alloc(nil).init_str(msg));
+		note.setTitle(title);
+		note.setInformativeText(msg);
 
 		let center:id = msg_send![class("NSUserNotificationCenter"), defaultUserNotificationCenter];
 
 		msg_send![center, deliverNotification: note]
 	}
+
 }
 
 fn app_run()
@@ -377,12 +386,7 @@ impl Pref
 				let volume: f32 = msg_send![user_defaults, floatForKey: NSString::alloc(nil).init_str("volume")];
 				let pitch: f32 = msg_send![user_defaults, floatForKey: NSString::alloc(nil).init_str("pitch")];
 
-				let len:usize = msg_send![audio_scheme, length];
-
-				let mut scheme_bytes:Vec<u8> = Vec::with_capacity(len);
-        		scheme_bytes.set_len(len);
-       			std::ptr::copy_nonoverlapping(audio_scheme.UTF8String() as *const u8, scheme_bytes.as_mut_ptr(), len);
-				let mut scheme_str = String::from_utf8(scheme_bytes).unwrap();
+				let mut scheme_str = NSString_to_string(audio_scheme);
 
 				//validate scheme
 				if schemes.iter().filter(|s|{*s.name == scheme_str}).count() == 0
@@ -475,6 +479,34 @@ impl UserNotificationCenterDelegate for id
 
 }
 
+fn NSLocalizedString(key: &str) -> id
+{
+	unsafe
+	{
+		//[NSBundle mainBundle] localizedStringForKey:(key) value:@"" table:nil]
+		let bundle:id = msg_send![class("NSBundle"),mainBundle];
+		let s:id = msg_send![bundle, 
+						localizedStringForKey:NSString::alloc(nil).init_str(key) 
+										value:NSString::alloc(nil).init_str("") 
+										table: nil];
+
+		return s;
+	}
+}
+
+fn NSString_to_string(nsstring: id) -> String 
+{
+	unsafe
+	{
+		let len:usize = msg_send![nsstring, length];
+
+		let mut bytes:Vec<u8> = Vec::with_capacity(len);
+		bytes.set_len(len);
+		std::ptr::copy_nonoverlapping(nsstring.UTF8String() as *const u8, bytes.as_mut_ptr(), len);
+		
+		String::from_utf8(bytes).unwrap()
+	}
+}
 
 #[allow(non_snake_case)]
 #[allow(unused_variables)]
@@ -717,7 +749,7 @@ trait SettingsDelegate
 		{
 			let s = &schemes[i];
 
-			let _: id = msg_send![popup_audio_scheme, addItemWithTitle: NSString::alloc(nil).init_str(&s.display_name)];
+			let _: id = msg_send![popup_audio_scheme, addItemWithTitle: NSLocalizedString(&s.display_name)];
 			if  *s.name == pref.audio_scheme
 			{
 				let _:id = msg_send![popup_audio_scheme, selectItemAtIndex:i];

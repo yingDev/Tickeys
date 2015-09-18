@@ -8,8 +8,8 @@ if [ $? -eq 0 ]
 then
 	echo "copying files...";
 	cp target/release/Tickeys Tickeys.app/Contents/MacOS/;
-	rm -rf Tickeys.app/Contents/Resources;
-	cp -r Resources Tickeys.app/Contents/;
+	rm -rf Tickeys.app/Contents/SharedSupport;
+	cp -r SharedSupport Tickeys.app/Contents/;
 	
 	ver=`fgrep "version" -m 1 Cargo.toml | cut -d\" -f2`;
 	echo "updating version string... $ver";

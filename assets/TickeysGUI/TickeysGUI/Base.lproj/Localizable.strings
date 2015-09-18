@@ -1,0 +1,18 @@
+/* 
+  Localizable.strings
+  TickeysGUI
+
+  Created by Ying on 9/18/15.
+  Copyright © 2015 YingDev.com. All rights reserved.
+*/
+"Tickeys_Running" = "Tickeys is running.";
+"press_qaz123" = "Press QAZ123 to open preferences.";
+"ax_tip" = "To run Tickeys, you MUST add Tickeys.app to `System Preferences > Security & Privacy > Accessibility` list.";
+"quit" = "Quit";
+"doneWithThis" = "Continue";
+"newVersion" = "New Version Available!";
+"check_update_url" = "http://www.yingdev.com/projects/latestVersion?product=Tickeys_0.4.0&lang=en-US";
+"bubble" = "Bubbule";
+"typewriter" = "Typewriter";
+"mechanical" = "Mechanical";
+"sword" = "Sword";

@@ -7,13 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2E3D2BEF1BABF6480054D776 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2E3D2BF11BABF6480054D776 /* Localizable.strings */; };
 		2EB67D291B0978C90078AA5F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EB67D281B0978C90078AA5F /* AppDelegate.m */; };
 		2EB67D2B1B0978C90078AA5F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EB67D2A1B0978C90078AA5F /* main.m */; };
 		2EB67D2D1B0978C90078AA5F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2EB67D2C1B0978C90078AA5F /* Images.xcassets */; };
 		2EB67D301B0978C90078AA5F /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2EB67D2E1B0978C90078AA5F /* MainMenu.xib */; };
 		2EB67D3C1B0978C90078AA5F /* TickeysGUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EB67D3B1B0978C90078AA5F /* TickeysGUITests.m */; };
-		2EB67D461B0978E80078AA5F /* Settings.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2EB67D451B0978E80078AA5F /* Settings.xib */; };
 		2EB67D491B097AD40078AA5F /* SettingsDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EB67D481B097AD40078AA5F /* SettingsDelegate.m */; };
+		2EF9E81B1BABEF68007CE0F7 /* Settings.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2EF9E81D1BABEF68007CE0F7 /* Settings.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -27,6 +28,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2E3D2BF01BABF6480054D776 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		2E3D2BF21BABF6560054D776 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		2EB67D221B0978C90078AA5F /* TickeysGUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TickeysGUI.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2EB67D261B0978C90078AA5F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2EB67D271B0978C90078AA5F /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -37,9 +40,10 @@
 		2EB67D351B0978C90078AA5F /* TickeysGUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TickeysGUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2EB67D3A1B0978C90078AA5F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2EB67D3B1B0978C90078AA5F /* TickeysGUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TickeysGUITests.m; sourceTree = "<group>"; };
-		2EB67D451B0978E80078AA5F /* Settings.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Settings.xib; sourceTree = "<group>"; };
 		2EB67D471B097AD40078AA5F /* SettingsDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsDelegate.h; sourceTree = "<group>"; };
 		2EB67D481B097AD40078AA5F /* SettingsDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsDelegate.m; sourceTree = "<group>"; };
+		2ECCFFCA1BABF32100B79377 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = "zh-Hans"; path = "zh-Hans.lproj/Settings.xib"; sourceTree = "<group>"; };
+		2EF9E81C1BABEF68007CE0F7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/Settings.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -86,9 +90,10 @@
 				2EB67D2C1B0978C90078AA5F /* Images.xcassets */,
 				2EB67D2E1B0978C90078AA5F /* MainMenu.xib */,
 				2EB67D251B0978C90078AA5F /* Supporting Files */,
-				2EB67D451B0978E80078AA5F /* Settings.xib */,
+				2EF9E81D1BABEF68007CE0F7 /* Settings.xib */,
 				2EB67D471B097AD40078AA5F /* SettingsDelegate.h */,
 				2EB67D481B097AD40078AA5F /* SettingsDelegate.m */,
+				2E3D2BF11BABF6480054D776 /* Localizable.strings */,
 			);
 			path = TickeysGUI;
 			sourceTree = "<group>";
@@ -182,6 +187,7 @@
 			knownRegions = (
 				en,
 				Base,
+				"zh-Hans",
 			);
 			mainGroup = 2EB67D191B0978C90078AA5F;
 			productRefGroup = 2EB67D231B0978C90078AA5F /* Products */;
@@ -199,7 +205,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2EB67D461B0978E80078AA5F /* Settings.xib in Resources */,
+				2EF9E81B1BABEF68007CE0F7 /* Settings.xib in Resources */,
+				2E3D2BEF1BABF6480054D776 /* Localizable.strings in Resources */,
 				2EB67D2D1B0978C90078AA5F /* Images.xcassets in Resources */,
 				2EB67D301B0978C90078AA5F /* MainMenu.xib in Resources */,
 			);
@@ -244,12 +251,30 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		2E3D2BF11BABF6480054D776 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2E3D2BF01BABF6480054D776 /* zh-Hans */,
+				2E3D2BF21BABF6560054D776 /* Base */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
 		2EB67D2E1B0978C90078AA5F /* MainMenu.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
 				2EB67D2F1B0978C90078AA5F /* Base */,
 			);
 			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+		2EF9E81D1BABEF68007CE0F7 /* Settings.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2EF9E81C1BABEF68007CE0F7 /* Base */,
+				2ECCFFCA1BABF32100B79377 /* zh-Hans */,
+			);
+			name = Settings.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

@@ -15,7 +15,7 @@
     self = [super init];
 	
 	self.user_data = (void*)123;
-	
+	NSLog(@"%@", NSLocalizedString(@"quit", @""));
 	return self;
 }
 
