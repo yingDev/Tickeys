@@ -12,6 +12,8 @@ brew install freealut
 ```
 
 ## Todo
+* handle system sleep/wake notifications
+* detailed update info
 * ~~i18n & L10n~~
 
 
