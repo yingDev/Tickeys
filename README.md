@@ -12,7 +12,10 @@ brew install freealut
 ```
 
 ## Todo
-* i18n & L10n
+* handle system sleep/wake notifications
+* detailed update info
+* ~~i18n & L10n~~
+
 
 ## License
 * MIT
