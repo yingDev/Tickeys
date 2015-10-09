@@ -58,7 +58,7 @@ impl Tickeys
 		Tickeys{
 			volume:1f32,
 			pitch:1f32, 
-			audio_player: SimpleAudioPlayer::new(4), 
+			audio_player: SimpleAudioPlayer::new(2), 
 			keymap: BTreeMap::new(),
 			first_n_non_unique: -1,
 			last_keys: VecDeque::with_capacity(8), 

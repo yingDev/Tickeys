@@ -7,11 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2E32640D1BAE5FF400BCB9FA /* tickeys.icns in Resources */ = {isa = PBXBuildFile; fileRef = 2E32640C1BAE5FF400BCB9FA /* tickeys.icns */; settings = {ASSET_TAGS = (); }; };
+		2E32640E1BAE697300BCB9FA /* WhatsNew.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E3264101BAE697300BCB9FA /* WhatsNew.xib */; };
 		2E3D2BEF1BABF6480054D776 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2E3D2BF11BABF6480054D776 /* Localizable.strings */; };
 		2EB67D291B0978C90078AA5F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EB67D281B0978C90078AA5F /* AppDelegate.m */; };
 		2EB67D2B1B0978C90078AA5F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EB67D2A1B0978C90078AA5F /* main.m */; };
 		2EB67D2D1B0978C90078AA5F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2EB67D2C1B0978C90078AA5F /* Images.xcassets */; };
-		2EB67D301B0978C90078AA5F /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2EB67D2E1B0978C90078AA5F /* MainMenu.xib */; };
 		2EB67D3C1B0978C90078AA5F /* TickeysGUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EB67D3B1B0978C90078AA5F /* TickeysGUITests.m */; };
 		2EB67D491B097AD40078AA5F /* SettingsDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EB67D481B097AD40078AA5F /* SettingsDelegate.m */; };
 		2EF9E81B1BABEF68007CE0F7 /* Settings.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2EF9E81D1BABEF68007CE0F7 /* Settings.xib */; };
@@ -28,6 +29,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2E32640C1BAE5FF400BCB9FA /* tickeys.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = tickeys.icns; sourceTree = "<group>"; };
+		2E32640F1BAE697300BCB9FA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/WhatsNew.xib; sourceTree = "<group>"; };
+		2E3264131BAE69B900BCB9FA /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = "zh-Hans"; path = "zh-Hans.lproj/WhatsNew.xib"; sourceTree = "<group>"; };
 		2E3D2BF01BABF6480054D776 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		2E3D2BF21BABF6560054D776 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		2EB67D221B0978C90078AA5F /* TickeysGUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TickeysGUI.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -36,7 +40,6 @@
 		2EB67D281B0978C90078AA5F /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		2EB67D2A1B0978C90078AA5F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		2EB67D2C1B0978C90078AA5F /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		2EB67D2F1B0978C90078AA5F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		2EB67D351B0978C90078AA5F /* TickeysGUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TickeysGUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2EB67D3A1B0978C90078AA5F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2EB67D3B1B0978C90078AA5F /* TickeysGUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TickeysGUITests.m; sourceTree = "<group>"; };
@@ -85,15 +88,16 @@
 		2EB67D241B0978C90078AA5F /* TickeysGUI */ = {
 			isa = PBXGroup;
 			children = (
+				2E32640C1BAE5FF400BCB9FA /* tickeys.icns */,
 				2EB67D271B0978C90078AA5F /* AppDelegate.h */,
 				2EB67D281B0978C90078AA5F /* AppDelegate.m */,
 				2EB67D2C1B0978C90078AA5F /* Images.xcassets */,
-				2EB67D2E1B0978C90078AA5F /* MainMenu.xib */,
 				2EB67D251B0978C90078AA5F /* Supporting Files */,
 				2EF9E81D1BABEF68007CE0F7 /* Settings.xib */,
 				2EB67D471B097AD40078AA5F /* SettingsDelegate.h */,
 				2EB67D481B097AD40078AA5F /* SettingsDelegate.m */,
 				2E3D2BF11BABF6480054D776 /* Localizable.strings */,
+				2E3264101BAE697300BCB9FA /* WhatsNew.xib */,
 			);
 			path = TickeysGUI;
 			sourceTree = "<group>";
@@ -207,8 +211,9 @@
 			files = (
 				2EF9E81B1BABEF68007CE0F7 /* Settings.xib in Resources */,
 				2E3D2BEF1BABF6480054D776 /* Localizable.strings in Resources */,
+				2E32640E1BAE697300BCB9FA /* WhatsNew.xib in Resources */,
+				2E32640D1BAE5FF400BCB9FA /* tickeys.icns in Resources */,
 				2EB67D2D1B0978C90078AA5F /* Images.xcassets in Resources */,
-				2EB67D301B0978C90078AA5F /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -251,6 +256,15 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		2E3264101BAE697300BCB9FA /* WhatsNew.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2E32640F1BAE697300BCB9FA /* Base */,
+				2E3264131BAE69B900BCB9FA /* zh-Hans */,
+			);
+			name = WhatsNew.xib;
+			sourceTree = "<group>";
+		};
 		2E3D2BF11BABF6480054D776 /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -258,14 +272,6 @@
 				2E3D2BF21BABF6560054D776 /* Base */,
 			);
 			name = Localizable.strings;
-			sourceTree = "<group>";
-		};
-		2EB67D2E1B0978C90078AA5F /* MainMenu.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				2EB67D2F1B0978C90078AA5F /* Base */,
-			);
-			name = MainMenu.xib;
 			sourceTree = "<group>";
 		};
 		2EF9E81D1BABEF68007CE0F7 /* Settings.xib */ = {

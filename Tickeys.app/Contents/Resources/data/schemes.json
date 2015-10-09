@@ -29,5 +29,22 @@
 		"files": ["1.wav", "2.wav", "3.wav", "4.wav", "5.wav", "6.wav", "back.wav", "enter.wav", "space.wav"],
 		"non_unique_count": 6,
 		"key_audio_map":{"36": 7,"49":8, "51":6}
+	},
+
+	{
+		"name": "Cherry_G80_3000",
+		"display_name": "Cherry G80-3000",
+		"files": ["G80-3000.wav",  "G80-3000_fast1.wav", "G80-3000_slow1.wav", "G80-3000_fast2.wav","G80-3000_slow2.wav"],
+		"non_unique_count": 5,
+		"key_audio_map":{"36": 4, "49": 4}
+	},
+
+	{
+		"name": "Cherry_G80_3494",
+		"display_name": "Cherry G80-3494",
+		"files": ["G80-3494.wav", "G80-3494_fast1.wav", "G80-3494_slow1.wav", "G80-3494_enter.wav", "G80-3494_space.wav", "G80-3494_backspace.wav"],
+		"non_unique_count": 3,
+		"key_audio_map":{"36": 3, "49": 4, "51": 5}
 	}
+
 ]

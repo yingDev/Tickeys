@@ -23,6 +23,7 @@
 	[del retain];
 
 	[NSBundle loadNibNamed:@"Settings" owner:del];
+	[NSBundle loadNibNamed:@"WhatsNew" owner:del];
 	
 }
 
