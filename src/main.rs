@@ -8,6 +8,7 @@ extern crate block;
 extern crate rustc_serialize;
 #[macro_use]
 extern crate objc;
+extern crate IOKit_sys as iokit;
 
 use std::option::Option;
 use std::thread;
@@ -70,7 +71,54 @@ fn main()
 
 	show_notification_nsstring(NSLocalizedString("Tickeys_Running"), NSLocalizedString("press_qaz123"));
 
+	register_os_wake_noti();
 	app_run();
+}
+
+fn register_os_wake_noti()
+{
+	println!("register_os_wake_noti()");
+
+ 	extern fn power_callback(refcon: *mut c_void, service: iokit::io_service_t, messageType: u32, messageArgument: *mut c_void)
+	{	
+		println!("System Power Callback! ");
+		match messageType
+		{
+			iokit::kIOMessageSystemHasPoweredOn => 
+			{
+				println!("System PoweredOn");
+				app_relaunch_self(); //just relaunch;
+			},
+			_ => {}
+		}
+	}
+
+	unsafe
+	{
+		// notification port allocated by IORegisterForSystemPower
+	    let mut notifyPortRef: iokit::IONotificationPortRef = std::ptr::null_mut();
+
+	    // notifier object, used to deregister later
+	    let mut notifierObject: iokit::io_object_t = 0;
+
+	    // this parameter is passed to the callback
+	    let refCon: *mut c_void = std::ptr::null_mut();
+
+	    // register to receive system sleep notifications
+	    let root_port = iokit::IORegisterForSystemPower( refCon, &mut notifyPortRef as *mut _, power_callback, &mut notifierObject as *mut _);
+
+	    if root_port == 0 
+	    {
+	        println!("IORegisterForSystemPower failed\n");
+	        return; //ignore for now
+	    }
+
+	    // add the notification port to the application runloop
+	    core_foundation::CFRunLoopAddSource( core_foundation::CFRunLoopGetCurrent(),
+	    	iokit::IONotificationPortGetRunLoopSource(notifyPortRef) as CFRunLoopSourceRef,
+	    	core_foundation::kCFRunLoopCommonModes );
+	}
+
 }
 
 fn request_accessiblility()
