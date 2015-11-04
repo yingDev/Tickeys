@@ -10,7 +10,6 @@ extern crate rustc_serialize;
 extern crate objc;
 extern crate IOKit_sys as iokit;
 
-use std::option::Option;
 use std::thread;
 use std::io::Read;
 use std::sync::{Once, ONCE_INIT};
@@ -46,10 +45,8 @@ use cocoa_ext::{NSUserNotification, RetainRelease};
 const CURRENT_VERSION : &'static str = env!("CARGO_PKG_VERSION");//"0.3.6";
 const OPEN_SETTINGS_KEY_SEQ: &'static[&'static[u8]] = &[&[12, 0, 6, 18, 19, 20], &[12, 0, 6, 83, 84, 85]]; //QAZ123 & numpad qaz123
 
-//todo: what's the better way to store constants?
 const WEBSITE : &'static str = "http://www.yingdev.com/projects/tickeys";
 const DONATE_URL: &'static str = "http://www.yingdev.com/home/donate";
-//const CHECK_UPDATE_API : &'static str = "http://www.yingdev.com/projects/latestVersion?product=Tickeys_0.4.0";
 
 static mut SHOWING_GUI:bool = false;
 
@@ -58,7 +55,7 @@ fn main()
 	unsafe{NSAutoreleasePool::new(nil)};
 
 	request_accessiblility();
-	begin_check_for_update(&NSString_to_string(NSLocalizedString("check_update_url")));
+	begin_check_for_update(&nsstring_to_string(ns_localized_string("check_update_url")));
 
 	let pref = Pref::load();
 
@@ -69,7 +66,7 @@ fn main()
 	tickeys.set_on_keydown(Some(handle_keydown)); //handle qaz123
 	tickeys.start();
 
-	show_notification_nsstring(NSLocalizedString("Tickeys_Running"), NSLocalizedString("press_qaz123"));
+	show_notification_nsstring(ns_localized_string("Tickeys_Running"), ns_localized_string("press_qaz123"));
 
 	register_os_wake_noti();
 	app_run();
@@ -79,10 +76,11 @@ fn register_os_wake_noti()
 {
 	println!("register_os_wake_noti()");
 
- 	extern fn power_callback(refcon: *mut c_void, service: iokit::io_service_t, messageType: u32, messageArgument: *mut c_void)
+	#[allow(unused_variables)]
+ 	extern fn power_callback(ref_con: *mut c_void, service: iokit::io_service_t, message_type: u32, message_argument: *mut c_void)
 	{	
 		println!("System Power Callback! ");
-		match messageType
+		match message_type
 		{
 			iokit::kIOMessageSystemHasPoweredOn => 
 			{
@@ -96,16 +94,16 @@ fn register_os_wake_noti()
 	unsafe
 	{
 		// notification port allocated by IORegisterForSystemPower
-	    let mut notifyPortRef: iokit::IONotificationPortRef = std::ptr::null_mut();
+	    let mut notify_port_ref: iokit::IONotificationPortRef = std::ptr::null_mut();
 
 	    // notifier object, used to deregister later
-	    let mut notifierObject: iokit::io_object_t = 0;
+	    let mut notifier_object: iokit::io_object_t = 0;
 
 	    // this parameter is passed to the callback
-	    let refCon: *mut c_void = std::ptr::null_mut();
+	    let ref_con: *mut c_void = std::ptr::null_mut();
 
 	    // register to receive system sleep notifications
-	    let root_port = iokit::IORegisterForSystemPower( refCon, &mut notifyPortRef as *mut _, power_callback, &mut notifierObject as *mut _);
+	    let root_port = iokit::IORegisterForSystemPower( ref_con, &mut notify_port_ref as *mut _, power_callback, &mut notifier_object as *mut _);
 
 	    if root_port == 0 
 	    {
@@ -115,7 +113,7 @@ fn register_os_wake_noti()
 
 	    // add the notification port to the application runloop
 	    core_foundation::CFRunLoopAddSource( core_foundation::CFRunLoopGetCurrent(),
-	    	iokit::IONotificationPortGetRunLoopSource(notifyPortRef) as CFRunLoopSourceRef,
+	    	iokit::IONotificationPortGetRunLoopSource(notify_port_ref) as CFRunLoopSourceRef,
 	    	core_foundation::kCFRunLoopCommonModes );
 	}
 
@@ -146,9 +144,9 @@ fn request_accessiblility()
 		{
 			let alert:id = msg_send![class("NSAlert"), new];
 			alert.autorelease();
-			let _:id = msg_send![alert, setMessageText: NSLocalizedString("ax_tip")];
-			let _:id = msg_send![alert, addButtonWithTitle: NSLocalizedString("quit")];
-			let _:id = msg_send![alert, addButtonWithTitle: NSLocalizedString("doneWithThis")];
+			let _:id = msg_send![alert, setMessageText: ns_localized_string("ax_tip")];
+			let _:id = msg_send![alert, addButtonWithTitle: ns_localized_string("quit")];
+			let _:id = msg_send![alert, addButtonWithTitle: ns_localized_string("doneWithThis")];
 
 			let btn:i32 = msg_send![alert, runModal];
 			println!("request_accessiblility alert: {}", btn);
@@ -218,7 +216,7 @@ fn begin_check_for_update(url: &str)
 
 	thread::spawn(move ||
 	{
-	    let mut client = Client::new();
+	    let client = Client::new();
 
 	    let result = client.get(&check_update_url)
 	        .header(Connection::close())
@@ -258,10 +256,10 @@ fn begin_check_for_update(url: &str)
 			    	{
 			    		println!("New Version Available!");
 			    		
-			    		let title = NSLocalizedString("newVersion");
-			    		let whatsNew = unsafe{NSString::alloc(nil).init_str(&format!("{} -> {}: {}",CURRENT_VERSION, ver.Version, ver.WhatsNew)).autorelease()};
+			    		let title = ns_localized_string("newVersion");
+			    		let whats_new = unsafe{NSString::alloc(nil).init_str(&format!("{} -> {}: {}",CURRENT_VERSION, ver.Version, ver.WhatsNew)).autorelease()};
 			    		
-			    		show_notification_nsstring(title, whatsNew)
+			    		show_notification_nsstring(title, whats_new)
 			    	});
 
 			    	let block = & *cblock.copy();
@@ -434,7 +432,7 @@ impl Pref
 				let volume: f32 = msg_send![user_defaults, floatForKey: NSString::alloc(nil).init_str("volume")];
 				let pitch: f32 = msg_send![user_defaults, floatForKey: NSString::alloc(nil).init_str("pitch")];
 
-				let mut scheme_str = NSString_to_string(audio_scheme);
+				let mut scheme_str = nsstring_to_string(audio_scheme);
 
 				//validate scheme
 				if schemes.iter().filter(|s|{*s.name == scheme_str}).count() == 0
@@ -527,7 +525,7 @@ impl UserNotificationCenterDelegate for id
 
 }
 
-fn NSLocalizedString(key: &str) -> id
+fn ns_localized_string(key: &str) -> id
 {
 	unsafe
 	{
@@ -542,7 +540,7 @@ fn NSLocalizedString(key: &str) -> id
 	}
 }
 
-fn NSString_to_string(nsstring: id) -> String 
+fn nsstring_to_string(nsstring: id) -> String 
 {
 	unsafe
 	{
@@ -733,7 +731,7 @@ trait SettingsDelegate
 					let schemes = load_audio_schemes();
 					let sch = &schemes[value as usize];
 
-					let mut scheme_dir = "data/".to_string() + &sch.name;//.to_string();
+					let scheme_dir = "data/".to_string() + &sch.name;//.to_string();
 					//scheme_dir.push_str(&sch.name);
 					tickeys_ptr.load_scheme(&get_res_path(&scheme_dir), sch);
 
@@ -797,7 +795,7 @@ trait SettingsDelegate
 		{
 			let s = &schemes[i];
 
-			let _: id = msg_send![popup_audio_scheme, addItemWithTitle: NSLocalizedString(&s.display_name)];
+			let _: id = msg_send![popup_audio_scheme, addItemWithTitle: ns_localized_string(&s.display_name)];
 			if  *s.name == pref.audio_scheme
 			{
 				let _:id = msg_send![popup_audio_scheme, selectItemAtIndex:i];

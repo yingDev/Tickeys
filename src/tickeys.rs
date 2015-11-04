@@ -69,7 +69,7 @@ impl Tickeys
 
 	pub fn start(&mut self)
 	{
-		let mut tap;
+		let tap;
 
 		let ptr_to_self: *mut c_void = unsafe{std::mem::transmute(self)};
 
@@ -104,7 +104,7 @@ impl Tickeys
 		{
 			path.push_str(f);
 			println!("loading audio:{}", path);
-			let mut audio = AudioData::from_file(&path);
+			let audio = AudioData::from_file(&path);
 
 			if audio.buffer == 0 as ALuint
 			{

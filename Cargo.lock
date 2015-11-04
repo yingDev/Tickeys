@@ -1,6 +1,6 @@
 [root]
 name = "Tickeys"
-version = "0.4.1"
+version = "0.4.2"
 dependencies = [
  "IOKit-sys 0.1.2 (git+https://github.com/yingDev/iokit-sys.git)",
  "block 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -24,7 +24,7 @@ dependencies = [
 [[package]]
 name = "IOKit-sys"
 version = "0.1.2"
-source = "git+https://github.com/yingDev/iokit-sys.git#61637f36b9146f7ea949ed0ed1fe672a474e50ab"
+source = "git+https://github.com/yingDev/iokit-sys.git#fc11a0cba2a6dcb406410b24e8fb8666c9730a69"
 dependencies = [
  "CoreFoundation-sys 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "libc 0.1.12 (registry+https://github.com/rust-lang/crates.io-index)",
