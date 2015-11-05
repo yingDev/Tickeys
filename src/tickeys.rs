@@ -6,7 +6,7 @@ extern crate rustc_serialize;
 extern crate objc;
 extern crate std;
 
-use std::collections::{VecDeque, HashMap, BTreeMap};
+use std::collections::{VecDeque, BTreeMap};
 use std::option::Option;
 use std::io::Read;
 use std::string::String;
@@ -20,7 +20,7 @@ use objc::*;
 
 use event_tap;
 
-#[derive(RustcDecodable, RustcEncodable)]
+#[derive(RustcDecodable, RustcEncodable, Clone)]
 pub struct AudioScheme
 {
 	pub name:String,
@@ -44,11 +44,13 @@ pub struct Tickeys
 	keyboard_monitor: Option< event_tap::KeyboardMonitor>, //defered
 
 	on_keydown: Option<fn(sender:&Tickeys, key: u8)>,
+
+	schemes: Vec<AudioScheme>,
 }
 
 impl Tickeys
 {
-	pub fn new() -> Tickeys
+	pub fn new(schemes: Vec<AudioScheme>) -> Tickeys
 	{
 		unsafe
 		{
@@ -63,7 +65,8 @@ impl Tickeys
 			first_n_non_unique: -1,
 			last_keys: VecDeque::with_capacity(8), 
 			keyboard_monitor:None, 
-			on_keydown: Option::None		
+			on_keydown: Option::None,
+			schemes: schemes,
 		}
 	}
 
@@ -93,8 +96,20 @@ impl Tickeys
 		//todo: stop the kbd monitor?
 	}
 
-	pub fn load_scheme(&mut self, dir: &str, scheme: &AudioScheme)
+	pub fn get_schemes(&self) -> &Vec<AudioScheme>
 	{
+		&self.schemes
+	}
+
+	fn find_scheme(&self, name: &str) -> AudioScheme
+	{
+		self.schemes.iter().filter(|s|{ *(s.name) == *name}).next().unwrap().clone()
+	}
+
+	pub fn load_scheme(&mut self, dir: &str, scheme_name: &str)
+	{
+		let scheme = self.find_scheme(scheme_name);
+
 		let mut audio_data = Vec::with_capacity(scheme.files.len());
 
 		let mut path = dir.to_string() + "/";
