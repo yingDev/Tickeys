@@ -1,7 +1,7 @@
 use cocoa::base::{class,id,nil};
 use cocoa::foundation::NSString;
 use tickeys::AudioScheme;
-use cocoa_ext::*;
+use cocoa_util::*;
 
 
 pub struct Pref

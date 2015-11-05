@@ -1,7 +1,7 @@
 extern crate objc;
 
 use super::consts::*;
-use cocoa_ext::*;
+use cocoa_util::*;
 use pref::*;
 use tickeys::Tickeys;
 use std::sync::{ONCE_INIT, Once};

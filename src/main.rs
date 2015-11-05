@@ -14,18 +14,15 @@ use std::thread;
 use std::io::Read;
 use std::string::String;
 use std::fs::File;
-
 use libc::{c_void};
 use core_foundation::*;
 use objc::*;
 use objc::runtime::*;
 use cocoa::base::{class,id,nil};
 use cocoa::foundation::{NSAutoreleasePool, NSString};
-
 use hyper::Client;
 use hyper::header::{Connection};
 use hyper::status::StatusCode;
-
 use self::block::{ConcreteBlock};
 use rustc_serialize::json;
 
@@ -34,16 +31,17 @@ mod core_foundation;
 mod alut;
 mod event_tap;
 mod tickeys;
-mod cocoa_ext;
+mod cocoa_util;
 mod consts;
 mod settings_ui;
 mod pref;
 
-use tickeys::{Tickeys, AudioScheme};
-use cocoa_ext::*;
+use tickeys::*;
+use cocoa_util::*;
 use settings_ui::*;
 use consts::*;
 use pref::*;
+
 
 fn main()
 {
@@ -64,9 +62,13 @@ fn main()
 
 	show_notification_nsstring(ns_localized_string("Tickeys_Running"), ns_localized_string("press_qaz123"), noti_click_callback);
 
+	//relaunch on os wakeup from sleep
 	register_os_wake_noti();
+
+	//main loop
 	app_run();
 }
+
 
 fn register_os_wake_noti()
 {
@@ -115,6 +117,7 @@ fn register_os_wake_noti()
 
 }
 
+
 fn request_accessiblility()
 {
 	println!("request_accessiblility");
@@ -158,6 +161,7 @@ fn request_accessiblility()
 	}
 }
 
+
 fn load_audio_schemes() -> Vec<AudioScheme>
 {
 	let path = get_res_path("data/schemes.json");
@@ -193,13 +197,10 @@ fn begin_check_for_update(url: &str)
 	}
 
 	let run_loop_ref = unsafe{CFRunLoopGetCurrent() as usize};
-
 	let check_update_url = url.to_string();
-
 	thread::spawn(move ||
 	{
 	    let client = Client::new();
-
 	    let result = client.get(&check_update_url).header(Connection::close()).send();
 
 	    let mut resp;
@@ -238,7 +239,7 @@ fn begin_check_for_update(url: &str)
 			    		
 			    		let title = ns_localized_string("newVersion");
 			    		let whats_new = unsafe{NSString::alloc(nil).init_str(&format!("{} -> {}: {}",CURRENT_VERSION, ver.Version, ver.WhatsNew)).autorelease()};
-			    		
+			    	
 			    		show_notification_nsstring(title, whats_new, noti_click_callback)
 			    	});
 
@@ -250,13 +251,13 @@ fn begin_check_for_update(url: &str)
 			    	}
 		    	}
 	    	}
-
 	    }else
 	    {
 	    	println!("Failed to check for update: Status {}", resp.status);
 	    }
 	});
 }
+
 
 fn handle_keydown(tickeys: &Tickeys, _:u8)
 {
@@ -293,23 +294,20 @@ fn handle_keydown(tickeys: &Tickeys, _:u8)
 fn show_settings(tickeys: &Tickeys)
 {
 	println!("Settings!");
-
 	unsafe
 	{
 		SettingsDelegate::get_instance(nil, std::mem::transmute(tickeys));
 	}
 }
 
+
 extern fn noti_click_callback(this: &mut Object, _cmd: Sel, center: id, note: id)
 {
 	println!("noti_click_callback");
-
 	unsafe
 	{
 		let workspace: id = msg_send![class("NSWorkspace"), sharedWorkspace];
-		//todo: extract
 		let url:id = msg_send![class("NSURL"), URLWithString: NSString::alloc(nil).init_str(WEBSITE)];
-
 		let ok:bool = msg_send![workspace, openURL: url];
 
 		msg_send![center, removeDeliveredNotification:note]
