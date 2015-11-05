@@ -16,13 +16,13 @@ then
 	plutil -replace CFBundleVersion -string "$ver" Tickeys.app/Contents/Info.plist;
 else
 	echo "error: cargo build";
-	exit;
+	exit -1;
 fi
 
 if [ -z "$DEVELOPER_ID" ]
 then
 	echo "Please set your DEVELOPER_ID envar first!";
-	exit;
+	exit -1;
 fi
 echo "codesigning with DEVELOPER_ID=$DEVELOPER_ID";
 
