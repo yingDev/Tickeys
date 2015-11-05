@@ -140,6 +140,8 @@ fn request_accessiblility()
 
 		while !is_enabled(true)
 		{
+			thread::sleep_ms(3000);
+
 			let alert:id = msg_send![class("NSAlert"), new];
 			alert.autorelease();
 			let _:id = msg_send![alert, setMessageText: ns_localized_string("ax_tip")];
