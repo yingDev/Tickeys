@@ -6,8 +6,7 @@ extern crate time;
 extern crate hyper;
 extern crate block;
 extern crate rustc_serialize;
-#[macro_use]
-extern crate objc;
+#[macro_use] extern crate objc;
 extern crate IOKit_sys as iokit;
 
 use std::thread;
@@ -308,7 +307,7 @@ extern fn noti_click_callback(this: &mut Object, _cmd: Sel, center: id, note: id
 	{
 		let workspace: id = msg_send![class("NSWorkspace"), sharedWorkspace];
 		let url:id = msg_send![class("NSURL"), URLWithString: NSString::alloc(nil).init_str(WEBSITE)];
-		let ok:bool = msg_send![workspace, openURL: url];
+		let _:bool = msg_send![workspace, openURL: url];
 
 		msg_send![center, removeDeliveredNotification:note]
 	}

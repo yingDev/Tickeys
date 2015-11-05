@@ -6,12 +6,12 @@ build = "build.rs"
 
 
 [dependencies]
-libc = "0.1.10"
+libc = "0.2.1"
 glutin_cocoa = "0.1.6"
-time = "0.1.25"
+time = "0.1.33"
 objc = "0.1.6"
-hyper = "0.6.13"
-block = "0.1.1"
+hyper = "0.6.15"
+block = "0.1.2"
 rustc-serialize = "0.3.16"
 openal-rs = "0.1.1"
 
