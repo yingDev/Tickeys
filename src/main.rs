@@ -201,6 +201,7 @@ fn begin_check_for_update(url: &str)
 	let check_update_url = url.to_string();
 	thread::spawn(move ||
 	{
+		std::thread::sleep_ms(1000 * 60); //do it one minite later.
 	    let client = Client::new();
 	    let result = client.get(&check_update_url).header(Connection::close()).send();
 
