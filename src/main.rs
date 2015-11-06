@@ -47,7 +47,7 @@ fn main()
 	unsafe{NSAutoreleasePool::new(nil)};
 
 	request_accessiblility();
-	begin_check_for_update(&nsstring_to_string(ns_localized_string("check_update_url")));
+	begin_check_for_update(&nsstring_to_string(l10n_str("check_update_url")));
 
 	let schems = load_audio_schemes();
 	let pref = Pref::load(&schems);
@@ -59,7 +59,7 @@ fn main()
 	tickeys.set_on_keydown(Some(handle_keydown)); //handle qaz123
 	tickeys.start();
 
-	show_notification_nsstring(ns_localized_string("Tickeys_Running"), ns_localized_string("press_qaz123"), noti_click_callback);
+	show_noti(l10n_str("Tickeys_Running"), l10n_str("press_qaz123"), noti_click_callback);
 
 	//relaunch on os wakeup from sleep
 	register_os_wake_noti();
@@ -144,9 +144,9 @@ fn request_accessiblility()
 
 			let alert:id = msg_send![class("NSAlert"), new];
 			alert.autorelease();
-			let _:id = msg_send![alert, setMessageText: ns_localized_string("ax_tip")];
-			let _:id = msg_send![alert, addButtonWithTitle: ns_localized_string("quit")];
-			let _:id = msg_send![alert, addButtonWithTitle: ns_localized_string("doneWithThis")];
+			let _:id = msg_send![alert, setMessageText: l10n_str("ax_tip")];
+			let _:id = msg_send![alert, addButtonWithTitle: l10n_str("quit")];
+			let _:id = msg_send![alert, addButtonWithTitle: l10n_str("doneWithThis")];
 
 			let btn:i32 = msg_send![alert, runModal];
 			println!("request_accessiblility alert: {}", btn);
@@ -239,10 +239,10 @@ fn begin_check_for_update(url: &str)
 			    	{
 			    		println!("New Version Available!");
 			    		
-			    		let title = ns_localized_string("newVersion");
+			    		let title = l10n_str("newVersion");
 			    		let whats_new = unsafe{NSString::alloc(nil).init_str(&format!("{} -> {}: {}",CURRENT_VERSION, ver.Version, ver.WhatsNew)).autorelease()};
 			    	
-			    		show_notification_nsstring(title, whats_new, noti_click_callback)
+			    		show_noti(title, whats_new, noti_click_callback)
 			    	});
 
 			    	let block = & *cblock.copy();

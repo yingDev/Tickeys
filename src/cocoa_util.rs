@@ -52,7 +52,7 @@ impl RetainRelease for id
 	}
 }
 
-pub fn ns_localized_string(key: &str) -> id
+pub fn l10n_str(key: &str) -> id
 {
 	unsafe
 	{
@@ -135,7 +135,7 @@ pub fn app_terminate()
 
 
 
-pub fn show_notification_nsstring(title: id, msg: id, activated_fn: extern fn(&mut Object, Sel, id, id))
+pub fn show_noti(title: id, msg: id, activated_fn: extern fn(&mut Object, Sel, id, id))
 {
 	static REGISTER_DELEGATE: Once = ONCE_INIT;
 	REGISTER_DELEGATE.call_once(||
