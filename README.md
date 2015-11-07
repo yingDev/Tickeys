@@ -8,6 +8,8 @@ A demo for learning `Rust`.
 
 ![Tickeys UI](https://raw.githubusercontent.com/yingDev/Tickeys/master/.readme_images/ui.png)
 
+[![Tickeys Video](https://raw.githubusercontent.com/yingDev/Tickeys/master/.readme_images/video_thumb.png)](https://www.youtube.com/watch?v=XeqA-LU5IWg) 
+
 ## Env
 * alut:
 ```sh
