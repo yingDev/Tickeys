@@ -1,5 +1,6 @@
 # Tickeys
-![Tickeys Icon](http://ww1.sinaimg.cn/large/8cc88963gw1er08h49mp5j203k03kdfx.jpg)
+![Tickeys Icon](https://raw.githubusercontent.com/yingDev/Tickeys/master/.readme_images/icon.png)
+![Tickeys UI](https://raw.githubusercontent.com/yingDev/Tickeys/master/.readme_images/ui.png)
 
 Instant audio feedback for typing. For MacOS X. 
 
