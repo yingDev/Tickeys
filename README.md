@@ -1,10 +1,12 @@
 # Tickeys
 ![Tickeys Icon](https://raw.githubusercontent.com/yingDev/Tickeys/master/.readme_images/icon.png)
-![Tickeys UI](https://raw.githubusercontent.com/yingDev/Tickeys/master/.readme_images/ui.png)
+
 
 Instant audio feedback for typing. For MacOS X. 
 
 A demo for learning `Rust`.
+
+![Tickeys UI](https://raw.githubusercontent.com/yingDev/Tickeys/master/.readme_images/ui.png)
 
 ## Env
 * alut:
