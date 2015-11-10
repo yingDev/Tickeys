@@ -54,7 +54,7 @@ pub trait SettingsDelegate
 		static REGISTER_APPDELEGATE: Once = ONCE_INIT;
 		REGISTER_APPDELEGATE.call_once(||
 		{
-			println!("SettingsDelegate::new::REGISTER_APPDELEGATE");
+			println!("SettingsDelegate::__register_objc_class_once");
 			let nsobjcet = objc::runtime::Class::get("NSObject").unwrap();
 			let mut decl = objc::declare::ClassDecl::new(nsobjcet, "SettingsDelegate").unwrap();
 

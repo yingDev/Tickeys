@@ -20,9 +20,6 @@ impl Pref
 			let user_defaults: id = msg_send![class("NSUserDefaults"), standardUserDefaults];
 			let pref_exists_key:id = NSString::alloc(nil).init_str("pref_exists");
 
-			//todo: 每次都要加载？
-			//let schemes = load_audio_schemes();
-
 			let pref = Pref{audio_scheme: schemes[0].name.clone(), volume: 0.5f32, pitch: 1.0f32};
 
 			let pref_exists: id = msg_send![user_defaults, stringForKey: pref_exists_key];

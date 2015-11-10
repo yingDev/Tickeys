@@ -44,7 +44,7 @@ use pref::*;
 
 fn main()
 {
-	unsafe{NSAutoreleasePool::new(nil)};
+	unsafe { NSAutoreleasePool::new(nil) };
 
 	request_accessiblility();
 	begin_check_for_update(&nsstring_to_string(l10n_str("check_update_url")));
@@ -75,11 +75,11 @@ fn register_os_wake_noti()
 
 	#[allow(unused_variables)]
  	extern fn power_callback(ref_con: *mut c_void, service: iokit::io_service_t, message_type: u32, message_argument: *mut c_void)
-	{	
+	{
 		println!("System Power Callback! ");
 		match message_type
 		{
-			iokit::kIOMessageSystemHasPoweredOn => 
+			iokit::kIOMessageSystemHasPoweredOn =>
 			{
 				println!("System PoweredOn");
 				app_relaunch_self(); //just relaunch;
@@ -102,7 +102,7 @@ fn register_os_wake_noti()
 	    // register to receive system sleep notifications
 	    let root_port = iokit::IORegisterForSystemPower( ref_con, &mut notify_port_ref as *mut _, power_callback, &mut notifier_object as *mut _);
 
-	    if root_port == 0 
+	    if root_port == 0
 	    {
 	        println!("IORegisterForSystemPower failed\n");
 	        return; //ignore for now
@@ -238,10 +238,10 @@ fn begin_check_for_update(url: &str)
 	    			let cblock : ConcreteBlock<(),(),_> = ConcreteBlock::new(move ||
 			    	{
 			    		println!("New Version Available!");
-			    		
+
 			    		let title = l10n_str("newVersion");
 			    		let whats_new = unsafe{NSString::alloc(nil).init_str(&format!("{} -> {}: {}",CURRENT_VERSION, ver.Version, ver.WhatsNew)).autorelease()};
-			    	
+
 			    		show_noti(title, whats_new, noti_click_callback)
 			    	});
 
@@ -261,8 +261,9 @@ fn begin_check_for_update(url: &str)
 }
 
 
-fn handle_keydown(tickeys: &Tickeys, _:u8)
+fn handle_keydown(tickeys: &Tickeys, key: u8)
 {
+	println!("key: {:}", key);
 	let last_keys = tickeys.get_last_keys();
 	let last_keys_len = last_keys.len();
 
@@ -315,8 +316,3 @@ extern fn noti_click_callback(this: &mut Object, _cmd: Sel, center: id, note: id
 		msg_send![center, removeDeliveredNotification:note]
 	}
 }
-
-
-
-
-
