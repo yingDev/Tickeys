@@ -74,7 +74,8 @@ fn register_os_wake_noti()
 	println!("register_os_wake_noti()");
 
 	#[allow(unused_variables)]
- 	extern fn power_callback(ref_con: *mut c_void, service: iokit::io_service_t, message_type: u32, message_argument: *mut c_void)
+ 	extern fn power_callback(ref_con: *mut c_void, service: iokit::io_service_t,
+		message_type: u32, message_argument: *mut c_void)
 	{
 		println!("System Power Callback! ");
 		match message_type
@@ -100,7 +101,8 @@ fn register_os_wake_noti()
 	    let ref_con: *mut c_void = std::ptr::null_mut();
 
 	    // register to receive system sleep notifications
-	    let root_port = iokit::IORegisterForSystemPower( ref_con, &mut notify_port_ref as *mut _, power_callback, &mut notifier_object as *mut _);
+	    let root_port = iokit::IORegisterForSystemPower( ref_con, &mut notify_port_ref as *mut _,
+			power_callback, &mut notifier_object as *mut _);
 
 	    if root_port == 0
 	    {
@@ -129,7 +131,10 @@ fn request_accessiblility()
 
  	unsafe fn is_enabled(prompt: bool) -> bool
  	{
-		let dict:id = msg_send![class("NSDictionary"), dictionaryWithObject:(if prompt {kCFBooleanTrue}else{kCFBooleanFalse}) forKey:kAXTrustedCheckOptionPrompt];
+		let dict: id = msg_send![class("NSDictionary"),
+			dictionaryWithObject: (if prompt {kCFBooleanTrue}else{kCFBooleanFalse})
+			forKey: kAXTrustedCheckOptionPrompt];
+
 		dict.autorelease();
 		return AXIsProcessTrustedWithOptions(dict);
 	}
@@ -240,7 +245,10 @@ fn begin_check_for_update(url: &str)
 			    		println!("New Version Available!");
 
 			    		let title = l10n_str("newVersion");
-			    		let whats_new = unsafe{NSString::alloc(nil).init_str(&format!("{} -> {}: {}",CURRENT_VERSION, ver.Version, ver.WhatsNew)).autorelease()};
+			    		let whats_new = unsafe{
+							NSString::alloc(nil).init_str(
+								&format!("{} -> {}: {}",CURRENT_VERSION, ver.Version, ver.WhatsNew)
+							).autorelease()};
 
 			    		show_noti(title, whats_new, noti_click_callback)
 			    	});

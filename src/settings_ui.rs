@@ -25,11 +25,8 @@ pub trait SettingsDelegate
 
 	    unsafe
 	    {
-	    	if SHOWING_GUI 
-			{
-				return nil;
-			}
-	    	
+	    	if SHOWING_GUI { return nil };
+
 	    	let cls = Class::get("SettingsDelegate").unwrap();
 
 	       	let obj: id = msg_send![cls, new];
@@ -64,7 +61,7 @@ pub trait SettingsDelegate
 			decl_prop!(decl, id, slide_pitch);
 			decl_prop!(decl, id, label_version);
 			decl_prop!(decl, id, window);
-			
+
 			unsafe
 			{
 				//methods
@@ -124,20 +121,21 @@ pub trait SettingsDelegate
 				{
 
 					let value:i32 = msg_send![sender, indexOfSelectedItem];
-					
+
 					let sch;// = &schemes[value as usize];
 					{
 						let schemes = tickeys_ptr.get_schemes();//= load_audio_schemes();
 						sch = schemes[value as usize].name.clone();
 					}
-					
+
 
 					let scheme_dir = "data/".to_string() + &sch;//.to_string();
 					//scheme_dir.push_str(&sch.name);
 					tickeys_ptr.load_scheme(&get_res_path(&scheme_dir), &sch);
 
-					let _:id = msg_send![user_defaults, setObject: NSString::alloc(nil).init_str(sch.as_ref())
-														   forKey: NSString::alloc(nil).init_str("audio_scheme")];
+					let _:id = msg_send![user_defaults,
+						setObject: NSString::alloc(nil).init_str(sch.as_ref())
+						forKey: NSString::alloc(nil).init_str("audio_scheme")];
 				},
 
 				TAG_SLIDE_VOLUME =>
@@ -145,7 +143,8 @@ pub trait SettingsDelegate
 					let value:f32 = msg_send![sender, floatValue];
 					tickeys_ptr.set_volume(value);
 
-					let _:id = msg_send![user_defaults, setFloat: value forKey: NSString::alloc(nil).init_str("volume")];
+					let _:id = msg_send![user_defaults, setFloat: value
+						forKey: NSString::alloc(nil).init_str("volume")];
 				},
 
 				TAG_SLIDE_PITCH =>
@@ -158,7 +157,8 @@ pub trait SettingsDelegate
 					}
 					tickeys_ptr.set_pitch(value);
 
-					let _:id = msg_send![user_defaults, setFloat: value forKey: NSString::alloc(nil).init_str("pitch")];
+					let _:id = msg_send![user_defaults, setFloat: value
+						forKey: NSString::alloc(nil).init_str("pitch")];
 				}
 
 				_ => {panic!("WTF");}
@@ -217,7 +217,8 @@ pub trait SettingsDelegate
 		let _:id = msg_send![slide_pitch, setFloatValue: value];
 
 		let label_version: id = msg_send![this, label_version];
-		let _:id = msg_send![label_version, setStringValue:NSString::alloc(nil).init_str(format!("v{}",CURRENT_VERSION).as_ref())];
+		let _:id = msg_send![label_version,
+			setStringValue: NSString::alloc(nil).init_str(format!("v{}",CURRENT_VERSION).as_ref())];
 
 		//let _:id = msg_send![this, show]
 

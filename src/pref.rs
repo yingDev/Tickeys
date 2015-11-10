@@ -29,9 +29,14 @@ impl Pref
 				return pref;
 			}else
 			{
-				let audio_scheme: id = msg_send![user_defaults, stringForKey:NSString::alloc(nil).init_str("audio_scheme")];
-				let volume: f32 = msg_send![user_defaults, floatForKey: NSString::alloc(nil).init_str("volume")];
-				let pitch: f32 = msg_send![user_defaults, floatForKey: NSString::alloc(nil).init_str("pitch")];
+				let audio_scheme: id = msg_send![user_defaults,
+					stringForKey: NSString::alloc(nil).init_str("audio_scheme")];
+
+				let volume: f32 = msg_send![user_defaults,
+					floatForKey: NSString::alloc(nil).init_str("volume")];
+
+				let pitch: f32 = msg_send![user_defaults,
+					floatForKey: NSString::alloc(nil).init_str("pitch")];
 
 				let mut scheme_str = nsstring_to_string(audio_scheme);
 
@@ -53,9 +58,16 @@ impl Pref
 		{
 			let user_defaults: id = msg_send![class("NSUserDefaults"), standardUserDefaults];
 
-			let _:id = msg_send![user_defaults, setObject: NSString::alloc(nil).init_str(&self.audio_scheme) forKey: NSString::alloc(nil).init_str("audio_scheme")];
-			let _:id = msg_send![user_defaults, setFloat: self.volume forKey: NSString::alloc(nil).init_str("volume")];
-			let _:id = msg_send![user_defaults, setFloat: self.pitch forKey: NSString::alloc(nil).init_str("pitch")];
+			let _:id = msg_send![user_defaults,
+				setObject: NSString::alloc(nil).init_str(&self.audio_scheme)
+				forKey: NSString::alloc(nil).init_str("audio_scheme")];
+
+			let _:id = msg_send![user_defaults,
+				setFloat: self.volume
+				forKey: NSString::alloc(nil).init_str("volume")];
+
+			let _:id = msg_send![user_defaults, 
+				setFloat: self.pitch forKey: NSString::alloc(nil).init_str("pitch")];
 
 			let pref_exists_key:id = NSString::alloc(nil).init_str("pref_exists");
 			let _:id = msg_send![user_defaults, setObject:pref_exists_key forKey: pref_exists_key];
