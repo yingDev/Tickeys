@@ -1,7 +1,7 @@
 extern crate objc;
 
 use super::consts::*;
-use cocoa_util::*;
+use super::cocoa_util::*;
 use pref::*;
 use tickeys::Tickeys;
 use std::sync::{ONCE_INIT, Once};
@@ -22,7 +22,6 @@ pub trait SettingsDelegate
 	fn get_instance(_: Self, ptr_to_app: *mut Tickeys) -> id
 	{
 		Self::__register_objc_class_once();
-
 
 	    unsafe
 	    {
@@ -59,100 +58,25 @@ pub trait SettingsDelegate
 			let nsobjcet = objc::runtime::Class::get("NSObject").unwrap();
 			let mut decl = objc::declare::ClassDecl::new(nsobjcet, "SettingsDelegate").unwrap();
 
+			decl_prop!(decl, usize, user_data);
+			decl_prop!(decl, id, popup_audio_scheme);
+			decl_prop!(decl, id, slide_volume);
+			decl_prop!(decl, id, slide_pitch);
+			decl_prop!(decl, id, label_version);
+			decl_prop!(decl, id, window);
+			
 			unsafe
 			{
-				//property ptr_to_app
-				decl.add_ivar::<usize>("_user_data");
-				let set_user_data_fn: extern fn(&mut Object, Sel, usize) = Self::set_user_data_;
-				decl.add_method(sel!(setUser_data:), set_user_data_fn);
-
-				let get_user_data_fn: extern fn(&Object, Sel)->usize = Self::get_user_data_;
-				decl.add_method(sel!(user_data), get_user_data_fn);
-
-				//property popup_audio_scheme
-				decl.add_ivar::<id>("_popup_audio_scheme");
-				let set_popup_audio_scheme_fn: extern fn(&mut Object, Sel, id) = Self::set_popup_audio_scheme_;
-				decl.add_method(sel!(setPopup_audio_scheme:), set_popup_audio_scheme_fn);
-
-				let get_popup_audio_scheme_fn: extern fn(&Object, Sel)->id = Self::get_popup_audio_scheme_;
-				decl.add_method(sel!(popup_audio_scheme), get_popup_audio_scheme_fn);
-
-				//property slide_volume
-				decl.add_ivar::<id>("_slide_volume");
-				let set_slide_volume_fn: extern fn(&mut Object, Sel, id) = Self::set_slide_volume_;
-				decl.add_method(sel!(setSlide_volume:), set_slide_volume_fn);
-
-				let get_slide_volume_fn: extern fn(&Object, Sel)->id = Self::get_slide_volume_;
-				decl.add_method(sel!(slide_volume), get_slide_volume_fn);
-
-				//property slide_pitch
-				decl.add_ivar::<id>("_slide_pitch");
-				let set_slide_pitch_fn: extern fn(&mut Object, Sel, id) = Self::set_slide_pitch_;
-				decl.add_method(sel!(setSlide_pitch:), set_slide_pitch_fn);
-
-				let get_slide_pitch_fn: extern fn(&Object, Sel)->id = Self::get_slide_pitch_;
-				decl.add_method(sel!(slide_pitch), get_slide_pitch_fn);
-
-				//property label_version
-				decl.add_ivar::<id>("_label_version");
-				let set_label_version_fn: extern fn(&mut Object, Sel, id) = Self::set_label_version_;
-				decl.add_method(sel!(setLabel_version:), set_label_version_fn);
-
-				let get_label_version_fn: extern fn(&Object, Sel)->id = Self::get_label_version_;
-				decl.add_method(sel!(label_version), get_label_version_fn);
-
-				//property window
-				decl.add_ivar::<id>("_window");
-				let set_window_fn: extern fn(&mut Object, Sel, id) = Self::set_window_;
-				decl.add_method(sel!(setWindow:), set_window_fn);
-
-				let get_window_fn: extern fn(& Object, Sel)->id = Self::get_window_;
-				decl.add_method(sel!(getWindow), get_window_fn);
-
 				//methods
-				let quit_fn: extern fn(&mut Object, Sel, id) = Self::quit_;
-				decl.add_method(sel!(quit:), quit_fn);
-
-				let value_changed_fn: extern fn(&mut Object, Sel, id) = Self::value_changed_;
-				decl.add_method(sel!(value_changed:), value_changed_fn);
-
-				let follow_link_fn: extern fn(&mut Object, Sel, id) = Self::follow_link_;
-				decl.add_method(sel!(follow_link:), follow_link_fn);
-
-				let windowWillClose_fn: extern fn(&Object, Sel, id) = Self::windowWillClose;
-				decl.add_method(sel!(windowWillClose:), windowWillClose_fn);
-
-				//let windowDidBecomeKey_fn: extern fn(&mut Object,Sel,id) = Self::windowDidBecomeKey;
-				//decl.add_method(sel!(windowDidBecomeKey:), windowDidBecomeKey_fn);
+				decl.add_method(sel!(quit:), Self::quit_ as extern fn(&mut Object, Sel, id));
+				decl.add_method(sel!(value_changed:), Self::value_changed_ as extern fn(&mut Object, Sel, id));
+				decl.add_method(sel!(follow_link:), Self::follow_link_ as extern fn(&mut Object, Sel, id));
+				decl.add_method(sel!(windowWillClose:), Self::windowWillClose as extern fn(&Object, Sel, id));
 			}
 
 			decl.register();
 		});
 	}
-
-	//property ptr_to_app
-	extern fn set_user_data_(this: &mut Object, _cmd: Sel, val: usize){unsafe { this.set_ivar::<usize>("_user_data", val); }}
-	extern fn get_user_data_(this: &Object, _cmd: Sel) -> usize{unsafe { *this.get_ivar::<usize>("_user_data") }}
-
-	//property popup_audio_scheme
-	extern fn set_popup_audio_scheme_(this: &mut Object, _cmd: Sel, val: id){unsafe { this.set_ivar::<id>("_popup_audio_scheme", val); }}
-	extern fn get_popup_audio_scheme_(this: &Object, _cmd: Sel) -> id{unsafe { *this.get_ivar::<id>("_popup_audio_scheme") }}
-
-	//property slide_volume
-	extern fn set_slide_volume_(this: &mut Object, _cmd:Sel, val: id){unsafe{this.set_ivar::<id>("_slide_volume", val);}}
-	extern fn get_slide_volume_(this: &Object, _cmd:Sel) -> id{unsafe{*this.get_ivar::<id>("_slide_volume")}}
-
-	//property slide_pitch
-	extern fn set_slide_pitch_(this: &mut Object, _cmd:Sel, val: id){unsafe{this.set_ivar::<id>("_slide_pitch", val);}}
-	extern fn get_slide_pitch_(this: &Object, _cmd:Sel) -> id{unsafe{*this.get_ivar::<id>("_slide_pitch")}}
-
-	//property label_version
-	extern fn set_label_version_(this: &mut Object, _cmd: Sel, val: id){unsafe{this.set_ivar::<id>("_label_version", val);}}
-	extern fn get_label_version_(this: &Object, _cmd: Sel)->id{unsafe{*this.get_ivar::<id>("_label_version")}}
-
-	//property window
-	extern fn set_window_(this: &mut Object, _cmd: Sel, val: id){unsafe{this.set_ivar::<id>("_window", val);}}
-	extern fn get_window_(this: &Object, _cmd: Sel)->id{unsafe{*this.get_ivar::<id>("_window")}}
 
 	extern fn quit_(this: &mut Object, _cmd: Sel, sender: id)
 	{
@@ -298,7 +222,7 @@ pub trait SettingsDelegate
 		//let _:id = msg_send![this, show]
 
 		println!("makeKeyAndOrderFront:");
-		let win:id = msg_send![this, getWindow];
+		let win:id = msg_send![this, window];
 		let _:id = msg_send![win, makeKeyAndOrderFront:nil];
 		let _:id = msg_send![NSApp(), activateIgnoringOtherApps:true];
 	}

@@ -218,3 +218,58 @@ impl UserNotificationCenterDelegate for id
 {
 
 }
+
+
+
+pub fn register_sel(name_with_nul: &str) -> objc::runtime::Sel 
+{
+	let ptr = name_with_nul.as_ptr() as *const _;
+	unsafe { objc::runtime::sel_registerName(ptr) }
+}				    	
+
+pub extern fn set_prop<T: objc::Encode>(this: &mut Object, sel: Sel, val: T)
+{
+	unsafe 
+	{
+		//set_xxx: -> _xxx
+		let mut ivar = sel.name().slice_unchecked(3, sel.name().len() - 1).to_owned();
+		let first_char_lower = ivar.remove(0).to_lowercase().next().unwrap();
+		ivar.insert(0, first_char_lower);
+		ivar.insert(0, '_');
+
+		this.set_ivar::<T>(&ivar, val);
+	}
+}
+
+pub extern fn get_prop<T: objc::Encode+Copy>(this: &Object, sel: Sel)->T 
+{ 
+	let mut ivar_name = "_".to_owned();
+	ivar_name.push_str(sel.name());
+	unsafe { *this.get_ivar::<T>(&ivar_name)} 
+}
+
+#[macro_export]
+macro_rules! decl_prop 
+{
+    ($decl: ident, $t: ty, $name: ident) => 
+    (
+		unsafe
+		{
+			let mut setter = "set".to_owned();
+			let mut name_upper = stringify!($name).to_owned();
+			let first_char_upper = name_upper.remove(0).to_uppercase().next().unwrap();
+			name_upper.insert(0, first_char_upper);
+			name_upper.push(':');
+			name_upper.push('\0');
+			setter.push_str(&name_upper);
+
+			println!("decl_prop: ivar  ={:}", concat!('_',stringify!($name)));
+			println!("decl_prop: getter={:}", stringify!($name));
+			println!("decl_prop: setter={:}", &setter);
+
+			$decl.add_ivar::<$t>(concat!('_',stringify!($name)));
+			$decl.add_method( register_sel(&setter), set_prop::<$t> as extern fn(&mut Object, Sel, $t));
+			$decl.add_method(sel!($name), get_prop::<$t> as extern fn(&Object, Sel)->$t);
+		}
+    )
+}

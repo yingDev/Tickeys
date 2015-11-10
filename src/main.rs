@@ -30,7 +30,7 @@ mod core_foundation;
 mod alut;
 mod event_tap;
 mod tickeys;
-mod cocoa_util;
+#[macro_use] mod cocoa_util;
 mod consts;
 mod settings_ui;
 mod pref;
