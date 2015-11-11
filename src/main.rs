@@ -44,10 +44,10 @@ use pref::*;
 
 fn main()
 {
-	unsafe { NSAutoreleasePool::new(nil) };
+	unsafe { NSAutoreleasePool::new(nil); }
 
-	request_accessiblility();
-	begin_check_for_update(&nsstring_to_string(l10n_str("check_update_url")));
+	request_ax();
+	begin_check_update(&nsstring_to_string(l10n_str("check_update_url")));
 
 	let schems = load_audio_schemes();
 	let pref = Pref::load(&schems);
@@ -60,10 +60,8 @@ fn main()
 	tickeys.start();
 
 	show_noti(l10n_str("Tickeys_Running"), l10n_str("press_qaz123"), noti_click_callback);
-
 	//relaunch on os wakeup from sleep
 	register_os_wake_noti();
-
 	//main loop
 	app_run();
 }
@@ -75,10 +73,10 @@ fn register_os_wake_noti()
 
 	#[allow(unused_variables)]
  	extern fn power_callback(ref_con: *mut c_void, service: iokit::io_service_t,
-		message_type: u32, message_argument: *mut c_void)
+		msg: u32, msg_args: *mut c_void)
 	{
 		println!("System Power Callback! ");
-		match message_type
+		match msg
 		{
 			iokit::kIOMessageSystemHasPoweredOn =>
 			{
@@ -93,13 +91,10 @@ fn register_os_wake_noti()
 	{
 		// notification port allocated by IORegisterForSystemPower
 	    let mut notify_port_ref: iokit::IONotificationPortRef = std::ptr::null_mut();
-
 	    // notifier object, used to deregister later
 	    let mut notifier_object: iokit::io_object_t = 0;
-
 	    // this parameter is passed to the callback
 	    let ref_con: *mut c_void = std::ptr::null_mut();
-
 	    // register to receive system sleep notifications
 	    let root_port = iokit::IORegisterForSystemPower( ref_con, &mut notify_port_ref as *mut _,
 			power_callback, &mut notifier_object as *mut _);
@@ -109,7 +104,6 @@ fn register_os_wake_noti()
 	        println!("IORegisterForSystemPower failed\n");
 	        return; //ignore for now
 	    }
-
 	    // add the notification port to the application runloop
 	    core_foundation::CFRunLoopAddSource( core_foundation::CFRunLoopGetCurrent(),
 	    	iokit::IONotificationPortGetRunLoopSource(notify_port_ref) as CFRunLoopSourceRef,
@@ -119,9 +113,9 @@ fn register_os_wake_noti()
 }
 
 
-fn request_accessiblility()
+fn request_ax()
 {
-	println!("request_accessiblility");
+	println!("request_ax");
 
 	#[link(name = "ApplicationServices", kind = "framework")]
 	extern "system"
@@ -154,12 +148,12 @@ fn request_accessiblility()
 			let _:id = msg_send![alert, addButtonWithTitle: l10n_str("doneWithThis")];
 
 			let btn:i32 = msg_send![alert, runModal];
-			println!("request_accessiblility alert: {}", btn);
+			println!("request_ax alert: {}", btn);
 			match btn
 			{
 				1001 => {continue},
 				1000 => {app_terminate();},
-				_ => {panic!("request_accessiblility");}
+				_ => {panic!("request_ax");}
 			}
 		}
 
@@ -180,9 +174,7 @@ fn load_audio_schemes() -> Vec<AudioScheme>
 		Err(e) => panic!("Failed to read json:{}",e)
 	}
 
-	let schemes:Vec<AudioScheme> = json::decode(&json_str).unwrap();
-
-	schemes
+	json::decode(&json_str).unwrap()
 }
 
 
@@ -192,7 +184,7 @@ fn get_data_path(sub_path: &str) -> String
 }
 
 
-fn begin_check_for_update(url: &str)
+fn begin_check_update(url: &str)
 {
 	#[derive(RustcDecodable, RustcEncodable)]
 	#[allow(non_snake_case)]
@@ -202,36 +194,14 @@ fn begin_check_for_update(url: &str)
 		WhatsNew: String,
 	}
 
-	let run_loop_ref = unsafe{CFRunLoopGetCurrent() as usize};
-	let check_update_url = url.to_string();
-	thread::spawn(move ||
+	fn do_job(check_update_url: String, run_loop_ref: usize) -> Result<(), hyper::Error>
 	{
-		std::thread::sleep_ms(1000 * 60); //do it one minite later.
-	    let client = Client::new();
-	    let result = client.get(&check_update_url).header(Connection::close()).send();
-
-	    let mut resp;
-	    match result
-	    {
-	    	Ok(r) => resp = r,
-	    	Err(e) => {
-	    		println!("Failed to check for update: {}", e);
-	    		return;
-	    	}
-	    }
-
+		let client = Client::new();
+	    let mut resp = try!{ client.get(&check_update_url).header(Connection::close()).send() };
 	    if resp.status == StatusCode::Ok
 	    {
 	    	let mut content = String::new();
-	    	match resp.read_to_string(&mut content)
-	    	{
-	    		Ok(_) => {},
-	    		Err(e) =>
-	    		{
-	    			println!("Failed to read http content: {}", e);
-	    			return;
-	    		}
-	    	}
+			try!{ resp.read_to_string(&mut content) };
 	    	println!("Response: {}", content);
 
 	    	if content.contains("Version")
@@ -245,33 +215,47 @@ fn begin_check_for_update(url: &str)
 			    		println!("New Version Available!");
 
 			    		let title = l10n_str("newVersion");
-			    		let whats_new = unsafe{
+			    		let whats_new = unsafe
+						{
 							NSString::alloc(nil).init_str(
 								&format!("{} -> {}: {}",CURRENT_VERSION, ver.Version, ver.WhatsNew)
-							).autorelease()};
+							).autorelease()
+						};
 
 			    		show_noti(title, whats_new, noti_click_callback)
 			    	});
 
 			    	let block = & *cblock.copy();
-
-			    	unsafe
-			    	{
-			    		CFRunLoopPerformBlock(run_loop_ref as *mut c_void, kCFRunLoopDefaultMode, block);
-			    	}
+			    	unsafe { CFRunLoopPerformBlock(run_loop_ref as *mut c_void, kCFRunLoopDefaultMode, block); }
 		    	}
 	    	}
+			return Ok(());
 	    }else
 	    {
 	    	println!("Failed to check for update: Status {}", resp.status);
+			return Err(hyper::Error::Status);
 	    }
+	}
+
+	let run_loop_ref = unsafe{CFRunLoopGetCurrent() as usize};
+	let check_update_url = url.to_string();
+	thread::spawn(move ||
+	{
+		thread::sleep_ms(1000 * 30); //do it xx seconds later.
+		println!("begin_check_update do_job!");
+
+		match do_job(check_update_url, run_loop_ref)
+		{
+			Ok(()) => {println!("begin_check_update(): Ok");},
+			Err(e) => {println!("begin_check_update() Error: {:}", e);}
+		}
 	});
 }
 
 
 fn handle_keydown(tickeys: &Tickeys, key: u8)
 {
-	println!("key: {:}", key);
+	//println!("key: {:}", key);
 	let last_keys = tickeys.get_last_keys();
 	let last_keys_len = last_keys.len();
 

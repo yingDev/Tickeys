@@ -1,6 +1,6 @@
 [package]
 name = "Tickeys"
-version = "0.4.2"
+version = "0.4.3"
 authors = ["应元东 <ying@yingDev.com>"]
 build = "build.rs"
 
@@ -17,5 +17,3 @@ openal-rs = "0.1.1"
 
 [dependencies.IOKit-sys]
 git = "https://github.com/yingDev/iokit-sys.git"
-
-
