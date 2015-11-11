@@ -70,7 +70,6 @@ fn main()
 fn register_os_wake_noti()
 {
 	println!("register_os_wake_noti()");
-
 	#[allow(unused_variables)]
  	extern fn power_callback(ref_con: *mut c_void, service: iokit::io_service_t,
 		msg: u32, msg_args: *mut c_void)
@@ -109,14 +108,12 @@ fn register_os_wake_noti()
 	    	iokit::IONotificationPortGetRunLoopSource(notify_port_ref) as CFRunLoopSourceRef,
 	    	core_foundation::kCFRunLoopCommonModes );
 	}
-
 }
 
 
 fn request_ax()
 {
 	println!("request_ax");
-
 	#[link(name = "ApplicationServices", kind = "framework")]
 	extern "system"
 	{
@@ -128,15 +125,13 @@ fn request_ax()
 		let dict: id = msg_send![class("NSDictionary"),
 			dictionaryWithObject: (if prompt {kCFBooleanTrue}else{kCFBooleanFalse})
 			forKey: kAXTrustedCheckOptionPrompt];
-
 		dict.autorelease();
 		return AXIsProcessTrustedWithOptions(dict);
 	}
 
 	unsafe
 	{
-		if is_enabled(false) {return;}
-
+		if is_enabled(false) { return; }
 		while !is_enabled(true)
 		{
 			thread::sleep_ms(3000);
@@ -151,9 +146,9 @@ fn request_ax()
 			println!("request_ax alert: {}", btn);
 			match btn
 			{
-				1001 => {continue},
-				1000 => {app_terminate();},
-				_ => {panic!("request_ax");}
+				1001 => continue,
+				1000 => app_terminate(),
+				_ => panic!("request_ax")
 			}
 		}
 
@@ -173,7 +168,6 @@ fn load_audio_schemes() -> Vec<AudioScheme>
 		Ok(_) => {},
 		Err(e) => panic!("Failed to read json:{}",e)
 	}
-
 	json::decode(&json_str).unwrap()
 }
 
@@ -194,6 +188,19 @@ fn begin_check_update(url: &str)
 		WhatsNew: String,
 	}
 
+	let run_loop_ref = unsafe { CFRunLoopGetCurrent() as usize };
+	let check_update_url = url.to_string();
+	thread::spawn(move ||
+	{
+		thread::sleep_ms(1000 * 30); //do it xx seconds later.
+		println!("begin_check_update do_job!");
+		match do_job(check_update_url, run_loop_ref)
+		{
+			Ok(()) => println!("begin_check_update(): Ok"),
+			Err(e) => println!("begin_check_update() Error: {:}", e)
+		}
+	});
+
 	fn do_job(check_update_url: String, run_loop_ref: usize) -> Result<(), hyper::Error>
 	{
 		let client = Client::new();
@@ -213,7 +220,6 @@ fn begin_check_update(url: &str)
 	    			let cblock : ConcreteBlock<(),(),_> = ConcreteBlock::new(move ||
 			    	{
 			    		println!("New Version Available!");
-
 			    		let title = l10n_str("newVersion");
 			    		let whats_new = unsafe
 						{
@@ -221,7 +227,6 @@ fn begin_check_update(url: &str)
 								&format!("{} -> {}: {}",CURRENT_VERSION, ver.Version, ver.WhatsNew)
 							).autorelease()
 						};
-
 			    		show_noti(title, whats_new, noti_click_callback)
 			    	});
 
@@ -237,19 +242,6 @@ fn begin_check_update(url: &str)
 	    }
 	}
 
-	let run_loop_ref = unsafe{CFRunLoopGetCurrent() as usize};
-	let check_update_url = url.to_string();
-	thread::spawn(move ||
-	{
-		thread::sleep_ms(1000 * 30); //do it xx seconds later.
-		println!("begin_check_update do_job!");
-
-		match do_job(check_update_url, run_loop_ref)
-		{
-			Ok(()) => {println!("begin_check_update(): Ok");},
-			Err(e) => {println!("begin_check_update() Error: {:}", e);}
-		}
-	});
 }
 
 
