@@ -45,15 +45,13 @@ use pref::*;
 fn main()
 {
 	unsafe { NSAutoreleasePool::new(nil); }
-
 	request_ax();
 	begin_check_update(&nsstring_to_string(l10n_str("check_update_url")));
 
-	let schems = load_audio_schemes();
-	let pref = Pref::load(&schems);
-
-	let mut tickeys = Tickeys::new(schems);
-	tickeys.load_scheme(&get_data_path(&pref.audio_scheme), &pref.audio_scheme);
+	let sch = load_schemes();
+	let pref = Pref::load(&sch);
+	let mut tickeys = Tickeys::new(sch);
+	tickeys.load_scheme(&get_res_path(&format!("data/{:}", &pref.scheme)), &pref.scheme);
 	tickeys.set_volume(pref.volume);
 	tickeys.set_pitch(pref.pitch);
 	tickeys.set_on_keydown(Some(handle_keydown)); //handle qaz123
@@ -61,15 +59,15 @@ fn main()
 
 	show_noti(l10n_str("Tickeys_Running"), l10n_str("press_qaz123"), noti_click_callback);
 	//relaunch on os wakeup from sleep
-	register_os_wake_noti();
+	monitor_os_power_event();
 	//main loop
 	app_run();
 }
 
 
-fn register_os_wake_noti()
+fn monitor_os_power_event()
 {
-	println!("register_os_wake_noti()");
+	println!("monitor_os_power_event()");
 	#[allow(unused_variables)]
  	extern fn power_callback(ref_con: *mut c_void, service: iokit::io_service_t,
 		msg: u32, msg_args: *mut c_void)
@@ -157,7 +155,7 @@ fn request_ax()
 }
 
 
-fn load_audio_schemes() -> Vec<AudioScheme>
+fn load_schemes() -> Vec<AudioScheme>
 {
 	let path = get_res_path("data/schemes.json");
 	let mut file = File::open(path).unwrap();
@@ -169,12 +167,6 @@ fn load_audio_schemes() -> Vec<AudioScheme>
 		Err(e) => panic!("Failed to read json:{}",e)
 	}
 	json::decode(&json_str).unwrap()
-}
-
-
-fn get_data_path(sub_path: &str) -> String
-{
-	get_res_path(&("data/".to_string() + sub_path))
 }
 
 
@@ -241,7 +233,6 @@ fn begin_check_update(url: &str)
 			return Err(hyper::Error::Status);
 	    }
 	}
-
 }
 
 

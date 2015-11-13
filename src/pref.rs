@@ -6,7 +6,7 @@ use cocoa_util::*;
 
 pub struct Pref
 {
-	pub audio_scheme: String,
+	pub scheme: String,
 	pub volume: f32,
 	pub pitch: f32,
 }
@@ -20,7 +20,7 @@ impl Pref
 			let user_defaults: id = msg_send![class("NSUserDefaults"), standardUserDefaults];
 			let pref_exists_key:id = NSString::alloc(nil).init_str("pref_exists");
 
-			let pref = Pref{audio_scheme: schemes[0].name.clone(), volume: 0.5f32, pitch: 1.0f32};
+			let pref = Pref{scheme: schemes[0].name.clone(), volume: 0.5f32, pitch: 1.0f32};
 
 			let pref_exists: id = msg_send![user_defaults, stringForKey: pref_exists_key];
 			if pref_exists == nil //first run
@@ -43,10 +43,10 @@ impl Pref
 				//validate scheme
 				if schemes.iter().filter(|s|{*s.name == scheme_str}).count() == 0
 				{
-					scheme_str = pref.audio_scheme;
+					scheme_str = pref.scheme;
 				}
 
-				Pref{audio_scheme:  scheme_str, volume: volume, pitch: pitch}
+				Pref{scheme:  scheme_str, volume: volume, pitch: pitch}
 			}
 		}
 
@@ -59,14 +59,14 @@ impl Pref
 			let user_defaults: id = msg_send![class("NSUserDefaults"), standardUserDefaults];
 
 			let _:id = msg_send![user_defaults,
-				setObject: NSString::alloc(nil).init_str(&self.audio_scheme)
+				setObject: NSString::alloc(nil).init_str(&self.scheme)
 				forKey: NSString::alloc(nil).init_str("audio_scheme")];
 
 			let _:id = msg_send![user_defaults,
 				setFloat: self.volume
 				forKey: NSString::alloc(nil).init_str("volume")];
 
-			let _:id = msg_send![user_defaults, 
+			let _:id = msg_send![user_defaults,
 				setFloat: self.pitch forKey: NSString::alloc(nil).init_str("pitch")];
 
 			let pref_exists_key:id = NSString::alloc(nil).init_str("pref_exists");

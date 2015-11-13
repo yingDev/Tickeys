@@ -197,7 +197,7 @@ pub trait SettingsDelegate
 			let s = &schemes[i];
 
 			let _: id = msg_send![popup_audio_scheme, addItemWithTitle: l10n_str(&s.display_name)];
-			if  *s.name == pref.audio_scheme
+			if  *s.name == pref.scheme
 			{
 				let _:id = msg_send![popup_audio_scheme, selectItemAtIndex:i];
 			}
