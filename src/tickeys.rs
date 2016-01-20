@@ -90,7 +90,7 @@ impl Tickeys
 
 	pub fn stop(&mut self)
 	{
-		//todo: stop the kbd monitor?
+		//TODO: stop the kbd monitor?
 	}
 
 	pub fn get_schemes(&self) -> &Vec<AudioScheme>
@@ -223,6 +223,14 @@ impl Tickeys
 
 			return false;
 		}
+	}
+}
+
+impl Drop for Tickeys
+{
+	fn drop(&mut self)
+	{
+		println!("Tickeys::drop");
 	}
 }
 

@@ -92,11 +92,12 @@ pub fn get_res_path(sub_path: &str) -> String
 	data_path.into_os_string().into_string().unwrap()
 }
 
-pub fn app_run()
+pub fn app_run(appDelegate: id)
 {
 	unsafe
 	{
 		let app = NSApp();
+		let _:id = msg_send![app, setDelegate:appDelegate];
 		app.run();
 	}
 }
@@ -135,33 +136,9 @@ pub fn app_terminate()
 
 
 
-pub fn show_noti(title: id, msg: id, activated_fn: extern fn(&mut Object, Sel, id, id))
-{
-	static REGISTER_DELEGATE: Once = ONCE_INIT;
-	REGISTER_DELEGATE.call_once(||
-	{
-		unsafe
-		{
-			let noti_center_del:id = UserNotificationCenterDelegate::new(nil,activated_fn).autorelease();
-			let center:id = msg_send![class("NSUserNotificationCenter"), defaultUserNotificationCenter];
-			let _:id = msg_send![center, setDelegate: noti_center_del];
-		}
-	});
 
-	unsafe
-	{
-		let note:id = NSUserNotification::new(nil).autorelease();
-		note.setTitle(title);
-		note.setInformativeText(msg);
 
-		let center:id = msg_send![class("NSUserNotificationCenter"), defaultUserNotificationCenter];
-
-		msg_send![center, deliverNotification: note]
-	}
-
-}
-
-#[allow(non_snake_case)]
+/*#[allow(non_snake_case)]
 #[allow(unused_variables)]
 pub trait UserNotificationCenterDelegate //: <NSUserNotificationCenerDelegate>
 {
@@ -217,7 +194,7 @@ pub trait UserNotificationCenterDelegate //: <NSUserNotificationCenerDelegate>
 impl UserNotificationCenterDelegate for id
 {
 
-}
+}*/
 
 
 
