@@ -3,6 +3,7 @@ extern crate objc;
 use super::consts::*;
 use super::cocoa_util::*;
 use pref::*;
+use core_graphics::*;
 use tickeys::Tickeys;
 use std::sync::{ONCE_INIT, Once};
 
@@ -17,7 +18,7 @@ static mut SHOWING_GUI:bool = false;
 
 #[allow(non_snake_case)]
 #[allow(unused_variables)]
-pub trait SettingsDelegate
+pub trait SettingsController //<NSWindowDelegate, NSTableViewDelegate, NSTableViewDataSource>
 {
 	fn get_instance(_: Self, ptr_to_app: *mut Tickeys) -> id
 	{
@@ -26,23 +27,18 @@ pub trait SettingsDelegate
 	    unsafe
 	    {
 	    	if SHOWING_GUI { return nil };
-
-	    	let cls = Class::get("SettingsDelegate").unwrap();
-
-	       	let obj: id = msg_send![cls, new];
-	       	obj.retain();
-	       	let _:id = msg_send![obj, setUser_data: ptr_to_app];
-
-	       	let data: *mut Tickeys = msg_send![obj, user_data];
-	       	assert!(data == ptr_to_app);
-
+			
 			let nib_name = NSString::alloc(nil).init_str("Settings");
-			let _: id = msg_send![class("NSBundle"), loadNibNamed:nib_name owner: obj];
+			let inst: id = msg_send![class(stringify!(SettingsController)), alloc];
+	       	let inst: id = msg_send![inst, initWithWindowNibName: nib_name];
+	       	inst.retain();
 
-			Self::load_values(obj);
+	       	let _:id = msg_send![inst, setUser_data: ptr_to_app];
+			let _: id = msg_send![inst, showWindow: nil];
+
 
 			SHOWING_GUI = true;
-	       	obj
+	       	inst
     	}
 	}
 
@@ -51,16 +47,16 @@ pub trait SettingsDelegate
 		static REGISTER_APPDELEGATE: Once = ONCE_INIT;
 		REGISTER_APPDELEGATE.call_once(||
 		{
-			println!("SettingsDelegate::__register_objc_class_once");
-			let nsobjcet = objc::runtime::Class::get("NSObject").unwrap();
-			let mut decl = objc::declare::ClassDecl::new(nsobjcet, "SettingsDelegate").unwrap();
+			println!("SettingsController::__register_objc_class_once");
+			let superCls = objc::runtime::Class::get("NSWindowController").unwrap();
+			let mut decl = objc::declare::ClassDecl::new(superCls, stringify!(SettingsController)).unwrap();
 
 			decl_prop!(decl, usize, user_data);
 			decl_prop!(decl, id, popup_audio_scheme);
 			decl_prop!(decl, id, slide_volume);
 			decl_prop!(decl, id, slide_pitch);
 			decl_prop!(decl, id, label_version);
-			decl_prop!(decl, id, window);
+			decl_prop!(decl, id, filterListTable);
 
 			unsafe
 			{
@@ -69,10 +65,41 @@ pub trait SettingsDelegate
 				decl.add_method(sel!(value_changed:), Self::value_changed_ as extern fn(&mut Object, Sel, id));
 				decl.add_method(sel!(follow_link:), Self::follow_link_ as extern fn(&mut Object, Sel, id));
 				decl.add_method(sel!(windowWillClose:), Self::windowWillClose as extern fn(&Object, Sel, id));
+				decl.add_method(sel!(windowDidLoad), Self::windowDidLoad as extern fn(&mut Object, Sel));
+				decl.add_method(sel!(tableView:shouldEditTableColumn:row:), Self::tableViewShouldEditTableColumnRow as extern fn(&mut Object, Sel, id, id, i32) -> bool);
+
+				decl.add_method(sel!(btnAddClicked:), Self::btnAddClicked as extern fn(&mut Object, Sel, id));
+				decl.add_method(sel!(btnRemoveClicked:), Self::btnRemoveClicked as extern fn(&mut Object, Sel, id));
+
+
+				//tableViewSource & tableViewDelegate
+				decl.add_method(sel!(numberOfRowsInTableView:), Self::numberOfRowsInTableView as extern fn(&mut Object, Sel, id)->i32);
+				decl.add_method(sel!(tableView:objectValueForTableColumn:row:), Self::tableViewObjectValueForTableColumn as extern fn(&mut Object, Sel, id, id, i32)->id);
+
 			}
 
 			decl.register();
 		});
+	}
+
+	extern fn windowDidLoad(this: &mut Object, _cmd: Sel)
+	{
+		println!("windowDidLoad");
+		unsafe
+		{
+			let window: id = msg_send![this, window];
+
+			//hide window btns
+			let btnMin: id = msg_send![window, standardWindowButton:1];
+			let _: id = msg_send![btnMin, setHidden: true];
+			let btnZoom: id = msg_send![window, standardWindowButton:2];
+			let _: id = msg_send![btnZoom, setHidden: true];
+
+			let _: id = msg_send![window, setLevel: CGWindowLevelForKey(CGWindowLevelKey::kCGFloatingWindowLevelKey)];
+
+			Self::load_values(this);
+		}
+
 	}
 
 	extern fn quit_(this: &mut Object, _cmd: Sel, sender: id)
@@ -90,7 +117,7 @@ pub trait SettingsDelegate
 			{
 				0 => WEBSITE,
 				1 => DONATE_URL,
-				_ => panic!("SettingsDelegate::follow_link_")
+				_ => panic!("SettingsController::follow_link_")
 			};
 
 			let workspace: id = msg_send![class("NSWorkspace"), sharedWorkspace];
@@ -103,7 +130,7 @@ pub trait SettingsDelegate
 
 	extern fn value_changed_(this: &mut Object, _cmd:Sel, sender: id)
 	{
-		println!("SettingsDelegate::value_changed_");
+		println!("SettingsController::value_changed_");
 
 		const TAG_POPUP_SCHEME: i64 = 0;
 		const TAG_SLIDE_VOLUME: i64 = 1;
@@ -169,7 +196,7 @@ pub trait SettingsDelegate
 
 	extern fn windowWillClose(this: &Object, _cmd: Sel, note: id)
 	{
-		println!("SettingsDelegate::windowWillClose");
+		println!("SettingsController::windowWillClose");
 		unsafe
 		{
 			let app_ptr: *mut Tickeys = msg_send![this, user_data];
@@ -178,6 +205,70 @@ pub trait SettingsDelegate
 			let user_defaults: id = msg_send![class("NSUserDefaults"), standardUserDefaults];
 			let _:id = msg_send![user_defaults, synchronize];
 			let _:id = msg_send![this, release];
+		}
+	}
+
+	extern fn btnAddClicked(this: &mut Object, _cmd: Sel, sender: id)
+	{
+		println!("Add Item");
+		unsafe
+		{
+			let open: id = msg_send![class("NSOpenPanel"), openPanel];
+			let apps_dir: id = msg_send![class("NSURL"), URLWithString: nsstr("/Applications")];
+			let allowed_types: id = msg_send![class("NSMutableArray"), arrayWithCapacity:2];
+			let _: id = msg_send![allowed_types, addObject: nsstr("app")];
+
+			let _: id = msg_send![open, setDirectoryURL: apps_dir];
+			let _: id = msg_send![open, setAllowedFileTypes: allowed_types];
+			let _: id = msg_send![open, setAllowsMultipleSelection: true];
+
+			let ret: i32 = msg_send![open, runModal];
+			if ret == 1 //Ok 
+			{
+				let files: id = msg_send![open, URLs];
+				let n: i32 = msg_send![files, count];
+
+				let filterList: id = Self::filterList();
+				for i in 0..n 
+				{
+					let appName: id = nsurl_filename(msg_send![files, objectAtIndex: i]);
+
+					let contains: bool = msg_send![filterList, containsObject: appName];
+					if !contains
+					{
+						let _: id = msg_send![filterList, addObject: appName];
+					}
+				}
+
+				//reload table ddata
+				let filterListTable: id = msg_send![this, filterListTable];
+				let _: id = msg_send![filterListTable, reloadData];
+
+				//save 
+				let ud: id = msg_send![class("NSUserDefaults"), standardUserDefaults];
+				let _: id = msg_send![ud, setObject:filterList forKey: nsstr("FilterList")];
+			}
+		}
+	}
+
+	extern fn btnRemoveClicked(this: &mut Object, _cmd: Sel, sender: id)
+	{
+		println!("Remove Item");
+		unsafe
+		{
+			let filterList = Self::filterList();
+			let table: id = msg_send![this, filterListTable];
+
+			let selectedRow: i32 = msg_send![table, selectedRow];
+
+			if selectedRow >= 0 
+			{
+				let _: id = msg_send![filterList, removeObjectAtIndex:selectedRow];
+				let _: id = msg_send![table, reloadData];
+
+				let ud: id = msg_send![class("NSUserDefaults"), standardUserDefaults];
+				let _: id = msg_send![ud, setObject:filterList forKey: nsstr("FilterList")];
+			}
 		}
 	}
 
@@ -228,8 +319,42 @@ pub trait SettingsDelegate
 		let _:id = msg_send![NSApp(), activateIgnoringOtherApps:true];
 	}
 
+
+	//-(NSInteger)numberOfRowsInTableView:(NSTableView *)tableView
+	extern fn numberOfRowsInTableView(this: &mut Object, _cmd: Sel, tableView: id) -> i32
+	{
+		unsafe
+		{
+			msg_send![Self::filterList(), count]
+		}
+	}
+
+	fn filterList() -> id
+	{
+		unsafe
+		{
+			//strong coupling...
+			let appDelegate: id = msg_send![NSApp(), delegate];
+			msg_send![appDelegate, filterList]
+		}
+	}
+
+	//-(id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
+	extern fn tableViewObjectValueForTableColumn(this: &mut Object, _cmd: Sel, tableView: id, tableColumn: id, row: i32) -> id 
+	{
+		unsafe
+		{
+			msg_send![Self::filterList(), objectAtIndex: row]
+		}
+	}
+
+	//-(BOOL)tableView:(NSTableView *)tableView shouldEditTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
+	extern fn tableViewShouldEditTableColumnRow(this: &mut Object, _cmd: Sel, tableView: id, tableColumn: id, row: i32) -> bool 
+	{
+		false
+	}
 }
 
-impl SettingsDelegate for id
+impl SettingsController for id
 {
 }

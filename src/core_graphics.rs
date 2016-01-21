@@ -73,6 +73,33 @@ pub enum CGEventType
   kCGEventTapDisabledByUserInput = 0xFFFFFFFF
 }
 
+#[repr(i32)]
+pub enum CGWindowLevelKey 
+{
+    kCGBaseWindowLevelKey = 0,
+    kCGMinimumWindowLevelKey,
+    kCGDesktopWindowLevelKey,
+    kCGBackstopMenuLevelKey,
+    kCGNormalWindowLevelKey,
+    kCGFloatingWindowLevelKey,
+    kCGTornOffMenuWindowLevelKey,
+    kCGDockWindowLevelKey,
+    kCGMainMenuWindowLevelKey,
+    kCGStatusWindowLevelKey,
+    kCGModalPanelWindowLevelKey,
+    kCGPopUpMenuWindowLevelKey,
+    kCGDraggingWindowLevelKey,
+    kCGScreenSaverWindowLevelKey,
+    kCGMaximumWindowLevelKey,
+    kCGOverlayWindowLevelKey,
+    kCGHelpWindowLevelKey,
+    kCGUtilityWindowLevelKey,
+    kCGDesktopIconWindowLevelKey,
+    kCGCursorWindowLevelKey,
+    kCGAssistiveTechHighWindowLevelKey,
+    kCGNumberOfWindowLevelKeys  /* Must be last. */
+}
+
 #[repr(u32)]
 #[allow(dead_code)]
 #[allow(non_camel_case_types)]
@@ -353,4 +380,7 @@ extern "system"
 	pub fn CGEventTapEnable(tap: CFMachPortRef, enable: bool);
 
 	pub fn CGEventTapIsEnabled(tap: CFMachPortRef) -> bool;
+
+  pub fn CGWindowLevelForKey(key: CGWindowLevelKey) -> i32;
+
 }

@@ -7,14 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2E32640D1BAE5FF400BCB9FA /* tickeys.icns in Resources */ = {isa = PBXBuildFile; fileRef = 2E32640C1BAE5FF400BCB9FA /* tickeys.icns */; settings = {ASSET_TAGS = (); }; };
+		2E32640D1BAE5FF400BCB9FA /* tickeys.icns in Resources */ = {isa = PBXBuildFile; fileRef = 2E32640C1BAE5FF400BCB9FA /* tickeys.icns */; };
 		2E32640E1BAE697300BCB9FA /* WhatsNew.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E3264101BAE697300BCB9FA /* WhatsNew.xib */; };
 		2E3D2BEF1BABF6480054D776 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2E3D2BF11BABF6480054D776 /* Localizable.strings */; };
 		2EB67D291B0978C90078AA5F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EB67D281B0978C90078AA5F /* AppDelegate.m */; };
 		2EB67D2B1B0978C90078AA5F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EB67D2A1B0978C90078AA5F /* main.m */; };
 		2EB67D2D1B0978C90078AA5F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2EB67D2C1B0978C90078AA5F /* Images.xcassets */; };
 		2EB67D3C1B0978C90078AA5F /* TickeysGUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EB67D3B1B0978C90078AA5F /* TickeysGUITests.m */; };
-		2EB67D491B097AD40078AA5F /* SettingsDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EB67D481B097AD40078AA5F /* SettingsDelegate.m */; };
+		2EB67D491B097AD40078AA5F /* SettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EB67D481B097AD40078AA5F /* SettingsController.m */; };
 		2EF9E81B1BABEF68007CE0F7 /* Settings.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2EF9E81D1BABEF68007CE0F7 /* Settings.xib */; };
 /* End PBXBuildFile section */
 
@@ -43,9 +43,8 @@
 		2EB67D351B0978C90078AA5F /* TickeysGUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TickeysGUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2EB67D3A1B0978C90078AA5F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2EB67D3B1B0978C90078AA5F /* TickeysGUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TickeysGUITests.m; sourceTree = "<group>"; };
-		2EB67D471B097AD40078AA5F /* SettingsDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsDelegate.h; sourceTree = "<group>"; };
-		2EB67D481B097AD40078AA5F /* SettingsDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsDelegate.m; sourceTree = "<group>"; };
-		2ECCFFCA1BABF32100B79377 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = "zh-Hans"; path = "zh-Hans.lproj/Settings.xib"; sourceTree = "<group>"; };
+		2EB67D471B097AD40078AA5F /* SettingsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsController.h; sourceTree = "<group>"; };
+		2EB67D481B097AD40078AA5F /* SettingsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsController.m; sourceTree = "<group>"; };
 		2EF9E81C1BABEF68007CE0F7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/Settings.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -94,8 +93,8 @@
 				2EB67D2C1B0978C90078AA5F /* Images.xcassets */,
 				2EB67D251B0978C90078AA5F /* Supporting Files */,
 				2EF9E81D1BABEF68007CE0F7 /* Settings.xib */,
-				2EB67D471B097AD40078AA5F /* SettingsDelegate.h */,
-				2EB67D481B097AD40078AA5F /* SettingsDelegate.m */,
+				2EB67D471B097AD40078AA5F /* SettingsController.h */,
+				2EB67D481B097AD40078AA5F /* SettingsController.m */,
 				2E3D2BF11BABF6480054D776 /* Localizable.strings */,
 				2E3264101BAE697300BCB9FA /* WhatsNew.xib */,
 			);
@@ -231,7 +230,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2EB67D491B097AD40078AA5F /* SettingsDelegate.m in Sources */,
+				2EB67D491B097AD40078AA5F /* SettingsController.m in Sources */,
 				2EB67D2B1B0978C90078AA5F /* main.m in Sources */,
 				2EB67D291B0978C90078AA5F /* AppDelegate.m in Sources */,
 			);
@@ -278,7 +277,6 @@
 			isa = PBXVariantGroup;
 			children = (
 				2EF9E81C1BABEF68007CE0F7 /* Base */,
-				2ECCFFCA1BABF32100B79377 /* zh-Hans */,
 			);
 			name = Settings.xib;
 			sourceTree = "<group>";
@@ -370,7 +368,7 @@
 				INFOPLIST_FILE = TickeysGUI/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx10.10;
+				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
@@ -382,7 +380,7 @@
 				INFOPLIST_FILE = TickeysGUI/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx10.10;
+				SDKROOT = macosx;
 			};
 			name = Release;
 		};

@@ -9,12 +9,14 @@
 #import <Foundation/Foundation.h>
 #import <Cocoa/Cocoa.h>
 
-@interface SettingsDelegate : NSObject//<NSWindowDelegate>
+@interface SettingsController : NSWindowController<NSWindowDelegate, NSTableViewDelegate, NSTableViewDataSource>
 @property (assign) IBOutlet NSPopUpButton *popup_audio_scheme;
 @property (assign) IBOutlet NSSlider *slide_volume;
 @property (assign) IBOutlet NSSlider *slide_pitch;
 @property (assign) IBOutlet NSTextField *label_version;
 @property (assign) void* user_data;
-@property (assign) IBOutlet NSPanel *window;
+
+@property (assign) IBOutlet NSTableView* filterListTable;
+//@property (assign) IBOutlet NSPanel *window;
 
 @end

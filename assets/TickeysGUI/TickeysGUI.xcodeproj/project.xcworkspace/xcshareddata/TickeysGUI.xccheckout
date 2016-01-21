@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>062224AD-BE08-486C-8641-C53EFB0AE656</string>
+	<key>IDESourceControlProjectName</key>
+	<string>project</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>80DFF23129166A633A7B4CC392C851556D0EEE6D</key>
+		<string>https://github.com/yingDev/Tickeys.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>assets/TickeysGUI/TickeysGUI.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>80DFF23129166A633A7B4CC392C851556D0EEE6D</key>
+		<string>../../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/yingDev/Tickeys.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>80DFF23129166A633A7B4CC392C851556D0EEE6D</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>80DFF23129166A633A7B4CC392C851556D0EEE6D</string>
+			<key>IDESourceControlWCCName</key>
+			<string>Tickeys</string>
+		</dict>
+	</array>
+</dict>
+</plist>

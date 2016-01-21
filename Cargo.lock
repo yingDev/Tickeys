@@ -1,6 +1,6 @@
 [root]
 name = "Tickeys"
-version = "0.4.3"
+version = "0.5.0"
 dependencies = [
  "IOKit-sys 0.1.3 (git+https://github.com/yingDev/iokit-sys.git)",
  "block 0.1.3 (registry+https://github.com/rust-lang/crates.io-index)",

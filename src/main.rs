@@ -43,6 +43,16 @@ use settings_ui::*;
 use consts::*;
 use pref::*;
 
+extern 
+{ 
+	static NSWorkspaceDidActivateApplicationNotification: id;
+	static NSWorkspaceApplicationKey: id;
+	static NSKeyValueChangeNewKey: id;
+
+}
+
+static mut RUNNING: bool = false; 
+
 
 fn main()
 {
@@ -97,7 +107,14 @@ fn monitor_os_power_event()
 	}
 }
 
-trait AppDelegate
+#[repr(i32)]
+enum FilterListMode 
+{
+	BlackList = 0,
+	WhiteList = 1
+}
+
+trait AppDelegate // <NSApplicationDelegate>
 {
 	fn new() -> id
 	{
@@ -105,29 +122,51 @@ trait AppDelegate
 		REG_OBJC_CLS.call_once(||
 		{
 			let nsobjcet = objc::runtime::Class::get("NSObject").unwrap();
-			let mut decl = objc::declare::ClassDecl::new(nsobjcet, "AppDelegate").unwrap();
+			let mut decl = objc::declare::ClassDecl::new(nsobjcet, stringify!(AppDelegate)).unwrap();
 
 			unsafe
 			{
-				let finish_launch_fn: extern fn(&mut Object, Sel, id) = Self::applicationDidFinishLaunching;
-				decl.add_method(sel!(applicationDidFinishLaunching:), finish_launch_fn);
+				decl.add_method(sel!(applicationDidFinishLaunching:), Self::applicationDidFinishLaunching as extern fn(&mut Object, Sel, id));
+				decl.add_method(sel!(applicationDidBecomeActive:), Self::applicationDidBecomeActive as extern fn(&mut Object, Sel, id));
+				decl.add_method(sel!(applicationWillTerminate:), Self::applicationWillTerminate as extern fn(&mut Object, Sel, id));
+				decl.add_method(sel!(userNotificationCenter:didActivateNotification:), Self::userNotificationCenterDidActivateNotification as extern fn(&mut Object, Sel, id, id));
+				decl.add_method(sel!(workspace_app_activated:), Self::workspace_app_activated as extern fn(&mut Object, Sel, id));
 
-				let activated_fn: extern fn(&mut Object, Sel, id) = Self::applicationDidBecomeActive;
-				decl.add_method(sel!(applicationDidBecomeActive:), activated_fn);
-
-				let will_term_fn: extern fn(&mut Object, Sel, id) = Self::applicationWillTerminate;
-				decl.add_method(sel!(applicationWillTerminate:), will_term_fn);
-
-				let activated_fn: extern fn(&mut Object, Sel, id, id) = Self::userNotificationCenterDidActivateNotification;
-				decl.add_method(sel!(userNotificationCenter:didActivateNotification:), activated_fn);
+				decl.add_method(sel!(observeValueForKeyPath:ofObject:change:context:), 
+						Self::observeValueForKeyPathOfObjectChangeContext as extern fn(&mut Object, Sel, id, id, id, *const c_void));
 
 				decl_prop!(decl, usize, tickeys);
+				decl_prop!(decl, id, filterList);
+				decl_prop!(decl, i32, filterListMode);
 			}
 
 			decl.register();
 		});
 
-	    unsafe { msg_send![class("AppDelegate"), new] }
+	    unsafe 
+	    { 
+	    	let inst: id = msg_send![class(stringify!(AppDelegate)), new];
+
+	    	let userDefaults: id = msg_send![class("NSUserDefaults"), standardUserDefaults];
+
+	    	let mut filterList: id = msg_send![userDefaults, objectForKey: nsstr("FilterList")];
+	    	if filterList == nil 
+	    	{
+	    		filterList = msg_send![class("NSMutableArray"), arrayWithCapacity: 8];
+	    	}else 
+	    	{
+	    		filterList = msg_send![class("NSMutableArray"), arrayWithArray: filterList];
+	    	}
+	    	let _: id = msg_send![inst, setFilterList: filterList];
+
+
+	    	//get filter mode
+	    	let filterListMode: i32 = msg_send![userDefaults, integerForKey: nsstr("FilterListMode")];
+	    	let _: id = msg_send![inst, setFilterListMode: filterListMode];
+	    	println!("FilterListMode = {:}", filterListMode);
+
+	    	inst
+	    }
 	}
 
 	extern fn applicationDidFinishLaunching(this: &mut Object, _cmd: Sel, note: id)
@@ -149,14 +188,46 @@ trait AppDelegate
 			let _: id = msg_send![this, setTickeys: tickeys]; //moved
 
 			let noti_center:id = msg_send![class("NSUserNotificationCenter"), defaultUserNotificationCenter];
-			let _:id = msg_send![noti_center, setDelegate: this];
+			let _:id = msg_send![noti_center, setDelegate: this as *mut Object];
 		}
 
 		Self::show_noti(l10n_str("Tickeys_Running"), l10n_str("press_qaz123"));
+
+		unsafe
+		{
+			//observe NSWorkspaceDidActivateApplicationNotification
+			let workspace: id = msg_send![class("NSWorkspace"), sharedWorkspace];
+			let notiCenter: id = msg_send![workspace, notificationCenter];
+
+			let _: id = msg_send![notiCenter, addObserver:this as *mut Object
+										    	selector:sel!(workspace_app_activated:) 
+											  	    name:NSWorkspaceDidActivateApplicationNotification 
+												  object:nil];
+
+			//observe FilterListMode 
+			let ud: id = msg_send![class("NSUserDefaultsController"), sharedUserDefaultsController];
+			let _: id = msg_send![ud, addObserver:this as *mut Object
+                                       forKeyPath:nsstr("values.FilterListMode")
+                                          options:1 /*NSKeyValueObservingOptionNew*/
+                                          context:0];
+
+             
+            //get current active app 
+	    	let workspace: id = msg_send![class("NSWorkspace"), sharedWorkspace];
+	    	let frontApp: id = msg_send![workspace, frontmostApplication];
+			Self::check_and_apply_mute_for_app(this, nsurl_filename(msg_send![frontApp, bundleURL]));
+
+		}
+
 	}
 
 	extern fn applicationDidBecomeActive(this: &mut Object, _cmd: Sel, note: id)
 	{
+		unsafe 
+		{
+			if !RUNNING { return; }
+		}
+
 		println!("applicationDidBecomeActive");
 		Self::show_settings(this);
 	}
@@ -179,6 +250,73 @@ trait AppDelegate
 
 			msg_send![center, removeDeliveredNotification:note]
 		}
+	}
+
+	extern fn workspace_app_activated(this: &mut Object, cmd: Sel, noti: id)
+	{
+		unsafe 
+		{
+			let dict: id = msg_send![noti, userInfo];
+			let app: id = msg_send![dict, objectForKey: NSWorkspaceApplicationKey];
+
+			let app_url: id = msg_send![app, bundleURL];
+			let path_components: id = msg_send![app_url, pathComponents];
+			
+			let app_name: id = msg_send![path_components, lastObject];
+
+			Self::check_and_apply_mute_for_app(this, app_name);
+		}
+	}
+
+	fn check_and_apply_mute_for_app(this: &Object, app_name: id)
+	{
+		unsafe
+		{
+			let filterList: id = msg_send![this, filterList];
+
+			////=========
+			let isInList: bool = msg_send![filterList, containsObject: app_name];
+			let filterListMode: i32 = msg_send![this, filterListMode];
+
+			println!("filterlistmode = {:?}", filterListMode);
+			let shouldMute = match filterListMode
+			{
+				0 => isInList,
+				1 => !isInList,
+				_ => false,
+			};
+
+			let mut tickeys: Box<Tickeys> = msg_send![this, tickeys];
+			tickeys.set_mute(shouldMute);
+			std::mem::forget(tickeys);
+
+			//println!("workspace_app_activated: {:}, shouldMute: {:}", nsstring_to_string(app_name), shouldMute);
+		}
+			
+	}
+
+	//- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+	extern fn observeValueForKeyPathOfObjectChangeContext(this: &mut Object, cmd: Sel, keypath: id, object: id, change: id, context: *const c_void)
+	{
+		println!("FilterListMode Changed!");
+
+		unsafe
+		{
+			if context == (0 as *const c_void)
+			{
+				let ud: id = msg_send![class("NSUserDefaults"), standardUserDefaults];
+				let newValue: i32 = msg_send![ud, integerForKey: nsstr("FilterListMode")];
+
+				let _: id = msg_send![this, setFilterListMode: newValue];
+
+				println!("FilterListMode Changed! {:}", newValue);
+
+			}else 
+			{
+				//... super call ?
+			}
+		}
+
 	}
 
 	fn show_noti(title: id, msg: id)
@@ -318,11 +456,14 @@ trait AppDelegate
 
 		unsafe
 		{
-			if is_enabled(false) { return; }
+			if is_enabled(false) 
+			{ 
+				RUNNING = true;
+				return; 
+			}
+			
 			while !is_enabled(true)
 			{
-				thread::sleep_ms(3000);
-
 				let alert:id = msg_send![class("NSAlert"), new];
 				alert.autorelease();
 				let _:id = msg_send![alert, setMessageText: l10n_str("ax_tip")];
@@ -349,7 +490,7 @@ trait AppDelegate
 		unsafe
 		{
 			let tickeys: Box<Tickeys> =  msg_send![this, tickeys];
-			SettingsDelegate::get_instance(nil, std::mem::transmute(tickeys));
+			SettingsController::get_instance(nil, std::mem::transmute(tickeys));
 		}
 	}
 
@@ -366,6 +507,7 @@ trait AppDelegate
 		}
 		json::decode(&json_str).unwrap()
 	}
+
 }
 
 impl AppDelegate for id

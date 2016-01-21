@@ -34,6 +34,7 @@ pub struct Tickeys
 {
 	volume:f32,
 	pitch:f32,
+	mute: bool,
 
 	audio_player: SimpleAudioPlayer,
 	keymap: BTreeMap<u8, u8>,
@@ -58,6 +59,7 @@ impl Tickeys
 		{
 			volume:1f32,
 			pitch:1f32,
+			mute: false,
 			audio_player: SimpleAudioPlayer::new(2),
 			keymap: BTreeMap::new(),
 			first_n_non_unique: -1,
@@ -145,6 +147,11 @@ impl Tickeys
 		self.audio_player.set_pitch(pitch);
 	}
 
+	pub fn set_mute(&mut self, mute: bool)
+	{
+		self.mute = mute;
+	}
+
 	#[allow(dead_code)]
 	pub fn get_volume(&self) -> f32
 	{
@@ -182,6 +189,11 @@ impl Tickeys
 		}
 
 		self.on_keydown.map(|f| f(self, keycode));
+
+		if self.mute 
+		{
+			return;
+		}
 
 		let index:i32 = match self.keymap.get(&keycode)
 		{

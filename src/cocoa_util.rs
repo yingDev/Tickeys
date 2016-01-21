@@ -81,6 +81,27 @@ pub fn nsstring_to_string(nsstring: id) -> String
 	}
 }
 
+pub fn nsstr(from: &str) -> id 
+{
+	unsafe
+	{
+		let ns_str = NSString::alloc(nil).init_str(from);
+		msg_send![ns_str, autorelease]
+	}
+
+}
+
+pub fn nsurl_filename(nsurl: id) -> id
+{
+	unsafe
+	{
+		let path_components: id = msg_send![nsurl, pathComponents];
+			
+		msg_send![path_components, lastObject]
+	}
+
+}
+
 pub fn get_res_path(sub_path: &str) -> String
 {
 	let args:Vec<_> = env::args().collect();

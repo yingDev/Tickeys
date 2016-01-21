@@ -1,0 +1,63 @@
+
+/* Class = "NSBox"; title = "Box"; ObjectID = "0QD-Dl-xyD"; */
+"0QD-Dl-xyD.title" = "Box";
+
+/* Class = "NSTextFieldCell"; title = "Quit:"; ObjectID = "1Jp-Rc-Uo0"; */
+"1Jp-Rc-Uo0.title" = "Quit:";
+
+/* Class = "NSButtonCell"; title = "Button"; ObjectID = "2HH-HY-QPr"; */
+"2HH-HY-QPr.title" = "Button";
+
+/* Class = "NSTextFieldCell"; title = "Pitch:"; ObjectID = "2Vw-XN-n2a"; */
+"2Vw-XN-n2a.title" = "Pitch:";
+
+/* Class = "NSButtonCell"; title = "YingDev.com"; ObjectID = "2bJ-t7-qCK"; */
+"2bJ-t7-qCK.title" = "YingDev.com";
+
+/* Class = "NSTextFieldCell"; title = "Table View Cell"; ObjectID = "8zF-T5-VQb"; */
+"8zF-T5-VQb.title" = "Table View Cell";
+
+/* Class = "NSMenuItem"; title = "Item 3"; ObjectID = "Acg-S9-RjJ"; */
+"Acg-S9-RjJ.title" = "Item 3";
+
+/* Class = "NSButtonCell"; title = "close"; ObjectID = "GYP-aS-8YC"; */
+"GYP-aS-8YC.title" = "close";
+
+/* Class = "NSTextFieldCell"; title = "Audio Fx:"; ObjectID = "HyJ-hw-B10"; */
+"HyJ-hw-B10.title" = "Audio Fx:";
+
+/* Class = "NSMenuItem"; title = "Item 1"; ObjectID = "K6q-5J-StW"; */
+"K6q-5J-StW.title" = "Item 1";
+
+/* Class = "NSTabViewItem"; label = "Applications"; ObjectID = "KBF-G1-0ty"; */
+"KBF-G1-0ty.label" = "Applications";
+
+/* Class = "NSTextFieldCell"; title = "White List"; ObjectID = "MQJ-iL-Uu6"; */
+"MQJ-iL-Uu6.title" = "White List";
+
+/* Class = "NSWindow"; title = "Tickeys"; ObjectID = "QvC-M9-y7g"; */
+"QvC-M9-y7g.title" = "Tickeys";
+
+/* Class = "NSTextFieldCell"; title = "0.4.0"; ObjectID = "a2l-UQ-fLH"; */
+"a2l-UQ-fLH.title" = "0.4.0";
+
+/* Class = "NSTextFieldCell"; title = "Volume:"; ObjectID = "bq9-Cp-1c6"; */
+"bq9-Cp-1c6.title" = "Volume:";
+
+/* Class = "NSButtonCell"; title = "Donate"; ObjectID = "lqL-DT-FRN"; */
+"lqL-DT-FRN.title" = "Donate";
+
+/* Class = "NSTabViewItem"; label = "General"; ObjectID = "nrH-rp-Hoo"; */
+"nrH-rp-Hoo.label" = "General";
+
+/* Class = "NSTextFieldCell"; title = "Black List"; ObjectID = "nsg-zw-xFB"; */
+"nsg-zw-xFB.title" = "Black List";
+
+/* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "rQg-5t-BIF"; */
+"rQg-5t-BIF.title" = "Text Cell";
+
+/* Class = "NSButtonCell"; title = "Quit Tickeys"; ObjectID = "w4s-2V-eb0"; */
+"w4s-2V-eb0.title" = "Quit Tickeys";
+
+/* Class = "NSMenuItem"; title = "Item 2"; ObjectID = "wmd-oH-4Aa"; */
+"wmd-oH-4Aa.title" = "Item 2";
