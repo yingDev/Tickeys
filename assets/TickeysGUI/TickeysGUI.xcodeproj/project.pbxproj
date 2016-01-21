@@ -34,6 +34,7 @@
 		2E3264131BAE69B900BCB9FA /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = "zh-Hans"; path = "zh-Hans.lproj/WhatsNew.xib"; sourceTree = "<group>"; };
 		2E3D2BF01BABF6480054D776 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		2E3D2BF21BABF6560054D776 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
+		2E9554831C5104D600846BDE /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = "zh-Hans"; path = "zh-Hans.lproj/Settings.xib"; sourceTree = "<group>"; };
 		2EB67D221B0978C90078AA5F /* TickeysGUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TickeysGUI.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2EB67D261B0978C90078AA5F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2EB67D271B0978C90078AA5F /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -277,6 +278,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				2EF9E81C1BABEF68007CE0F7 /* Base */,
+				2E9554831C5104D600846BDE /* zh-Hans */,
 			);
 			name = Settings.xib;
 			sourceTree = "<group>";

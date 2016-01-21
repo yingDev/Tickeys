@@ -23,7 +23,7 @@
             <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
             <view key="contentView" id="EiT-Mj-1SZ" customClass="NSVisualEffectView">
                 <rect key="frame" x="0.0" y="0.0" width="265" height="245"/>
-                <autoresizingMask key="autoresizingMask"/>
+                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 <subviews>
                     <button hidden="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8X8-63-6pE">
                         <rect key="frame" x="37" y="217" width="64" height="32"/>
@@ -44,11 +44,11 @@ Gw
                         <tabViewItems>
                             <tabViewItem label="General" identifier="1" id="nrH-rp-Hoo">
                                 <view key="view" id="6Tp-X5-WpP">
-                                    <rect key="frame" x="10" y="33" width="261" height="189"/>
+                                    <rect key="frame" x="10" y="33" width="191" height="0.0"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0By-bL-3yf">
-                                            <rect key="frame" x="28" y="118" width="67" height="17"/>
+                                            <rect key="frame" x="28" y="-71" width="67" height="17"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Volume:" id="bq9-Cp-1c6">
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -56,14 +56,14 @@ Gw
                                             </textFieldCell>
                                         </textField>
                                         <slider verticalHuggingPriority="750" fixedFrame="YES" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="2h9-31-DYh">
-                                            <rect key="frame" x="99" y="111" width="135" height="25"/>
+                                            <rect key="frame" x="99" y="-78" width="135" height="25"/>
                                             <sliderCell key="cell" state="on" alignment="left" maxValue="1" doubleValue="0.5" tickMarkPosition="below" numberOfTickMarks="9" allowsTickMarkValuesOnly="YES" sliderType="linear" id="6EZ-Ba-Yr4"/>
                                             <connections>
                                                 <action selector="value_changed:" target="-2" id="ksW-rK-yQe"/>
                                             </connections>
                                         </slider>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1LB-V7-bvV">
-                                            <rect key="frame" x="28" y="79" width="67" height="17"/>
+                                            <rect key="frame" x="28" y="-110" width="67" height="17"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Pitch:" id="2Vw-XN-n2a">
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -71,14 +71,14 @@ Gw
                                             </textFieldCell>
                                         </textField>
                                         <slider verticalHuggingPriority="750" fixedFrame="YES" tag="2" translatesAutoresizingMaskIntoConstraints="NO" id="uYF-2u-aqo">
-                                            <rect key="frame" x="99" y="72" width="135" height="25"/>
+                                            <rect key="frame" x="99" y="-117" width="135" height="25"/>
                                             <sliderCell key="cell" state="on" alignment="left" minValue="0.5" maxValue="1.5" doubleValue="1" tickMarkPosition="below" numberOfTickMarks="9" allowsTickMarkValuesOnly="YES" sliderType="linear" id="XYY-R3-tM5"/>
                                             <connections>
                                                 <action selector="value_changed:" target="-2" id="6DQ-2G-mYM"/>
                                             </connections>
                                         </slider>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gPD-H0-DEl">
-                                            <rect key="frame" x="15" y="158" width="80" height="17"/>
+                                            <rect key="frame" x="15" y="-31" width="80" height="17"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Audio Fx:" id="HyJ-hw-B10">
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -86,7 +86,7 @@ Gw
                                             </textFieldCell>
                                         </textField>
                                         <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="EkV-2p-KSX">
-                                            <rect key="frame" x="99" y="152" width="136" height="26"/>
+                                            <rect key="frame" x="99" y="-37" width="136" height="26"/>
                                             <popUpButtonCell key="cell" type="push" title="Item 1" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="K6q-5J-StW" id="c4h-CD-9aw">
                                                 <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="menu"/>
@@ -103,7 +103,7 @@ Gw
                                             </connections>
                                         </popUpButton>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gML-EK-C6g">
-                                            <rect key="frame" x="15" y="19" width="80" height="17"/>
+                                            <rect key="frame" x="15" y="-170" width="80" height="17"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Shutdown:" id="1Jp-Rc-Uo0">
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -111,7 +111,7 @@ Gw
                                             </textFieldCell>
                                         </textField>
                                         <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PRW-hD-gLZ">
-                                            <rect key="frame" x="95" y="10" width="143" height="32"/>
+                                            <rect key="frame" x="95" y="-179" width="143" height="32"/>
                                             <buttonCell key="cell" type="push" title="Quit Tickeys" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="w4s-2V-eb0">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="system"/>
@@ -121,7 +121,7 @@ Gw
                                             </connections>
                                         </button>
                                         <box verticalHuggingPriority="750" fixedFrame="YES" title="Box" boxType="separator" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="USO-GR-Eef">
-                                            <rect key="frame" x="-3" y="50" width="267" height="5"/>
+                                            <rect key="frame" x="-3" y="-139" width="267" height="5"/>
                                             <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                                             <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                             <font key="titleFont" metaFont="system"/>
@@ -174,7 +174,7 @@ Gw
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
                                             <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="zom-w8-33z">
-                                                <rect key="frame" x="224" y="17" width="15" height="102"/>
+                                                <rect key="frame" x="-15" y="1" width="16" height="0.0"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
                                         </scrollView>
@@ -200,12 +200,12 @@ Gw
                                         </button>
                                         <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aEt-jB-Lpt">
                                             <rect key="frame" x="17" y="159" width="61" height="19"/>
-                                            <popUpButtonCell key="cell" type="recessed" title="Don't" bezelStyle="recessed" imagePosition="left" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="border" inset="2" selectedItem="HYy-QC-4Ga" id="1Uu-HK-Ma2">
-                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                                                <font key="font" metaFont="systemBold" size="12"/>
+                                            <popUpButtonCell key="cell" type="roundRect" bezelStyle="roundedRect" imagePosition="left" alignment="center" lineBreakMode="truncatingTail" borderStyle="border" inset="2" id="1Uu-HK-Ma2">
+                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="cellTitle"/>
                                                 <menu key="menu" id="YMj-Fg-FBW">
                                                     <items>
-                                                        <menuItem title="Don't" state="on" id="HYy-QC-4Ga"/>
+                                                        <menuItem title="Don't" id="HYy-QC-4Ga"/>
                                                         <menuItem title="Only" id="t2a-mq-v2n"/>
                                                     </items>
                                                 </menu>
