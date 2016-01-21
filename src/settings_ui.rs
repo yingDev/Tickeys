@@ -309,7 +309,7 @@ pub trait SettingsController //<NSWindowDelegate, NSTableViewDelegate, NSTableVi
 
 		let label_version: id = msg_send![this, label_version];
 		let _:id = msg_send![label_version,
-			setStringValue: NSString::alloc(nil).init_str(format!("v{}",CURRENT_VERSION).as_ref())];
+			setStringValue: NSString::alloc(nil).init_str(format!("{}",CURRENT_VERSION).as_ref())];
 
 		//let _:id = msg_send![this, show]
 
