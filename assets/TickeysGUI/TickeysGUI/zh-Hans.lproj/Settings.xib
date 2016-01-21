@@ -130,7 +130,7 @@ Gw
                                 </view>
                             </tabViewItem>
                             <tabViewItem label="排除" identifier="2" id="KBF-G1-0ty">
-                                <view key="view" ambiguous="YES" id="bq8-wz-OtQ">
+                                <view key="view" id="bq8-wz-OtQ">
                                     <rect key="frame" x="10" y="33" width="261" height="189"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
@@ -230,13 +230,13 @@ Gw
                                 </view>
                             </tabViewItem>
                             <tabViewItem label="关于" identifier="" id="cFg-mt-q0R">
-                                <view key="view" id="E4M-8h-bzs">
+                                <view key="view" ambiguous="YES" id="E4M-8h-bzs">
                                     <rect key="frame" x="10" y="33" width="261" height="189"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <button verticalHuggingPriority="750" fixedFrame="YES" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="WUI-BD-6a8">
+                                        <button focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="WUI-BD-6a8">
                                             <rect key="frame" x="70" y="11" width="121" height="28"/>
-                                            <buttonCell key="cell" type="push" title="捐助支持" bezelStyle="rounded" image="NSFollowLinkFreestandingTemplate" imagePosition="right" alignment="center" controlSize="small" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="lqL-DT-FRN">
+                                            <buttonCell key="cell" type="push" title="捐助支持" bezelStyle="rounded" image="NSFollowLinkFreestandingTemplate" imagePosition="right" alignment="center" controlSize="small" borderStyle="border" focusRingType="none" imageScaling="proportionallyDown" inset="2" id="lqL-DT-FRN">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="smallSystem"/>
                                             </buttonCell>
@@ -252,9 +252,9 @@ Gw
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </textField>
-                                        <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="znH-Cr-sMI">
+                                        <button focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="znH-Cr-sMI">
                                             <rect key="frame" x="70" y="39" width="121" height="28"/>
-                                            <buttonCell key="cell" type="push" title="YingDev.com" bezelStyle="rounded" image="NSFollowLinkFreestandingTemplate" imagePosition="right" alignment="center" controlSize="small" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="2bJ-t7-qCK">
+                                            <buttonCell key="cell" type="push" title="YingDev.com" bezelStyle="rounded" image="NSFollowLinkFreestandingTemplate" imagePosition="right" alignment="center" controlSize="small" borderStyle="border" focusRingType="none" imageScaling="proportionallyDown" inset="2" id="2bJ-t7-qCK">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="smallSystem"/>
                                             </buttonCell>
