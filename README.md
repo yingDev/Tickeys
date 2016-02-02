@@ -21,7 +21,7 @@ brew install freealut openssl
 - [x] handle system sleep/wake notifications
 - [x] detailed update info
 - [x] i18n & L10n
-
+- [x] blacklist / whitelist
 
 ## Lic
 * MIT
