@@ -23,5 +23,5 @@ brew install freealut openssl
 - [x] i18n & L10n
 
 
-## License
+## Lic
 * MIT
