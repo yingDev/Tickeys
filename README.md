@@ -11,7 +11,7 @@ A demo for learning `Rust`.
 [![Tickeys Video](https://raw.githubusercontent.com/yingDev/Tickeys/master/.readme_images/video_thumb.png)](https://www.youtube.com/watch?v=XeqA-LU5IWg) 
 
 ## Env
-* alut:
+* alut
 * openssl
 ```sh
 brew install freealut openssl
