@@ -12,8 +12,9 @@ A demo for learning `Rust`.
 
 ## Env
 * alut:
+* openssl
 ```sh
-brew install freealut
+brew install freealut openssl
 ```
 
 ## Todo
