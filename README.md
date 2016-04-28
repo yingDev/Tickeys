@@ -23,7 +23,7 @@ brew cask install tickeys && open ~/Applications/Tickeys.app
 <img src="https://raw.githubusercontent.com/yingDev/Tickeys/master/.readme_images/video_thumb.png" alt='sound effects' width=400/>
 </a>
 
-## Env
+## Deps
 * alut
 * openssl
 ```sh
