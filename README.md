@@ -2,7 +2,7 @@
 ![Tickeys Icon](https://raw.githubusercontent.com/yingDev/Tickeys/master/.readme_images/icon.png)
 
 
-Instant audio feedback for typing. For MacOS X. 
+Instant audio feedback for typing. For macOS. 
 
 A demo for learning `Rust`.
 
