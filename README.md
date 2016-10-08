@@ -2,7 +2,7 @@
 ![Tickeys Icon](https://raw.githubusercontent.com/yingDev/Tickeys/master/.readme_images/icon.png)
 
 
-Instant audio feedback for typing. For MacOS X. 
+Instant audio feedback for typing. For macOS. 
 
 A demo for learning `Rust`.
 
@@ -15,13 +15,15 @@ brew cask install tickeys && open ~/Applications/Tickeys.app
 
 # Screenshots
 
-![Tickeys UI](https://raw.githubusercontent.com/yingDev/Tickeys/master/.readme_images/1.png)
-![Tickeys UI](https://raw.githubusercontent.com/yingDev/Tickeys/master/.readme_images/2.png)
+<img src="https://raw.githubusercontent.com/yingDev/Tickeys/master/.readme_images/1.png" alt='sound effects' width=400/>
+<br/>
+<img src="https://raw.githubusercontent.com/yingDev/Tickeys/master/.readme_images/2.png" alt='black/white list' width=400/>
+<br/><br/>
+<a href='https://www.youtube.com/watch?v=XeqA-LU5IWg' target='_blank'>
+<img src="https://raw.githubusercontent.com/yingDev/Tickeys/master/.readme_images/video_thumb.png" alt='sound effects' width=400/>
+</a>
 
-
-[![Tickeys Video](https://raw.githubusercontent.com/yingDev/Tickeys/master/.readme_images/video_thumb.png)](https://www.youtube.com/watch?v=XeqA-LU5IWg) 
-
-## Env
+## Deps
 * alut
 * openssl
 ```sh
