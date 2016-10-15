@@ -23,7 +23,7 @@ brew cask install tickeys && open ~/Applications/Tickeys.app
 <img src="https://raw.githubusercontent.com/yingDev/Tickeys/master/.readme_images/video_thumb.png" alt='sound effects' width=400/>
 </a>
 
-## Deps
+## Deps （for development)
 * alut
 * openssl
 ```sh
@@ -36,5 +36,5 @@ brew install freealut openssl
 - [x] i18n & L10n
 - [x] blacklist / whitelist
 
-## Lic
+## License
 * MIT
