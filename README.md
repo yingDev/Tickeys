@@ -4,7 +4,7 @@
 
 Instant audio feedback for typing. For macOS. 
 
-A demo for learning `Rust`.
+A demo for learning [Rust](https://www.rust-lang.org).
 
 # Install
   - brew cask
