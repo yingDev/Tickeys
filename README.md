@@ -1,6 +1,8 @@
 # Tickeys
 ![Tickeys Icon](https://raw.githubusercontent.com/yingDev/Tickeys/master/.readme_images/icon.png)
 
+<img src="https://raw.githubusercontent.com/yingDev/Tickeys/master/Tickeys%20icon%20design.png" width="128" height="128" />
+<br>(An alternative icon designed by [@WillStark](https://github.com/WillStark) )
 
 Instant audio feedback for typing. For macOS. 
 
