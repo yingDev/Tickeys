@@ -25,18 +25,37 @@ brew cask install tickeys && open /Applications/Tickeys.app
 <img src="https://raw.githubusercontent.com/yingDev/Tickeys/master/.readme_images/video_thumb.png" alt='sound effects' width=400/>
 </a>
 
+# Add custom schemes
+0. locate the `data` directory in Finder: `Tickeys.app/Content/Resources/data/`
+
+1. copy & paste an effect directory and rename the copy, eg.`drum` -> `myDrum`
+
+2. open `schemes.json` and edit it by copy & paste the corresponding scheme entry; change the `name`  and `display_name` as needed. eg:
+	```json 
+	,{
+		"name": "myDrum",
+		"display_name": "My Drum",
+		"files": ["1.wav", "2.wav", "3.wav", "4.wav", "space.wav", "backspace.wav", "enter.wav"],
+		"non_unique_count": 4, 
+		"key_audio_map":{"36": 6, "49": 4, "51": 5}
+	},
+	```
+	- note:
+	 	* "name": value must be the same as your directory name
+	 	* "files": sound file list 
+	 	* "non_unique_count": first N items in `files` are auto mapped to keys
+	  	* "key_audio_map": mappings of keyCode to sound index in "files". eg. 36 == `enter`
+	 
+3. add/replace your `.wav` files; update & save the json file
+
+4. re-launch Tickeys. ("qaz123")
+
 ## Deps （for development)
 * alut
 * openssl
 ```sh
 brew install freealut openssl
 ```
-
-## Todo
-- [x] handle system sleep/wake notifications
-- [x] detailed update info
-- [x] i18n & L10n
-- [x] blacklist / whitelist
 
 ## License
 * MIT
