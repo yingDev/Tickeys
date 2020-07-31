@@ -10,7 +10,7 @@ A demo for learning [Rust](https://www.rust-lang.org).
 
 ### Other versions:
 - Linux: [Tickeys-linux](https://github.com/BillBillBillBill/Tickeys-linux)
-- Windows: [Download](https://localhost/Content/Projects/Tickeys_Win/Release/1.1.1/Tickeys1.1.1.rar)
+- Windows: [Download](https://www.yingdev.com/Content/Projects/Tickeys_Win/Release/1.1.1/Tickeys1.1.1.rar)
 
 # Install
   - brew cask
