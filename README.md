@@ -8,8 +8,9 @@ Instant audio feedback for typing. For macOS.
 
 A demo for learning [Rust](https://www.rust-lang.org).
 
-### Looking for Linux version ?
-[https://github.com/BillBillBillBill/Tickeys-linux](https://github.com/BillBillBillBill/Tickeys-linux)
+### Other versions:
+- Linux: [Tickeys-linux](https://github.com/BillBillBillBill/Tickeys-linux)
+- Windows: [Download](https://localhost/Content/Projects/Tickeys_Win/Release/1.1.1/Tickeys1.1.1.rar)
 
 # Install
   - brew cask
