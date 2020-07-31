@@ -8,7 +8,7 @@ Instant audio feedback for typing. For macOS.
 
 A demo for learning [Rust](https://www.rust-lang.org).
 
-# Looking for Linux version ?
+### Looking for Linux version ?
 [https://github.com/BillBillBillBill/Tickeys-linux](https://github.com/BillBillBillBill/Tickeys-linux)
 
 # Install
