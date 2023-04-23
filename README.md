@@ -15,7 +15,7 @@ A demo for learning [Rust](https://www.rust-lang.org).
 # Install
   - brew cask
 ```sh
-brew --cask install tickeys && open /Applications/Tickeys.app
+brew install --cask tickeys && open /Applications/Tickeys.app
 ```
   - or download the [dmg](https://github.com/yingDev/Tickeys/releases/download/0.5.0/Tickeys-0.5.0-yosemite.dmg)
 
